@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://papaya-sunburst-326941.netlify.app/sitemap.xml
+Sitemap: https://joyful-crostata-027e18.netlify.app/sitemap.xml
+
