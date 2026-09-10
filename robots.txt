@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://papaya-sunburst-326941.netlify.app/sitemap.xml
