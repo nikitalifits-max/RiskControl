@@ -1,0 +1,7 @@
+{
+  "name": "riskcontrol",
+  "private": true,
+  "devDependencies": {
+    "playwright": "^1.47.0"
+  }
+}
