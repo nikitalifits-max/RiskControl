@@ -117,6 +117,14 @@
   .verdict-factors{margin-top:4px;}
   @keyframes tf-pulse{0%,100%{box-shadow:0 0 0 0 var(--accent);}50%{box-shadow:0 0 0 4px var(--accent);}}
   #interval.tf-highlight{animation:tf-pulse .9s ease-in-out 2;border-radius:6px;}
+  .ai-check{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+  .ai-check-btn{width:100%;padding:10px 14px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:600;}
+  .ai-check-btn:hover:not(:disabled){border-color:var(--accent);}
+  .ai-check-btn:disabled{opacity:.6;cursor:default;}
+  .ai-result{margin-top:10px;}
+  .ai-result-loading{font-size:13px;color:var(--muted);}
+  .ai-result-text{font-size:13.5px;line-height:1.55;white-space:pre-wrap;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+  .ai-result-error{font-size:13px;color:var(--red);background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:10px 12px;}
 
   /* ---------- мобильная адаптация ---------- */
   @media(max-width:640px){
@@ -233,6 +241,14 @@
       </div>
     </div>
     <p class="small" data-i18n="verdictDisclaimer">Автоматическая оценка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Не финансовый совет — решение всегда за тобой.</p>
+    <div class="ai-check">
+      <button type="button" id="aiCheckBtn" class="ai-check-btn" data-i18n="aiCheckBtn">🤖 Проверить с ИИ (данные + свежие новости)</button>
+      <div id="aiResult" class="ai-result" hidden>
+        <div id="aiResultLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
+        <div id="aiResultText" class="ai-result-text" hidden></div>
+        <div id="aiResultError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
+      </div>
+    </div>
   </div>
 
   <div id="pageCalc">
@@ -407,6 +423,9 @@
       verdictTfPrefix:"Учитывается таймфрейм:", verdictChangeBtn:"Изменить",
       verdictFactorsLabel:"Из чего сложилось:",
       verdictDisclaimer:"Автоматическая сводка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Это не сигнал к сделке и не гарантия результата — в честном тестировании на исторических данных этот набор факторов не показал устойчивого преимущества над рынком. Используй как один из ориентиров наравне со своим анализом; решение и риск — всегда твои.",
+      aiCheckBtn:"🤖 Проверить с ИИ (данные + свежие новости)", aiCheckBtnLoading:"Спрашиваю ИИ…",
+      aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
+      aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
       methodH2:"Как формируется вердикт", methodTag:"методология",
       methodIntro:"Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
@@ -465,6 +484,9 @@
       verdictTfPrefix:"Timeframe used:", verdictChangeBtn:"Change",
       verdictFactorsLabel:"What it's made of:",
       verdictDisclaimer:"Automatic summary from 5 factors: trend, funding, RSI, Fibonacci/pivot, candle pattern. This is not a trade signal or a guarantee of any result — in honest backtesting on historical data, this factor set did not show a reliable edge over the market. Use it as one input alongside your own analysis; the decision and the risk are always yours.",
+      aiCheckBtn:"🤖 Check with AI (data + fresh news)", aiCheckBtnLoading:"Asking the AI…",
+      aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
+      aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
       methodH2:"How this is built", methodTag:"methodology",
       methodIntro:"This is the sum of 5 equally weighted technical factors, each from -1 to +1:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
@@ -523,6 +545,9 @@
       verdictTfPrefix:"Verwendeter Zeitrahmen:", verdictChangeBtn:"Ändern",
       verdictFactorsLabel:"Woraus es sich zusammensetzt:",
       verdictDisclaimer:"Automatische Zusammenfassung aus 5 Faktoren: Trend, Funding, RSI, Fibonacci/Pivot, Kerzenmuster. Das ist kein Handelssignal und keine Erfolgsgarantie — in ehrlichen Backtests auf historischen Daten zeigte diese Faktorenkombination keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als einen von mehreren Anhaltspunkten neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir.",
+      aiCheckBtn:"🤖 Mit KI prüfen (Daten + aktuelle Nachrichten)", aiCheckBtnLoading:"Frage die KI…",
+      aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
+      aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
       methodH2:"Wie das zustande kommt", methodTag:"Methodik",
       methodIntro:"Das ist die Summe aus 5 gleich gewichteten technischen Faktoren, jeweils von -1 bis +1:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
@@ -581,6 +606,9 @@
       verdictTfPrefix:"Враховується таймфрейм:", verdictChangeBtn:"Змінити",
       verdictFactorsLabel:"З чого це складається:",
       verdictDisclaimer:"Автоматична зведення за 5 факторами: тренд, funding, RSI, Fibonacci/pivot, патерн свічок. Це не сигнал до угоди і не гарантія результату — у чесному тестуванні на історичних даних цей набір факторів не показав стійкої переваги над ринком. Використовуй як один з орієнтирів поряд зі своїм аналізом; рішення і ризик — завжди твої.",
+      aiCheckBtn:"🤖 Перевірити з ШІ (дані + свіжі новини)", aiCheckBtnLoading:"Питаю ШІ…",
+      aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
+      aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
       methodH2:"Як це влаштовано", methodTag:"методологія",
       methodIntro:"Це сума 5 рівнозначних технічних факторів, кожен від -1 до +1:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
@@ -639,6 +667,9 @@
       verdictTfPrefix:"מסגרת הזמן שנלקחת בחשבון:", verdictChangeBtn:"שנה",
       verdictFactorsLabel:"ממה זה מורכב:",
       verdictDisclaimer:"סיכום אוטומטי מ-5 גורמים: מגמה, funding, RSI, Fibonacci/פיבוט, תבנית נרות. זה לא איתות למסחר ולא הבטחה לתוצאה כלשהי — בבדיקה הוגנת על נתונים היסטוריים, שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק. השתמש בזה כאחד השיקולים לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך.",
+      aiCheckBtn:"🤖 בדוק עם AI (נתונים + חדשות עדכניות)", aiCheckBtnLoading:"שואל את ה-AI…",
+      aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
+      aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
       methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
       methodIntro:"זה סכום של 5 גורמים טכניים שווי-משקל, כל אחד בין -1 ל-+1:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
@@ -1225,6 +1256,54 @@
     el.classList.remove('tf-highlight');
     void el.offsetWidth; // перезапустить CSS-анимацию, если уже была показана
     el.classList.add('tf-highlight');
+  });
+
+  // ---------- ИИ-анализ по кнопке (данные + новости через Claude) ----------
+  $('aiCheckBtn').addEventListener('click', async ()=>{
+    const btn = $('aiCheckBtn');
+    const resultBox = $('aiResult');
+    const loadingEl = $('aiResultLoading');
+    const textEl = $('aiResultText');
+    const errorEl = $('aiResultError');
+    if(btn.disabled) return;
+    resultBox.hidden = false;
+    loadingEl.hidden = false;
+    textEl.hidden = true;
+    errorEl.hidden = true;
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = t('aiCheckBtnLoading');
+    try{
+      const payload = {
+        symbol: $('symbol').value || 'BTCUSDT',
+        timeframe: $('verdictTfValue').textContent,
+        price: $('mPrice').textContent,
+        change24h: $('mChange').textContent,
+        trendText: $('cTrendVal').textContent,
+        fundingText: $('cFundingVal').textContent,
+        rsiText: $('cRsiVal').textContent,
+        fibText: $('cFibVal').textContent,
+        patternText: $('cPatternVal').textContent,
+        lang: lang
+      };
+      const res = await fetch('/.netlify/functions/analyze', {
+        method: 'POST',
+        headers: {'content-type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.text){ throw new Error((data && data.error) || ('http_'+res.status)); }
+      textEl.textContent = data.text;
+      loadingEl.hidden = true;
+      textEl.hidden = false;
+    } catch(err){
+      console.error('AI check failed:', err);
+      loadingEl.hidden = true;
+      errorEl.hidden = false;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 
   // ---------- TradingView chart ----------
