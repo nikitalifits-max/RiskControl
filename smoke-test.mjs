@@ -187,6 +187,24 @@ async function main() {
     `oSize=${oSize}`
   );
 
+  // 8) вердикт по сделке посчитался (не завис на "собираю данные") и показывает таймфрейм
+  const verdictTitle = await page.$eval('#verdictTitle', (el) => el.textContent.trim());
+  const verdictClass = await page.$eval('#verdictTitle', (el) => el.className);
+  check(
+    'вердикт посчитан после загрузки рыночных данных',
+    /long|short|none/.test(verdictClass) && verdictTitle.length > 0,
+    `class=${verdictClass}, title=${verdictTitle}`
+  );
+  const verdictTf = await page.$eval('#verdictTfValue', (el) => el.textContent.trim());
+  check('вердикт показывает используемый таймфрейм', verdictTf.length > 0 && verdictTf !== '—', `tf=${verdictTf}`);
+
+  // 9) кнопка "Изменить" у вердикта ведёт к настройке таймфрейма на странице "Рынок"
+  await page.click('#verdictChangeBtn');
+  await page.waitForTimeout(300);
+  const marketVisible = await page.$eval('#pageMarket', (el) => !el.hidden);
+  const intervalHighlighted = await page.$eval('#interval', (el) => el.classList.contains('tf-highlight'));
+  check('кнопка "Изменить" переключает на страницу Рынок и подсвечивает таймфрейм', marketVisible && intervalHighlighted, `marketVisible=${marketVisible}, highlighted=${intervalHighlighted}`);
+
   await browser.close();
 
   console.log('');
