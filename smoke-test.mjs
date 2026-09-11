@@ -27,7 +27,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const targetArg = process.argv[2] || './index.html';
-const target = /^https?:\/\//.test(targetArg)
+const isHttpTarget = /^https?:\/\//.test(targetArg);
+const target = isHttpTarget
   ? targetArg
   : pathToFileURL(path.resolve(targetArg)).href;
 
@@ -118,6 +119,9 @@ async function main() {
 
   await page.goto(target, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
+  // на медленном раннере страница иногда не успевает отрисоваться за 1500мс —
+  // ждём конкретно кнопку темы (до 10с), а не полагаемся только на таймаут.
+  await page.waitForSelector('#themeToggle', { timeout: 10000 }).catch(() => {});
 
   // 1) страница загрузилась, без JS-исключений
   check('страница загружается без JS-ошибок', pageErrors.length === 0, pageErrors.join('; '));
@@ -136,8 +140,10 @@ async function main() {
     !!box1 && box1.x + box1.width <= vpWidth,
     box1 ? `x=${box1.x}, width=${box1.width}, viewport=${vpWidth}` : 'элемент не найден'
   );
-  await themeBtn.click();
-  await page.waitForTimeout(150);
+  if (themeBtn) {
+    await themeBtn.click();
+    await page.waitForTimeout(150);
+  }
   const themeAttr = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
   check('клик по переключателю темы меняет тему', themeAttr === 'dark', `data-theme=${themeAttr}`);
 
@@ -205,33 +211,41 @@ async function main() {
   const intervalHighlighted = await page.$eval('#interval', (el) => el.classList.contains('tf-highlight'));
   check('кнопка "Изменить" переключает на страницу Рынок и подсвечивает таймфрейм', marketVisible && intervalHighlighted, `marketVisible=${marketVisible}, highlighted=${intervalHighlighted}`);
 
-  // 10) кнопка "Проверить с ИИ" — успешный ответ серверной функции показывается пользователю
-  let aiCallCount = 0;
-  await page.route('**/.netlify/functions/analyze', async (route) => {
-    aiCallCount++;
-    if (aiCallCount === 1) {
+  // 10-11) кнопка "Проверить с ИИ" — эти 2 проверки подменяют относительный запрос
+  // (/.netlify/functions/analyze), поэтому честно работают только при проверке настоящего
+  // сайта (http/https). При проверке локального файла (file://) браузер не даёт корректно
+  // подменить относительный путь — это ограничение самого теста, а не баг сайта, поэтому
+  // на файле эти 2 проверки пропускаются, а не считаются ошибкой.
+  if (isHttpTarget) {
+    let aiCallCount = 0;
+    await page.route('**/.netlify/functions/analyze', async (route) => {
+      aiCallCount++;
+      if (aiCallCount === 1) {
+        return route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ text: 'Тестовый ответ ИИ. Не финансовый совет.' }),
+        });
+      }
       return route.fulfill({
-        status: 200,
+        status: 503,
         contentType: 'application/json',
-        body: JSON.stringify({ text: 'Тестовый ответ ИИ. Не финансовый совет.' }),
+        body: JSON.stringify({ error: 'api_key_not_configured' }),
       });
-    }
-    return route.fulfill({
-      status: 503,
-      contentType: 'application/json',
-      body: JSON.stringify({ error: 'api_key_not_configured' }),
     });
-  });
-  await page.click('#aiCheckBtn');
-  await page.waitForSelector('#aiResultText:not([hidden])', { timeout: 5000 }).catch(() => {});
-  const aiText = await page.$eval('#aiResultText', (el) => el.textContent).catch(() => '');
-  check('кнопка "Проверить с ИИ" показывает ответ от функции', aiText.includes('Тестовый ответ'), `text=${aiText}`);
+    await page.click('#aiCheckBtn');
+    await page.waitForSelector('#aiResultText:not([hidden])', { timeout: 5000 }).catch(() => {});
+    const aiText = await page.$eval('#aiResultText', (el) => el.textContent).catch(() => '');
+    check('кнопка "Проверить с ИИ" показывает ответ от функции', aiText.includes('Тестовый ответ'), `text=${aiText}`);
 
-  // 11) если функция вернула ошибку (например, ключ ещё не настроен) — показывается понятное сообщение, а не тишина
-  await page.click('#aiCheckBtn');
-  await page.waitForSelector('#aiResultError:not([hidden])', { timeout: 5000 }).catch(() => {});
-  const errorVisible = await page.$eval('#aiResultError', (el) => !el.hidden).catch(() => false);
-  check('при ошибке ИИ-функции показывается понятное сообщение вместо тишины', errorVisible);
+    // если функция вернула ошибку (например, ключ ещё не настроен) — показывается понятное сообщение, а не тишина
+    await page.click('#aiCheckBtn');
+    await page.waitForSelector('#aiResultError:not([hidden])', { timeout: 5000 }).catch(() => {});
+    const errorVisible = await page.$eval('#aiResultError', (el) => !el.hidden).catch(() => false);
+    check('при ошибке ИИ-функции показывается понятное сообщение вместо тишины', errorVisible);
+  } else {
+    console.log('  \x1b[33m…\x1b[0m проверки кнопки "Проверить с ИИ" пропущены (нужен настоящий адрес сайта, не файл)');
+  }
 
   await browser.close();
 
