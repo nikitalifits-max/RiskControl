@@ -119,6 +119,9 @@ async function main() {
 
   await page.goto(target, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1500);
+  // на медленном раннере страница иногда не успевает отрисоваться за 1500мс —
+  // ждём конкретно кнопку темы (до 10с), а не полагаемся только на таймаут.
+  await page.waitForSelector('#themeToggle', { timeout: 10000 }).catch(() => {});
 
   // 1) страница загрузилась, без JS-исключений
   check('страница загружается без JS-ошибок', pageErrors.length === 0, pageErrors.join('; '));
@@ -137,8 +140,10 @@ async function main() {
     !!box1 && box1.x + box1.width <= vpWidth,
     box1 ? `x=${box1.x}, width=${box1.width}, viewport=${vpWidth}` : 'элемент не найден'
   );
-  await themeBtn.click();
-  await page.waitForTimeout(150);
+  if (themeBtn) {
+    await themeBtn.click();
+    await page.waitForTimeout(150);
+  }
   const themeAttr = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
   check('клик по переключателю темы меняет тему', themeAttr === 'dark', `data-theme=${themeAttr}`);
 
@@ -258,3 +263,4 @@ main().catch((e) => {
   console.error('Тест упал с ошибкой:', e);
   process.exit(1);
 });
+    
