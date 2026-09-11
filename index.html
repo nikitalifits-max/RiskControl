@@ -197,7 +197,7 @@
   </div>
 
   <div class="card verdict-card" id="verdictCard">
-    <h2><span data-i18n="checklistH2">Вердикт по сделке</span> <span class="tag" data-i18n="checklistTag">вывод из 5 факторов</span></h2>
+    <h2><span data-i18n="checklistH2">Технический разбор рынка</span> <span class="tag" data-i18n="checklistTag">не сигнал к сделке</span></h2>
     <div class="verdict-main">
       <div class="verdict-icon" id="verdictIcon">⚪</div>
       <div>
@@ -346,8 +346,8 @@
             <li data-i18n="methodItem4">Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления</li>
             <li data-i18n="methodItem5">Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов</li>
           </ul>
-          <p class="small" data-i18n="methodThreshold">Сумма ≥ +3 или ≤ -3 — вердикт решительный (LONG/SHORT). От -2 до +2 — «не входить», сигналы противоречивые.</p>
-          <p class="small" data-i18n="methodSmall">Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Это не финансовая рекомендация — решение по входу всегда за тобой.</p>
+          <p class="small" data-i18n="methodThreshold">Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.</p>
+          <p class="small" data-i18n="methodSmall">Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои.</p>
         </div>
       </div>
     </div>
@@ -390,7 +390,7 @@
       mPriceK:"Последняя цена", mChangeK:"Изменение 24ч", mTrendK:"Тренд (EMA20 vs EMA50)",
       trendUp:"Восходящий", trendDown:"Нисходящий", trendFlat:"Смешанный/боковик",
       marketSmall:"Fibonacci и pivot уровни считаются автоматически по последним свечам выбранного таймфрейма (по последнему выраженному свингу high/low).",
-      checklistH2:"Вердикт по сделке", checklistTag:"вывод из 5 факторов",
+      checklistH2:"Технический разбор рынка", checklistTag:"не сигнал к сделке",
       itemTrendLabel:"Тренд (EMA20/EMA50)", itemTrendHint:"Цена относительно EMA20 и EMA50 на выбранном таймфрейме",
       itemFundingLabel:"Funding rate", itemFundingHint:"Экстремальная ставка финансирования — сигнал перекоса толпы",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Перекупленность выше 70, перепроданность ниже 30",
@@ -402,11 +402,11 @@
       cFibSupport:"▲ у поддержки", cFibResistance:"▼ у сопротивления",
       cPatternBull:"▲ бычий сигнал", cPatternBear:"▼ медвежий сигнал",
       verdictWaitingTitle:"Собираю данные…", verdictWaitingSub:"Жди первую загрузку рыночных данных",
-      verdictLongTitle:"Входить в LONG", verdictShortTitle:"Входить в SHORT", verdictNoneTitle:"Не входить сейчас",
-      verdictLongSub:"Большинство факторов бычьи", verdictShortSub:"Большинство факторов медвежьи", verdictNoneSub:"Сигналы противоречивые — явного перевеса нет",
+      verdictLongTitle:"Технический фон: бычий", verdictShortTitle:"Технический фон: медвежий", verdictNoneTitle:"Технический фон смешанный",
+      verdictLongSub:"Большинство факторов указывают на рост", verdictShortSub:"Большинство факторов указывают на снижение", verdictNoneSub:"Факторы противоречат друг другу — явной картины нет",
       verdictTfPrefix:"Учитывается таймфрейм:", verdictChangeBtn:"Изменить",
-      verdictFactorsLabel:"Почему так:",
-      verdictDisclaimer:"Автоматическая оценка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Не финансовый совет — решение всегда за тобой.",
+      verdictFactorsLabel:"Из чего сложилось:",
+      verdictDisclaimer:"Автоматическая сводка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Это не сигнал к сделке и не гарантия результата — в честном тестировании на исторических данных этот набор факторов не показал устойчивого преимущества над рынком. Используй как один из ориентиров наравне со своим анализом; решение и риск — всегда твои.",
       methodH2:"Как формируется вердикт", methodTag:"методология",
       methodIntro:"Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
@@ -414,8 +414,8 @@
       methodItem3:"RSI(14) — перекупленность выше 70 или перепроданность ниже 30",
       methodItem4:"Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления",
       methodItem5:"Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов",
-      methodThreshold:"Сумма ≥ +3 или ≤ -3 — вердикт решительный (LONG/SHORT). От -2 до +2 — «не входить», сигналы противоречивые.",
-      methodSmall:"Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Это не финансовая рекомендация — решение по входу всегда за тобой."
+      methodThreshold:"Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.",
+      methodSmall:"Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои."
     },
     en:{
       sub:"Personal tool: position-size/leverage calculator by risk + market factor summary. Not financial advice — the entry decision is always yours.",
@@ -448,7 +448,7 @@
       mPriceK:"Last price", mChangeK:"24h change", mTrendK:"Trend (EMA20 vs EMA50)",
       trendUp:"Uptrend", trendDown:"Downtrend", trendFlat:"Mixed/sideways",
       marketSmall:"Fibonacci and pivot levels are calculated automatically from the latest candles of the selected timeframe (from the last clear high/low swing).",
-      checklistH2:"Trade verdict", checklistTag:"conclusion from 5 factors",
+      checklistH2:"Market technical read", checklistTag:"not a trade signal",
       itemTrendLabel:"Trend (EMA20/EMA50)", itemTrendHint:"Price relative to EMA20 and EMA50 on the selected timeframe",
       itemFundingLabel:"Funding rate", itemFundingHint:"An extreme funding rate is a sign of crowd skew",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Overbought above 70, oversold below 30",
@@ -460,20 +460,20 @@
       cFibSupport:"▲ near support", cFibResistance:"▼ near resistance",
       cPatternBull:"▲ bullish signal", cPatternBear:"▼ bearish signal",
       verdictWaitingTitle:"Gathering data…", verdictWaitingSub:"Waiting for the first market data load",
-      verdictLongTitle:"Enter LONG", verdictShortTitle:"Enter SHORT", verdictNoneTitle:"Don't enter right now",
-      verdictLongSub:"Most factors are bullish", verdictShortSub:"Most factors are bearish", verdictNoneSub:"Signals are mixed — no clear edge",
+      verdictLongTitle:"Technical backdrop: bullish", verdictShortTitle:"Technical backdrop: bearish", verdictNoneTitle:"Technical backdrop: mixed",
+      verdictLongSub:"Most factors point up", verdictShortSub:"Most factors point down", verdictNoneSub:"Factors contradict each other — no clear picture",
       verdictTfPrefix:"Timeframe used:", verdictChangeBtn:"Change",
-      verdictFactorsLabel:"Why:",
-      verdictDisclaimer:"Automatic score from 5 factors: trend, funding, RSI, Fibonacci/pivot, candle pattern. Not financial advice — the decision is always yours.",
-      methodH2:"How the verdict is built", methodTag:"methodology",
-      methodIntro:"The verdict is the sum of 5 equally weighted factors, each from -1 to +1:",
+      verdictFactorsLabel:"What it's made of:",
+      verdictDisclaimer:"Automatic summary from 5 factors: trend, funding, RSI, Fibonacci/pivot, candle pattern. This is not a trade signal or a guarantee of any result — in honest backtesting on historical data, this factor set did not show a reliable edge over the market. Use it as one input alongside your own analysis; the decision and the risk are always yours.",
+      methodH2:"How this is built", methodTag:"methodology",
+      methodIntro:"This is the sum of 5 equally weighted technical factors, each from -1 to +1:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
       methodItem2:"Funding rate — an extreme rate in one direction is read as crowd skew (contrarian)",
       methodItem3:"RSI(14) — overbought above 70 or oversold below 30",
       methodItem4:"Fibonacci/pivot — price near a support or resistance level",
       methodItem5:"Pattern/structure — range breakout, engulfing, pin bar, or the direction of the high/low structure",
-      methodThreshold:"Sum ≥ +3 or ≤ -3 — a decisive verdict (LONG/SHORT). From -2 to +2 — \"don't enter\", signals are mixed.",
-      methodSmall:"All factors are computed automatically from Bybit data for the selected coin and timeframe. This is not financial advice — the entry decision is always yours."
+      methodThreshold:"Sum ≥ +3 or ≤ -3 — the technical backdrop is considered one-sided (bullish/bearish). From -2 to +2 — the picture is mixed, no clear lean.",
+      methodSmall:"All factors are computed automatically from Bybit data for the selected coin and timeframe. Important: this is not financial advice or a trade signal — in honest backtesting on historical data (several coins, over 300 days, validated on data the algorithm had not seen before), this factor set did not show a reliable edge over the market after costs. Use it as technical context alongside your own analysis; the decision and the risk are always yours."
     },
     de:{
       sub:"Persönliches Tool: Positionsgrößen-/Hebel-Rechner nach Risiko + Übersicht der Marktfaktoren. Keine Finanzberatung — die Entscheidung zum Einstieg triffst immer du selbst.",
@@ -506,7 +506,7 @@
       mPriceK:"Letzter Preis", mChangeK:"24-Std.-Änderung", mTrendK:"Trend (EMA20 vs. EMA50)",
       trendUp:"Aufwärtstrend", trendDown:"Abwärtstrend", trendFlat:"Gemischt/Seitwärts",
       marketSmall:"Fibonacci- und Pivot-Levels werden automatisch aus den letzten Kerzen des gewählten Zeitrahmens berechnet (aus dem letzten klaren High/Low-Swing).",
-      checklistH2:"Handels-Urteil", checklistTag:"Fazit aus 5 Faktoren",
+      checklistH2:"Technische Markteinschätzung", checklistTag:"kein Handelssignal",
       itemTrendLabel:"Trend (EMA20/EMA50)", itemTrendHint:"Preis relativ zu EMA20 und EMA50 im gewählten Zeitrahmen",
       itemFundingLabel:"Funding Rate", itemFundingHint:"Ein extremes Funding ist ein Zeichen für eine Marktschieflage",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Überkauft über 70, überverkauft unter 30",
@@ -518,20 +518,20 @@
       cFibSupport:"▲ nahe Unterstützung", cFibResistance:"▼ nahe Widerstand",
       cPatternBull:"▲ bullisches Signal", cPatternBear:"▼ bärisches Signal",
       verdictWaitingTitle:"Daten werden geladen…", verdictWaitingSub:"Warte auf die erste Marktdaten-Ladung",
-      verdictLongTitle:"LONG einsteigen", verdictShortTitle:"SHORT einsteigen", verdictNoneTitle:"Jetzt nicht einsteigen",
-      verdictLongSub:"Die meisten Faktoren sind bullisch", verdictShortSub:"Die meisten Faktoren sind bärisch", verdictNoneSub:"Signale sind gemischt — keine klare Tendenz",
+      verdictLongTitle:"Technisches Bild: bullisch", verdictShortTitle:"Technisches Bild: bärisch", verdictNoneTitle:"Technisches Bild: gemischt",
+      verdictLongSub:"Die meisten Faktoren deuten nach oben", verdictShortSub:"Die meisten Faktoren deuten nach unten", verdictNoneSub:"Die Faktoren widersprechen sich — kein klares Bild",
       verdictTfPrefix:"Verwendeter Zeitrahmen:", verdictChangeBtn:"Ändern",
-      verdictFactorsLabel:"Warum:",
-      verdictDisclaimer:"Automatische Bewertung aus 5 Faktoren: Trend, Funding, RSI, Fibonacci/Pivot, Kerzenmuster. Keine Finanzberatung — die Entscheidung triffst immer du.",
-      methodH2:"Wie das Urteil entsteht", methodTag:"Methodik",
-      methodIntro:"Das Urteil ist die Summe aus 5 gleich gewichteten Faktoren, jeweils von -1 bis +1:",
+      verdictFactorsLabel:"Woraus es sich zusammensetzt:",
+      verdictDisclaimer:"Automatische Zusammenfassung aus 5 Faktoren: Trend, Funding, RSI, Fibonacci/Pivot, Kerzenmuster. Das ist kein Handelssignal und keine Erfolgsgarantie — in ehrlichen Backtests auf historischen Daten zeigte diese Faktorenkombination keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als einen von mehreren Anhaltspunkten neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir.",
+      methodH2:"Wie das zustande kommt", methodTag:"Methodik",
+      methodIntro:"Das ist die Summe aus 5 gleich gewichteten technischen Faktoren, jeweils von -1 bis +1:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
       methodItem2:"Funding Rate — eine extreme Rate in eine Richtung gilt als Marktschieflage (konträr)",
       methodItem3:"RSI(14) — überkauft über 70 oder überverkauft unter 30",
       methodItem4:"Fibonacci/Pivot — Preis nahe einem Unterstützungs- oder Widerstandslevel",
       methodItem5:"Muster/Struktur — Range-Breakout, Engulfing, Pin Bar oder Richtung der Hoch/Tief-Struktur",
-      methodThreshold:"Summe ≥ +3 oder ≤ -3 — ein klares Urteil (LONG/SHORT). Von -2 bis +2 — „nicht einsteigen“, Signale sind gemischt.",
-      methodSmall:"Alle Faktoren werden automatisch aus Bybit-Daten für die gewählte Münze und den Zeitrahmen berechnet. Das ist keine Finanzberatung — die Einstiegsentscheidung triffst immer du."
+      methodThreshold:"Summe ≥ +3 oder ≤ -3 — das technische Bild gilt als eindeutig (bullisch/bärisch). Von -2 bis +2 — das Bild ist gemischt, keine klare Tendenz.",
+      methodSmall:"Alle Faktoren werden automatisch aus Bybit-Daten für die gewählte Münze und den Zeitrahmen berechnet. Wichtig: Das ist keine Finanzberatung und kein Handelssignal — in ehrlichen Backtests auf historischen Daten (mehrere Coins, über 300 Tage, geprüft an zuvor ungesehenen Daten) zeigte diese Faktorenkombination nach Kosten keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als technischen Anhaltspunkt neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir."
     },
     uk:{
       sub:"Особистий інструмент: калькулятор обсягу/плеча за ризиком + зведення ринкових факторів. Не фінансова порада — рішення про вхід завжди за тобою.",
@@ -564,7 +564,7 @@
       mPriceK:"Остання ціна", mChangeK:"Зміна за 24г", mTrendK:"Тренд (EMA20 проти EMA50)",
       trendUp:"Висхідний", trendDown:"Низхідний", trendFlat:"Змішаний/боковик",
       marketSmall:"Рівні Fibonacci та pivot розраховуються автоматично за останніми свічками обраного таймфрейму (за останнім вираженим свінгом high/low).",
-      checklistH2:"Вердикт по угоді", checklistTag:"висновок із 5 факторів",
+      checklistH2:"Технічний розбір ринку", checklistTag:"не сигнал до угоди",
       itemTrendLabel:"Тренд (EMA20/EMA50)", itemTrendHint:"Ціна відносно EMA20 та EMA50 на обраному таймфреймі",
       itemFundingLabel:"Funding rate", itemFundingHint:"Екстремальна ставка фінансування — сигнал перекосу натовпу",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Перекупленість вище 70, перепроданість нижче 30",
@@ -576,20 +576,20 @@
       cFibSupport:"▲ біля підтримки", cFibResistance:"▼ біля опору",
       cPatternBull:"▲ бичачий сигнал", cPatternBear:"▼ ведмежий сигнал",
       verdictWaitingTitle:"Збираю дані…", verdictWaitingSub:"Зачекай на перше завантаження ринкових даних",
-      verdictLongTitle:"Входити в LONG", verdictShortTitle:"Входити в SHORT", verdictNoneTitle:"Не входити зараз",
-      verdictLongSub:"Більшість факторів бичачі", verdictShortSub:"Більшість факторів ведмежі", verdictNoneSub:"Сигнали суперечливі — явного перевесу немає",
+      verdictLongTitle:"Технічний фон: бичачий", verdictShortTitle:"Технічний фон: ведмежий", verdictNoneTitle:"Технічний фон змішаний",
+      verdictLongSub:"Більшість факторів вказують на зростання", verdictShortSub:"Більшість факторів вказують на зниження", verdictNoneSub:"Фактори суперечать один одному — чіткої картини немає",
       verdictTfPrefix:"Враховується таймфрейм:", verdictChangeBtn:"Змінити",
-      verdictFactorsLabel:"Чому саме так:",
-      verdictDisclaimer:"Автоматична оцінка за 5 факторами: тренд, funding, RSI, Fibonacci/pivot, патерн свічок. Не фінансова порада — рішення завжди за тобою.",
-      methodH2:"Як формується вердикт", methodTag:"методологія",
-      methodIntro:"Вердикт — сума 5 рівнозначних факторів, кожен від -1 до +1:",
+      verdictFactorsLabel:"З чого це складається:",
+      verdictDisclaimer:"Автоматична зведення за 5 факторами: тренд, funding, RSI, Fibonacci/pivot, патерн свічок. Це не сигнал до угоди і не гарантія результату — у чесному тестуванні на історичних даних цей набір факторів не показав стійкої переваги над ринком. Використовуй як один з орієнтирів поряд зі своїм аналізом; рішення і ризик — завжди твої.",
+      methodH2:"Як це влаштовано", methodTag:"методологія",
+      methodIntro:"Це сума 5 рівнозначних технічних факторів, кожен від -1 до +1:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
       methodItem2:"Funding rate — екстремальна ставка в один бік трактується як перекос натовпу (контраріан)",
       methodItem3:"RSI(14) — перекупленість вище 70 або перепроданість нижче 30",
       methodItem4:"Fibonacci/pivot — ціна поруч із рівнем підтримки або опору",
       methodItem5:"Патерн/структура — пробій діапазону, поглинання, пін-бар або напрямок структури максимумів/мінімумів",
-      methodThreshold:"Сума ≥ +3 або ≤ -3 — вердикт рішучий (LONG/SHORT). Від -2 до +2 — «не входити», сигнали суперечливі.",
-      methodSmall:"Усі фактори рахуються автоматично за даними Bybit для обраної монети й таймфрейму. Це не фінансова рекомендація — рішення про вхід завжди за тобою."
+      methodThreshold:"Сума ≥ +3 або ≤ -3 — технічний фон вважається однозначним (бичачим/ведмежим). Від -2 до +2 — картина змішана, явного перевесу немає.",
+      methodSmall:"Усі фактори рахуються автоматично за даними Bybit для обраної монети й таймфрейму. Важливо: це не фінансова порада і не сигнал до угоди — у чесному тестуванні на історичних даних (кілька монет, понад 300 днів, з перевіркою на даних, які алгоритм раніше не бачив) цей набір факторів не показав надійної переваги над ринком після врахування комісій. Використовуй це як технічний орієнтир поряд зі своїм аналізом — рішення і ризик завжди твої."
     },
     he:{
       sub:"כלי אישי: מחשבון גודל פוזיציה/מינוף לפי סיכון + סיכום גורמי שוק. אין בכך ייעוץ פיננסי — ההחלטה על הכניסה תמיד שלך.",
@@ -622,7 +622,7 @@
       mPriceK:"מחיר אחרון", mChangeK:"שינוי 24 שעות", mTrendK:"מגמה (EMA20 מול EMA50)",
       trendUp:"מגמה עולה", trendDown:"מגמה יורדת", trendFlat:"מעורב/צדדי",
       marketSmall:"רמות פיבונאצ'י ופיבוט מחושבות אוטומטית לפי הנרות האחרונים של מסגרת הזמן שנבחרה (לפי תנודת ה-high/low הברורה האחרונה).",
-      checklistH2:"פסיקת המסחר", checklistTag:"מסקנה מ-5 גורמים",
+      checklistH2:"ניתוח טכני של השוק", checklistTag:"לא איתות למסחר",
       itemTrendLabel:"מגמה (EMA20/EMA50)", itemTrendHint:"המחיר ביחס ל-EMA20 ו-EMA50 במסגרת הזמן שנבחרה",
       itemFundingLabel:"Funding rate", itemFundingHint:"פאנדינג קיצוני מסמן הטיה בקרב הקהל",
       itemRsiLabel:"RSI (14)", itemRsiHint:"קניית יתר מעל 70, מכירת יתר מתחת ל-30",
@@ -634,20 +634,20 @@
       cFibSupport:"▲ קרוב לתמיכה", cFibResistance:"▼ קרוב להתנגדות",
       cPatternBull:"▲ איתות עולה", cPatternBear:"▼ איתות יורד",
       verdictWaitingTitle:"אוסף נתונים…", verdictWaitingSub:"ממתין לטעינת נתוני השוק הראשונה",
-      verdictLongTitle:"להיכנס ל-LONG", verdictShortTitle:"להיכנס ל-SHORT", verdictNoneTitle:"לא להיכנס כרגע",
-      verdictLongSub:"רוב הגורמים עולים", verdictShortSub:"רוב הגורמים יורדים", verdictNoneSub:"האיתותים מעורבים — אין נטייה ברורה",
+      verdictLongTitle:"רקע טכני: עולה", verdictShortTitle:"רקע טכני: יורד", verdictNoneTitle:"רקע טכני מעורב",
+      verdictLongSub:"רוב הגורמים מצביעים למעלה", verdictShortSub:"רוב הגורמים מצביעים למטה", verdictNoneSub:"הגורמים סותרים זה את זה — אין תמונה ברורה",
       verdictTfPrefix:"מסגרת הזמן שנלקחת בחשבון:", verdictChangeBtn:"שנה",
-      verdictFactorsLabel:"למה כך:",
-      verdictDisclaimer:"ציון אוטומטי מ-5 גורמים: מגמה, funding, RSI, Fibonacci/פיבוט, תבנית נרות. אין בכך ייעוץ פיננסי — ההחלטה תמיד שלך.",
-      methodH2:"איך נבנית הפסיקה", methodTag:"מתודולוגיה",
-      methodIntro:"הפסיקה היא סכום של 5 גורמים שווי-משקל, כל אחד בין -1 ל-+1:",
+      verdictFactorsLabel:"ממה זה מורכב:",
+      verdictDisclaimer:"סיכום אוטומטי מ-5 גורמים: מגמה, funding, RSI, Fibonacci/פיבוט, תבנית נרות. זה לא איתות למסחר ולא הבטחה לתוצאה כלשהי — בבדיקה הוגנת על נתונים היסטוריים, שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק. השתמש בזה כאחד השיקולים לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך.",
+      methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
+      methodIntro:"זה סכום של 5 גורמים טכניים שווי-משקל, כל אחד בין -1 ל-+1:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
       methodItem2:"Funding rate — שיעור קיצוני בכיוון אחד מתפרש כהטיה בקרב הקהל (קונטרארי)",
       methodItem3:"RSI(14) — קניית יתר מעל 70 או מכירת יתר מתחת ל-30",
       methodItem4:"Fibonacci/פיבוט — המחיר קרוב לרמת תמיכה או התנגדות",
       methodItem5:"תבנית/מבנה — פריצת טווח, בליעה, פין-בר, או כיוון מבנה השיאים/השפלים",
-      methodThreshold:"סכום ≥ +3 או ≤ -3 — פסיקה חד-משמעית (LONG/SHORT). בין -2 ל-+2 — \"לא להיכנס\", האיתותים מעורבים.",
-      methodSmall:"כל הגורמים מחושבים אוטומטית לפי נתוני Bybit עבור המטבע ומסגרת הזמן שנבחרו. אין בכך המלצה פיננסית — ההחלטה על הכניסה תמיד שלך."
+      methodThreshold:"סכום ≥ +3 או ≤ -3 — הרקע הטכני נחשב חד-משמעי (עולה/יורד). בין -2 ל-+2 — התמונה מעורבת, אין נטייה ברורה.",
+      methodSmall:"כל הגורמים מחושבים אוטומטית לפי נתוני Bybit עבור המטבע ומסגרת הזמן שנבחרו. חשוב: אין בכך ייעוץ פיננסי ולא איתות למסחר — בבדיקה הוגנת על נתונים היסטוריים (כמה מטבעות, יותר מ-300 יום, נבדק על נתונים שלא נראו קודם), שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק אחרי עמלות. השתמש בזה כרקע טכני לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך."
     }
   };
   const TV_LOCALE = {ru:'ru', en:'en', de:'de', uk:'en', he:'en'};
