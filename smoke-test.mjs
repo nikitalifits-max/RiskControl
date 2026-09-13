@@ -140,12 +140,15 @@ async function main() {
     !!box1 && box1.x + box1.width <= vpWidth,
     box1 ? `x=${box1.x}, width=${box1.width}, viewport=${vpWidth}` : 'элемент не найден'
   );
+  // сайт теперь по умолчанию открывается в тёмной теме ("тёмный терминал"), поэтому
+  // не привязываемся к конкретному значению — просто проверяем, что клик его меняет.
+  const themeBefore = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
   if (themeBtn) {
     await themeBtn.click();
     await page.waitForTimeout(150);
   }
   const themeAttr = await page.evaluate(() => document.documentElement.getAttribute('data-theme'));
-  check('клик по переключателю темы меняет тему', themeAttr === 'dark', `data-theme=${themeAttr}`);
+  check('клик по переключателю темы меняет тему', !!themeAttr && themeAttr !== themeBefore, `before=${themeBefore}, after=${themeAttr}`);
 
   // 4) переключение языка + RTL для иврита
   await page.selectOption('#langSelect', 'en');
@@ -204,23 +207,28 @@ async function main() {
   const verdictTf = await page.$eval('#verdictTfValue', (el) => el.textContent.trim());
   check('вердикт показывает используемый таймфрейм', verdictTf.length > 0 && verdictTf !== '—', `tf=${verdictTf}`);
 
-  // 9) кнопка "Изменить" у вердикта ведёт к настройке таймфрейма на странице "Рынок"
+  // 9) кнопка "Изменить" у вердикта подсвечивает таймфрейм в секции "Рынок"
+  // (обе секции — Калькулятор и Рынок — теперь на одной непрерывной странице,
+  // без переключения "страниц" как раньше, поэтому проверяем только подсветку)
   await page.click('#verdictChangeBtn');
   await page.waitForTimeout(300);
-  const marketVisible = await page.$eval('#pageMarket', (el) => !el.hidden);
   const intervalHighlighted = await page.$eval('#interval', (el) => el.classList.contains('tf-highlight'));
-  check('кнопка "Изменить" переключает на страницу Рынок и подсвечивает таймфрейм', marketVisible && intervalHighlighted, `marketVisible=${marketVisible}, highlighted=${intervalHighlighted}`);
+  check('кнопка "Изменить" прокручивает и подсвечивает таймфрейм', intervalHighlighted, `highlighted=${intervalHighlighted}`);
 
-  // 10-11) кнопка "Проверить с ИИ" — эти 2 проверки подменяют относительный запрос
+  // 10+) три отдельные кнопки "Проверить с ИИ" (вердикт / риск сделки / чек-лист) — по одной
+  // в каждой ключевой карточке. Эти проверки подменяют относительный запрос
   // (/.netlify/functions/analyze), поэтому честно работают только при проверке настоящего
   // сайта (http/https). При проверке локального файла (file://) браузер не даёт корректно
   // подменить относительный путь — это ограничение самого теста, а не баг сайта, поэтому
-  // на файле эти 2 проверки пропускаются, а не считаются ошибкой.
+  // на файле эти проверки пропускаются, а не считаются ошибкой.
   if (isHttpTarget) {
-    let aiCallCount = 0;
+    const aiCallCounts = {};
     await page.route('**/.netlify/functions/analyze', async (route) => {
-      aiCallCount++;
-      if (aiCallCount === 1) {
+      const req = route.request();
+      let focus = 'unknown';
+      try { focus = JSON.parse(req.postData() || '{}').focus || 'unknown'; } catch (e) {}
+      aiCallCounts[focus] = (aiCallCounts[focus] || 0) + 1;
+      if (aiCallCounts[focus] === 1) {
         return route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -233,18 +241,26 @@ async function main() {
         body: JSON.stringify({ error: 'api_key_not_configured' }),
       });
     });
-    await page.click('#aiCheckBtn');
-    await page.waitForSelector('#aiResultText:not([hidden])', { timeout: 5000 }).catch(() => {});
-    const aiText = await page.$eval('#aiResultText', (el) => el.textContent).catch(() => '');
-    check('кнопка "Проверить с ИИ" показывает ответ от функции', aiText.includes('Тестовый ответ'), `text=${aiText}`);
 
-    // если функция вернула ошибку (например, ключ ещё не настроен) — показывается понятное сообщение, а не тишина
-    await page.click('#aiCheckBtn');
-    await page.waitForSelector('#aiResultError:not([hidden])', { timeout: 5000 }).catch(() => {});
-    const errorVisible = await page.$eval('#aiResultError', (el) => !el.hidden).catch(() => false);
-    check('при ошибке ИИ-функции показывается понятное сообщение вместо тишины', errorVisible);
+    const aiButtons = [
+      { name: 'вердикт', btn: '#aiCheckBtn', text: '#aiResultText', error: '#aiResultError' },
+      { name: 'риск сделки', btn: '#aiCheckBtnRisk', text: '#aiResultRiskText', error: '#aiResultRiskError' },
+      { name: 'чек-лист', btn: '#aiCheckBtnChecklist', text: '#aiResultChecklistText', error: '#aiResultChecklistError' },
+    ];
+    for (const { name, btn, text, error } of aiButtons) {
+      await page.click(btn);
+      await page.waitForSelector(`${text}:not([hidden])`, { timeout: 5000 }).catch(() => {});
+      const aiText = await page.$eval(text, (el) => el.textContent).catch(() => '');
+      check(`кнопка ИИ "${name}" показывает ответ от функции`, aiText.includes('Тестовый ответ'), `text=${aiText}`);
+
+      // если функция вернула ошибку (например, ключ ещё не настроен) — показывается понятное сообщение, а не тишина
+      await page.click(btn);
+      await page.waitForSelector(`${error}:not([hidden])`, { timeout: 5000 }).catch(() => {});
+      const errorVisible = await page.$eval(error, (el) => !el.hidden).catch(() => false);
+      check(`при ошибке ИИ-функции "${name}" показывается понятное сообщение вместо тишины`, errorVisible);
+    }
   } else {
-    console.log('  \x1b[33m…\x1b[0m проверки кнопки "Проверить с ИИ" пропущены (нужен настоящий адрес сайта, не файл)');
+    console.log('  \x1b[33m…\x1b[0m проверки кнопок "Проверить с ИИ" пропущены (нужен настоящий адрес сайта, не файл)');
   }
 
   await browser.close();
