@@ -102,6 +102,18 @@
   .nav button:hover{color:var(--text);border-color:var(--accent);}
   .nav button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 
+  /* всплывающая подсказка "экран переключён" — чтобы переход между Калькулятором и Рынком
+     был заметен, даже если сама панель вкладок сейчас не в кадре (например, после клика
+     на "Изменить" в карточке вердикта, когда пользователь уже прокрутил страницу вниз) */
+  .page-toast{position:fixed;top:14px;left:50%;transform:translate(-50%,-14px);z-index:80;
+    background:linear-gradient(135deg,var(--accent-light),var(--accent));color:#fff;
+    padding:9px 18px;border-radius:var(--radius-pill);font-family:var(--font-mono);
+    font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    box-shadow:0 10px 28px -6px var(--accent-glow);opacity:0;pointer-events:none;
+    transition:opacity .22s ease,transform .22s ease;white-space:nowrap;}
+  .page-toast.show{opacity:1;transform:translate(-50%,0);}
+  @media(prefers-reduced-motion:reduce){.page-toast{transition:opacity .15s;}}
+
   /* ---------- symbol ticker bar ---------- */
   .ticker-bar{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px;}
   .symbol-row{display:flex;gap:8px;margin-top:6px;align-items:stretch;}
@@ -265,6 +277,7 @@
 </style>
 </head>
 <body>
+<div class="page-toast" id="pageToast" aria-live="polite"></div>
 <div class="ticker-marquee" aria-hidden="true">
   <div class="ticker-track">
     <span data-i18n="tagline">ЗНАЙ СВОЙ РИСК. КОНТРОЛИРУЙ СДЕЛКУ.</span><span class="sep">◆</span>
@@ -514,6 +527,7 @@
       tagline:"ЗНАЙ СВОЙ РИСК. КОНТРОЛИРУЙ СДЕЛКУ.",
       themeToggleTitle:"Светлая / тёмная тема",
       navCalc:"Калькулятор", navMarket:"Рынок",
+      toastCalc:"Открыт экран «Калькулятор»", toastMarket:"Открыт экран «Рынок»",
       symbolLabel:"Монета / пара (Bybit)", intervalLabel:"Таймфрейм для уровней",
       interval15:"15м", interval60:"1ч", interval240:"4ч", intervalD:"1д",
       applyBtn:"Применить",
@@ -576,6 +590,7 @@
       tagline:"KNOW YOUR RISK. CONTROL YOUR TRADE.",
       themeToggleTitle:"Light / dark theme",
       navCalc:"Calculator", navMarket:"Market",
+      toastCalc:"Calculator screen opened", toastMarket:"Market screen opened",
       symbolLabel:"Coin / pair (Bybit)", intervalLabel:"Timeframe for levels",
       interval15:"15m", interval60:"1h", interval240:"4h", intervalD:"1d",
       applyBtn:"Apply",
@@ -638,6 +653,7 @@
       tagline:"KENNE DEIN RISIKO. KONTROLLIERE DEINEN TRADE.",
       themeToggleTitle:"Helles / dunkles Design",
       navCalc:"Rechner", navMarket:"Markt",
+      toastCalc:"Rechner-Ansicht geöffnet", toastMarket:"Markt-Ansicht geöffnet",
       symbolLabel:"Coin / Paar (Bybit)", intervalLabel:"Zeitrahmen für Levels",
       interval15:"15m", interval60:"1h", interval240:"4h", intervalD:"1T",
       applyBtn:"Anwenden",
@@ -700,6 +716,7 @@
       tagline:"ЗНАЙ СВІЙ РИЗИК. КОНТРОЛЮЙ УГОДУ.",
       themeToggleTitle:"Світла / темна тема",
       navCalc:"Калькулятор", navMarket:"Ринок",
+      toastCalc:"Відкрито екран «Калькулятор»", toastMarket:"Відкрито екран «Ринок»",
       symbolLabel:"Монета / пара (Bybit)", intervalLabel:"Таймфрейм для рівнів",
       interval15:"15хв", interval60:"1год", interval240:"4год", intervalD:"1д",
       applyBtn:"Застосувати",
@@ -762,6 +779,7 @@
       tagline:"דע את הסיכון שלך. שלוט במסחר שלך.",
       themeToggleTitle:"ערכת נושא בהירה / כהה",
       navCalc:"מחשבון", navMarket:"שוק",
+      toastCalc:"נפתח מסך המחשבון", toastMarket:"נפתח מסך השוק",
       symbolLabel:"מטבע / זוג (Bybit)", intervalLabel:"מסגרת זמן לרמות",
       interval15:"15 דק׳", interval60:"שעה", interval240:"4 שעות", intervalD:"יום",
       applyBtn:"החל",
@@ -893,10 +911,28 @@
     document.getElementById('navCalcBtn').classList.toggle('active', id==='pageCalc');
     document.getElementById('navMarketBtn').classList.toggle('active', id==='pageMarket');
   }
-  function showPage(id){
+  let pageToastTimer = null;
+  function showPageToast(id){
+    const el = document.getElementById('pageToast');
+    if(!el) return;
+    el.textContent = t(id==='pageMarket' ? 'toastMarket' : 'toastCalc');
+    el.classList.add('show');
+    clearTimeout(pageToastTimer);
+    pageToastTimer = setTimeout(()=>el.classList.remove('show'), 1700);
+  }
+  // opts.skipScroll — используется кнопкой "Изменить" в карточке вердикта: она сама
+  // прокручивает к конкретному полю таймфрейма, поэтому здесь прокрутка не нужна.
+  function showPage(id, opts){
     document.getElementById('pageCalc').hidden = (id!=='pageCalc');
     document.getElementById('pageMarket').hidden = (id!=='pageMarket');
     setActiveNav(id);
+    showPageToast(id);
+    if(!opts || !opts.skipScroll){
+      // сама смена контента происходит мгновенно, но так как общий блок сверху (монета +
+      // вердикт) остаётся прежним, без прокрутки к началу нового экрана изменение снизу
+      // легко не заметить — выглядит как будто клик не сработал. Поэтому докручиваем сами.
+      document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
+    }
   }
   document.getElementById('navCalcBtn').addEventListener('click', ()=>showPage('pageCalc'));
   document.getElementById('navMarketBtn').addEventListener('click', ()=>showPage('pageMarket'));
@@ -1410,7 +1446,7 @@
 
   // ---------- вердикт: переход к смене таймфрейма ----------
   $('verdictChangeBtn').addEventListener('click', ()=>{
-    showPage('pageMarket');
+    showPage('pageMarket', {skipScroll:true});
     const el = $('interval');
     el.scrollIntoView({behavior:'smooth', block:'center'});
     el.focus();
