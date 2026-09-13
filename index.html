@@ -447,7 +447,7 @@
   </div>
   </div>
 
-  <div id="pageMarket">
+  <div id="pageMarket" hidden>
     <div class="grid grid-asym">
       <div>
         <div class="card">
@@ -886,20 +886,20 @@
   });
 
   // ---------- навигация по разделам ----------
-  // Раньше "Калькулятор" и "Рынок" были двумя отдельными скрытыми друг от друга
-  // страницами — из-за этого ИИ-блок было видно только в одном месте разом.
-  // Теперь это один непрерывный дашборд: обе секции всегда на странице, а кнопки
-  // сверху — это просто быстрый переход (прокрутка) к нужной секции.
+  // "Калькулятор" и "Рынок" — два отдельных экрана: видно только один из них
+  // одновременно, кнопки сверху переключают между ними. Строка с монетой и
+  // карточка вердикта — общие, показаны на обоих экранах сразу.
   function setActiveNav(id){
     document.getElementById('navCalcBtn').classList.toggle('active', id==='pageCalc');
     document.getElementById('navMarketBtn').classList.toggle('active', id==='pageMarket');
   }
-  function scrollToSection(id){
-    document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
+  function showPage(id){
+    document.getElementById('pageCalc').hidden = (id!=='pageCalc');
+    document.getElementById('pageMarket').hidden = (id!=='pageMarket');
     setActiveNav(id);
   }
-  document.getElementById('navCalcBtn').addEventListener('click', ()=>scrollToSection('pageCalc'));
-  document.getElementById('navMarketBtn').addEventListener('click', ()=>scrollToSection('pageMarket'));
+  document.getElementById('navCalcBtn').addEventListener('click', ()=>showPage('pageCalc'));
+  document.getElementById('navMarketBtn').addEventListener('click', ()=>showPage('pageMarket'));
 
   // ---------- helpers ----------
   const $ = id => document.getElementById(id);
@@ -1410,7 +1410,7 @@
 
   // ---------- вердикт: переход к смене таймфрейма ----------
   $('verdictChangeBtn').addEventListener('click', ()=>{
-    setActiveNav('pageMarket');
+    showPage('pageMarket');
     const el = $('interval');
     el.scrollIntoView({behavior:'smooth', block:'center'});
     el.focus();

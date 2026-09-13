@@ -207,13 +207,25 @@ async function main() {
   const verdictTf = await page.$eval('#verdictTfValue', (el) => el.textContent.trim());
   check('вердикт показывает используемый таймфрейм', verdictTf.length > 0 && verdictTf !== '—', `tf=${verdictTf}`);
 
-  // 9) кнопка "Изменить" у вердикта подсвечивает таймфрейм в секции "Рынок"
-  // (обе секции — Калькулятор и Рынок — теперь на одной непрерывной странице,
-  // без переключения "страниц" как раньше, поэтому проверяем только подсветку)
+  // 9) кнопка "Изменить" у вердикта переключает на экран "Рынок" и подсвечивает таймфрейм
   await page.click('#verdictChangeBtn');
   await page.waitForTimeout(300);
+  const marketVisibleAfterChange = await page.$eval('#pageMarket', (el) => !el.hidden);
+  check('кнопка "Изменить" переключает на экран "Рынок"', marketVisibleAfterChange);
   const intervalHighlighted = await page.$eval('#interval', (el) => el.classList.contains('tf-highlight'));
-  check('кнопка "Изменить" прокручивает и подсвечивает таймфрейм', intervalHighlighted, `highlighted=${intervalHighlighted}`);
+  check('кнопка "Изменить" подсвечивает таймфрейм', intervalHighlighted, `highlighted=${intervalHighlighted}`);
+
+  // 9b) кнопки "Калькулятор" / "Рынок" — это два отдельных экрана, виден только один
+  await page.click('#navCalcBtn');
+  await page.waitForTimeout(150);
+  const calcVisible = await page.$eval('#pageCalc', (el) => !el.hidden);
+  const marketHiddenNow = await page.$eval('#pageMarket', (el) => el.hidden);
+  check('кнопка "Калькулятор" показывает экран калькулятора и прячет "Рынок"', calcVisible && marketHiddenNow);
+  await page.click('#navMarketBtn');
+  await page.waitForTimeout(150);
+  const marketVisible = await page.$eval('#pageMarket', (el) => !el.hidden);
+  const calcHiddenNow = await page.$eval('#pageCalc', (el) => el.hidden);
+  check('кнопка "Рынок" показывает экран рынка и прячет "Калькулятор"', marketVisible && calcHiddenNow);
 
   // 10+) три отдельные кнопки "Проверить с ИИ" (вердикт / риск сделки / чек-лист) — по одной
   // в каждой ключевой карточке. Эти проверки подменяют относительный запрос
@@ -243,11 +255,16 @@ async function main() {
     });
 
     const aiButtons = [
-      { name: 'вердикт', btn: '#aiCheckBtn', text: '#aiResultText', error: '#aiResultError' },
-      { name: 'риск сделки', btn: '#aiCheckBtnRisk', text: '#aiResultRiskText', error: '#aiResultRiskError' },
-      { name: 'чек-лист', btn: '#aiCheckBtnChecklist', text: '#aiResultChecklistText', error: '#aiResultChecklistError' },
+      { name: 'вердикт', btn: '#aiCheckBtn', text: '#aiResultText', error: '#aiResultError', nav: null },
+      { name: 'риск сделки', btn: '#aiCheckBtnRisk', text: '#aiResultRiskText', error: '#aiResultRiskError', nav: '#navCalcBtn' },
+      { name: 'чек-лист', btn: '#aiCheckBtnChecklist', text: '#aiResultChecklistText', error: '#aiResultChecklistError', nav: '#navMarketBtn' },
     ];
-    for (const { name, btn, text, error } of aiButtons) {
+    for (const { name, btn, text, error, nav } of aiButtons) {
+      // риск сделки и чек-лист живут каждый на своём экране — переключаемся на нужный
+      if (nav) {
+        await page.click(nav);
+        await page.waitForTimeout(150);
+      }
       await page.click(btn);
       await page.waitForSelector(`${text}:not([hidden])`, { timeout: 5000 }).catch(() => {});
       const aiText = await page.$eval(text, (el) => el.textContent).catch(() => '');
