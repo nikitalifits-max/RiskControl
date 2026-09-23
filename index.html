@@ -74,7 +74,12 @@
 
   /* ---------- фоновый "живой" график за шапкой ---------- */
   .hero{position:relative;overflow:hidden;}
-  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none;}
+  /* Свечи — декоративные, только в верхней части хиро-блока (за заголовком),
+     маска плавно скрывает их до того, как дойдёт до текста ".sub", чтобы они
+     шли ЗА текстом, а не поверх/сквозь него. */
+  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none;
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 10%, transparent 20%);
+    mask-image:linear-gradient(to bottom, #000 0%, #000 10%, transparent 20%);}
   .hero-content{position:relative;z-index:1;}
   .wrap{max-width:1320px;margin:0 auto;padding:20px 16px 40px;}
   .v{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600;}
@@ -145,7 +150,11 @@
   /* ---------- layout ---------- */
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   .grid-asym{grid-template-columns:3fr 2fr;}
-  @media(max-width:980px){.grid{grid-template-columns:1fr;}.grid-asym{grid-template-columns:1fr;}}
+  /* На планшетах (в т.ч. iPad в портретной ориентации, ~768-834px) карточки
+     остаются в 2 колонки — раньше они схлопывались в одну уже с 980px, из-за
+     чего сайт выглядел слишком узким на iPad. В одну колонку сжимаемся только
+     на действительно узких (телефонных) экранах. */
+  @media(max-width:680px){.grid{grid-template-columns:1fr;}.grid-asym{grid-template-columns:1fr;}}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow);transition:background .2s,border-color .2s;}
   .card-quiet{background:transparent;border:none;border-top:1px solid var(--border-soft);border-radius:0;box-shadow:none;padding:18px 4px;}
   .card h2{font-size:14px;margin:0 0 16px;display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.01em;}
@@ -181,6 +190,10 @@
   .checklist-item{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px 12px;border:1px solid var(--border-soft);border-radius:8px;background:var(--panel2);}
   .checklist-item .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
   .checklist-item .hint{color:var(--muted2);font-size:10.5px;display:block;line-height:1.4;}
+  .glossary-item{padding:9px 0;border-bottom:1px solid var(--border-soft);}
+  .glossary-item:last-child{border-bottom:none;}
+  .glossary-item b{display:block;color:var(--text);font-size:13px;font-weight:700;margin-bottom:2px;}
+  .glossary-item span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5;}
   .small{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;}
   .status{font-size:11px;color:var(--muted);font-family:var(--font-mono);}
   .status.live{color:var(--green);}
@@ -515,6 +528,30 @@
       </div>
     </div>
   </div>
+
+  <!-- Общий блок "О проекте" + глоссарий — виден на обоих экранах (Калькулятор и Рынок),
+       не привязан к showPage(), потому что стоит вне #pageCalc/#pageMarket. -->
+  <div class="grid" style="margin-top:16px;">
+    <div>
+      <div class="card card-quiet">
+        <h2><span data-i18n="aboutH2">О проекте</span> <span class="tag" data-i18n="aboutTag">независимый инструмент</span></h2>
+        <p class="small" style="margin-top:0;" data-i18n="aboutText">RiskControl — независимый некоммерческий проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без регистрации и без сбора личных данных. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card card-quiet">
+        <h2><span data-i18n="glossaryH2">Глоссарий терминов</span> <span class="tag" data-i18n="glossaryTag">если что-то непонятно</span></h2>
+        <div class="glossary-item"><b data-i18n="glossLeverageTerm">Плечо (leverage)</b><span data-i18n="glossLeverageDef">Множитель, увеличивающий размер позиции относительно внесённой маржи. Плечо 10x значит, что и прибыль, и убыток по сделке умножаются в 10 раз.</span></div>
+        <div class="glossary-item"><b data-i18n="glossMarginTerm">Маржа</b><span data-i18n="glossMarginDef">Сумма собственных средств, которую биржа замораживает как залог под открытую позицию с плечом.</span></div>
+        <div class="glossary-item"><b data-i18n="glossLiqTerm">Ликвидация</b><span data-i18n="glossLiqDef">Цена, при которой биржа принудительно закрывает позицию, потому что убыток съел почти всю маржу. Чем выше плечо, тем ближе цена ликвидации к цене входа.</span></div>
+        <div class="glossary-item"><b data-i18n="glossFundingTerm">Funding rate</b><span data-i18n="glossFundingDef">Периодический платёж между лонгами и шортами на бессрочных фьючерсах, который удерживает цену контракта рядом со спотовой ценой.</span></div>
+        <div class="glossary-item"><b data-i18n="glossRsiTerm">RSI (14)</b><span data-i18n="glossRsiDef">Индикатор импульса от 0 до 100. Выше 70 — актив считается перекупленным, ниже 30 — перепроданным.</span></div>
+        <div class="glossary-item"><b data-i18n="glossTrendTerm">Тренд (EMA20/EMA50)</b><span data-i18n="glossTrendDef">Скользящие средние показывают направление рынка: цена выше обеих EMA — тренд бычий, ниже — медвежий.</span></div>
+        <div class="glossary-item"><b data-i18n="glossFibTerm">Fibonacci / pivot уровни</b><span data-i18n="glossFibDef">Ценовые уровни, рядом с которыми движение часто замедляется или разворачивается — используются как ориентиры поддержки и сопротивления.</span></div>
+        <div class="glossary-item"><b data-i18n="glossPatternTerm">Паттерн свечей</b><span data-i18n="glossPatternDef">Узнаваемая форма одной или нескольких свечей на графике (пробой, поглощение, пин-бар), которая намекает на возможное продолжение или разворот движения.</span></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
@@ -583,7 +620,18 @@
       methodItem4:"Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления",
       methodItem5:"Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов",
       methodThreshold:"Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.",
-      methodSmall:"Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои."
+      methodSmall:"Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои.",
+      aboutH2:"О проекте", aboutTag:"независимый инструмент",
+      aboutText:"RiskControl — независимый некоммерческий проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без регистрации и без сбора личных данных. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.",
+      glossaryH2:"Глоссарий терминов", glossaryTag:"если что-то непонятно",
+      glossLeverageTerm:"Плечо (leverage)", glossLeverageDef:"Множитель, увеличивающий размер позиции относительно внесённой маржи. Плечо 10x значит, что и прибыль, и убыток по сделке умножаются в 10 раз.",
+      glossMarginTerm:"Маржа", glossMarginDef:"Сумма собственных средств, которую биржа замораживает как залог под открытую позицию с плечом.",
+      glossLiqTerm:"Ликвидация", glossLiqDef:"Цена, при которой биржа принудительно закрывает позицию, потому что убыток съел почти всю маржу. Чем выше плечо, тем ближе цена ликвидации к цене входа.",
+      glossFundingTerm:"Funding rate", glossFundingDef:"Периодический платёж между лонгами и шортами на бессрочных фьючерсах, который удерживает цену контракта рядом со спотовой ценой.",
+      glossRsiTerm:"RSI (14)", glossRsiDef:"Индикатор импульса от 0 до 100. Выше 70 — актив считается перекупленным, ниже 30 — перепроданным.",
+      glossTrendTerm:"Тренд (EMA20/EMA50)", glossTrendDef:"Скользящие средние показывают направление рынка: цена выше обеих EMA — тренд бычий, ниже — медвежий.",
+      glossFibTerm:"Fibonacci / pivot уровни", glossFibDef:"Ценовые уровни, рядом с которыми движение часто замедляется или разворачивается — используются как ориентиры поддержки и сопротивления.",
+      glossPatternTerm:"Паттерн свечей", glossPatternDef:"Узнаваемая форма одной или нескольких свечей на графике (пробой, поглощение, пин-бар), которая намекает на возможное продолжение или разворот движения."
     },
     en:{
       sub:"Size your risk before you enter: exact position size, safe leverage, and liquidation price — in seconds, from live Bybit data. Not financial advice — the decision is always yours.",
@@ -646,7 +694,18 @@
       methodItem4:"Fibonacci/pivot — price near a support or resistance level",
       methodItem5:"Pattern/structure — range breakout, engulfing, pin bar, or the direction of the high/low structure",
       methodThreshold:"Sum ≥ +3 or ≤ -3 — the technical backdrop is considered one-sided (bullish/bearish). From -2 to +2 — the picture is mixed, no clear lean.",
-      methodSmall:"All factors are computed automatically from Bybit data for the selected coin and timeframe. Important: this is not financial advice or a trade signal — in honest backtesting on historical data (several coins, over 300 days, validated on data the algorithm had not seen before), this factor set did not show a reliable edge over the market after costs. Use it as technical context alongside your own analysis; the decision and the risk are always yours."
+      methodSmall:"All factors are computed automatically from Bybit data for the selected coin and timeframe. Important: this is not financial advice or a trade signal — in honest backtesting on historical data (several coins, over 300 days, validated on data the algorithm had not seen before), this factor set did not show a reliable edge over the market after costs. Use it as technical context alongside your own analysis; the decision and the risk are always yours.",
+      aboutH2:"About this tool", aboutTag:"independent project",
+      aboutText:"RiskControl is an independent, non-commercial project with no affiliation to any exchange, including Bybit, whose public data it uses for its calculations. The site's job is a single screen for sizing risk and position before a trade, with no sign-up and no personal data collected. It's an evolving side project — as with any tool, double-check the key numbers yourself before a real trade.",
+      glossaryH2:"Glossary", glossaryTag:"if something's unclear",
+      glossLeverageTerm:"Leverage", glossLeverageDef:"A multiplier that scales your position size relative to the margin you put up. 10x leverage means both profit and loss on the trade are multiplied by 10.",
+      glossMarginTerm:"Margin", glossMarginDef:"The amount of your own funds the exchange locks up as collateral for a leveraged position.",
+      glossLiqTerm:"Liquidation", glossLiqDef:"The price at which the exchange force-closes your position because losses have eaten through nearly all your margin. Higher leverage means the liquidation price sits closer to your entry.",
+      glossFundingTerm:"Funding rate", glossFundingDef:"A periodic payment between longs and shorts on perpetual futures that keeps the contract price anchored near the spot price.",
+      glossRsiTerm:"RSI (14)", glossRsiDef:"A momentum indicator from 0 to 100. Above 70 is considered overbought, below 30 oversold.",
+      glossTrendTerm:"Trend (EMA20/EMA50)", glossTrendDef:"Moving averages that show market direction: price above both EMAs is a bullish trend, below both is bearish.",
+      glossFibTerm:"Fibonacci / pivot levels", glossFibDef:"Price levels where movement often slows down or reverses — used as reference points for support and resistance.",
+      glossPatternTerm:"Candlestick pattern", glossPatternDef:"A recognizable shape formed by one or more candles (breakout, engulfing, pin bar) that hints at a possible continuation or reversal."
     },
     de:{
       sub:"Berechne dein Risiko, bevor du einsteigst: genaue Positionsgröße, sicherer Hebel und Liquidationspreis — in Sekunden, mit Live-Daten von Bybit. Keine Finanzberatung — die Entscheidung triffst immer du.",
@@ -709,7 +768,18 @@
       methodItem4:"Fibonacci/Pivot — Preis nahe einem Unterstützungs- oder Widerstandslevel",
       methodItem5:"Muster/Struktur — Range-Breakout, Engulfing, Pin Bar oder Richtung der Hoch/Tief-Struktur",
       methodThreshold:"Summe ≥ +3 oder ≤ -3 — das technische Bild gilt als eindeutig (bullisch/bärisch). Von -2 bis +2 — das Bild ist gemischt, keine klare Tendenz.",
-      methodSmall:"Alle Faktoren werden automatisch aus Bybit-Daten für die gewählte Münze und den Zeitrahmen berechnet. Wichtig: Das ist keine Finanzberatung und kein Handelssignal — in ehrlichen Backtests auf historischen Daten (mehrere Coins, über 300 Tage, geprüft an zuvor ungesehenen Daten) zeigte diese Faktorenkombination nach Kosten keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als technischen Anhaltspunkt neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir."
+      methodSmall:"Alle Faktoren werden automatisch aus Bybit-Daten für die gewählte Münze und den Zeitrahmen berechnet. Wichtig: Das ist keine Finanzberatung und kein Handelssignal — in ehrlichen Backtests auf historischen Daten (mehrere Coins, über 300 Tage, geprüft an zuvor ungesehenen Daten) zeigte diese Faktorenkombination nach Kosten keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als technischen Anhaltspunkt neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir.",
+      aboutH2:"Über dieses Tool", aboutTag:"unabhängiges Projekt",
+      aboutText:"RiskControl ist ein unabhängiges, nicht-kommerzielles Projekt ohne Verbindung zu irgendeiner Börse, einschließlich Bybit, dessen öffentliche Daten für die Berechnungen genutzt werden. Die Seite bietet einen einzigen Bildschirm zur Risiko- und Positionsgrößenberechnung vor einem Trade — ohne Registrierung und ohne Erhebung persönlicher Daten. Die Seite wird laufend weiterentwickelt; wie bei jedem Tool solltest du die wichtigsten Zahlen vor einem echten Trade selbst gegenprüfen.",
+      glossaryH2:"Glossar", glossaryTag:"falls etwas unklar ist",
+      glossLeverageTerm:"Hebel (Leverage)", glossLeverageDef:"Ein Multiplikator, der die Positionsgröße im Verhältnis zur hinterlegten Margin vergrößert. 10x Hebel bedeutet, dass Gewinn und Verlust des Trades mit 10 multipliziert werden.",
+      glossMarginTerm:"Margin", glossMarginDef:"Der Betrag der eigenen Mittel, den die Börse als Sicherheit für eine gehebelte Position einbehält.",
+      glossLiqTerm:"Liquidation", glossLiqDef:"Der Preis, bei dem die Börse die Position zwangsweise schließt, weil der Verlust fast die gesamte Margin aufgezehrt hat. Je höher der Hebel, desto näher liegt der Liquidationspreis am Einstieg.",
+      glossFundingTerm:"Funding Rate", glossFundingDef:"Eine periodische Zahlung zwischen Long- und Short-Positionen bei unbefristeten Futures, die den Kontraktpreis nahe am Spotpreis hält.",
+      glossRsiTerm:"RSI (14)", glossRsiDef:"Ein Momentum-Indikator von 0 bis 100. Über 70 gilt als überkauft, unter 30 als überverkauft.",
+      glossTrendTerm:"Trend (EMA20/EMA50)", glossTrendDef:"Gleitende Durchschnitte, die die Marktrichtung zeigen: Preis über beiden EMAs ist ein bullischer Trend, unter beiden ein bärischer.",
+      glossFibTerm:"Fibonacci-/Pivot-Level", glossFibDef:"Preisniveaus, an denen sich die Bewegung häufig verlangsamt oder umkehrt — genutzt als Orientierung für Unterstützung und Widerstand.",
+      glossPatternTerm:"Kerzenmuster", glossPatternDef:"Eine erkennbare Form aus einer oder mehreren Kerzen (Ausbruch, Engulfing, Pin Bar), die auf eine mögliche Fortsetzung oder Umkehr hindeutet."
     },
     uk:{
       sub:"Порахуй ризик до входу в угоду: точний обсяг позиції, безпечне плече і ціна ліквідації — за секунди, за живими даними Bybit. Не фінансова порада — рішення завжди за тобою.",
@@ -772,7 +842,18 @@
       methodItem4:"Fibonacci/pivot — ціна поруч із рівнем підтримки або опору",
       methodItem5:"Патерн/структура — пробій діапазону, поглинання, пін-бар або напрямок структури максимумів/мінімумів",
       methodThreshold:"Сума ≥ +3 або ≤ -3 — технічний фон вважається однозначним (бичачим/ведмежим). Від -2 до +2 — картина змішана, явного перевесу немає.",
-      methodSmall:"Усі фактори рахуються автоматично за даними Bybit для обраної монети й таймфрейму. Важливо: це не фінансова порада і не сигнал до угоди — у чесному тестуванні на історичних даних (кілька монет, понад 300 днів, з перевіркою на даних, які алгоритм раніше не бачив) цей набір факторів не показав надійної переваги над ринком після врахування комісій. Використовуй це як технічний орієнтир поряд зі своїм аналізом — рішення і ризик завжди твої."
+      methodSmall:"Усі фактори рахуються автоматично за даними Bybit для обраної монети й таймфрейму. Важливо: це не фінансова порада і не сигнал до угоди — у чесному тестуванні на історичних даних (кілька монет, понад 300 днів, з перевіркою на даних, які алгоритм раніше не бачив) цей набір факторів не показав надійної переваги над ринком після врахування комісій. Використовуй це як технічний орієнтир поряд зі своїм аналізом — рішення і ризик завжди твої.",
+      aboutH2:"Про проект", aboutTag:"незалежний інструмент",
+      aboutText:"RiskControl — незалежний некомерційний проєкт, не пов'язаний з жодною біржею, включно з Bybit, чиї публічні дані він використовує для розрахунків. Завдання сайту — один екран для розрахунку ризику й обсягу позиції перед угодою, без реєстрації та без збору особистих даних. Сайт поступово допрацьовується; як і з будь-яким інструментом — перед реальною угодою перевіряй ключові цифри самостійно.",
+      glossaryH2:"Глосарій термінів", glossaryTag:"якщо щось незрозуміло",
+      glossLeverageTerm:"Плече (leverage)", glossLeverageDef:"Множник, що збільшує розмір позиції відносно внесеної маржі. Плече 10x означає, що і прибуток, і збиток за угодою множаться на 10.",
+      glossMarginTerm:"Маржа", glossMarginDef:"Сума власних коштів, яку біржа заморожує як заставу під відкриту позицію з плечем.",
+      glossLiqTerm:"Ліквідація", glossLiqDef:"Ціна, за якої біржа примусово закриває позицію, бо збиток з'їв майже всю маржу. Що вище плече, то ближче ціна ліквідації до ціни входу.",
+      glossFundingTerm:"Funding rate", glossFundingDef:"Періодичний платіж між лонгами і шортами на безстрокових ф'ючерсах, який утримує ціну контракту поряд зі спотовою ціною.",
+      glossRsiTerm:"RSI (14)", glossRsiDef:"Індикатор імпульсу від 0 до 100. Вище 70 — актив вважається перекупленим, нижче 30 — перепроданим.",
+      glossTrendTerm:"Тренд (EMA20/EMA50)", glossTrendDef:"Ковзні середні показують напрямок ринку: ціна вища за обидві EMA — тренд бичачий, нижча — ведмежий.",
+      glossFibTerm:"Fibonacci / pivot рівні", glossFibDef:"Цінові рівні, поряд з якими рух часто сповільнюється або розвертається — використовуються як орієнтири підтримки й опору.",
+      glossPatternTerm:"Патерн свічок", glossPatternDef:"Впізнавана форма однієї або кількох свічок (пробій, поглинання, пін-бар), яка натякає на можливе продовження або розворот руху."
     },
     he:{
       sub:"חשב את הסיכון לפני הכניסה לעסקה: גודל פוזיציה מדויק, מינוף בטוח ומחיר חיסול — תוך שניות, לפי נתונים חיים מבייביט. אין בכך ייעוץ פיננסי — ההחלטה תמיד שלך.",
@@ -835,7 +916,18 @@
       methodItem4:"Fibonacci/פיבוט — המחיר קרוב לרמת תמיכה או התנגדות",
       methodItem5:"תבנית/מבנה — פריצת טווח, בליעה, פין-בר, או כיוון מבנה השיאים/השפלים",
       methodThreshold:"סכום ≥ +3 או ≤ -3 — הרקע הטכני נחשב חד-משמעי (עולה/יורד). בין -2 ל-+2 — התמונה מעורבת, אין נטייה ברורה.",
-      methodSmall:"כל הגורמים מחושבים אוטומטית לפי נתוני Bybit עבור המטבע ומסגרת הזמן שנבחרו. חשוב: אין בכך ייעוץ פיננסי ולא איתות למסחר — בבדיקה הוגנת על נתונים היסטוריים (כמה מטבעות, יותר מ-300 יום, נבדק על נתונים שלא נראו קודם), שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק אחרי עמלות. השתמש בזה כרקע טכני לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך."
+      methodSmall:"כל הגורמים מחושבים אוטומטית לפי נתוני Bybit עבור המטבע ומסגרת הזמן שנבחרו. חשוב: אין בכך ייעוץ פיננסי ולא איתות למסחר — בבדיקה הוגנת על נתונים היסטוריים (כמה מטבעות, יותר מ-300 יום, נבדק על נתונים שלא נראו קודם), שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק אחרי עמלות. השתמש בזה כרקע טכני לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך.",
+      aboutH2:"אודות הכלי", aboutTag:"פרויקט עצמאי",
+      aboutText:"RiskControl הוא פרויקט עצמאי ולא מסחרי, ללא קשר לאף בורסה, כולל Bybit שאת הנתונים הציבוריים שלה הוא משתמש בהם לחישובים. תפקיד האתר הוא מסך אחד לחישוב סיכון וגודל פוזיציה לפני עסקה, ללא הרשמה וללא איסוף נתונים אישיים. האתר משתפר בהדרגה; כמו בכל כלי — בדוק בעצמך את המספרים המרכזיים לפני עסקה אמיתית.",
+      glossaryH2:"מילון מונחים", glossaryTag:"אם משהו לא ברור",
+      glossLeverageTerm:"מינוף (leverage)", glossLeverageDef:"מכפיל שמגדיל את גודל הפוזיציה ביחס למרג'ין שהופקד. מינוף פי 10 אומר שגם הרווח וגם ההפסד בעסקה מוכפלים פי 10.",
+      glossMarginTerm:"מרג'ין", glossMarginDef:"סכום הכסף העצמי שהבורסה מקפיאה כבטוחה עבור פוזיציה עם מינוף.",
+      glossLiqTerm:"חיסול (ליקווידציה)", glossLiqDef:"המחיר שבו הבורסה סוגרת בכפייה את הפוזיציה כי ההפסד כילה כמעט את כל המרג'ין. ככל שהמינוף גבוה יותר, מחיר החיסול קרוב יותר למחיר הכניסה.",
+      glossFundingTerm:"Funding rate", glossFundingDef:"תשלום תקופתי בין לונג לשורט בחוזים נצחיים, ששומר את מחיר החוזה קרוב למחיר הספוט.",
+      glossRsiTerm:"RSI (14)", glossRsiDef:"אינדיקטור מומנטום בין 0 ל-100. מעל 70 נחשב לקניית יתר, מתחת ל-30 למכירת יתר.",
+      glossTrendTerm:"מגמה (EMA20/EMA50)", glossTrendDef:"ממוצעים נעים שמראים את כיוון השוק: מחיר מעל שני ה-EMA הוא מגמה עולה, מתחת לשניהם — יורדת.",
+      glossFibTerm:"רמות Fibonacci / פיבוט", glossFibDef:"רמות מחיר שלידן התנועה לרוב מאטה או מתהפכת — משמשות כנקודות ייחוס לתמיכה והתנגדות.",
+      glossPatternTerm:"תבנית נרות", glossPatternDef:"צורה מזוהה של נר אחד או יותר (פריצה, בליעה, פין-בר) שמרמזת על המשך אפשרי או היפוך של התנועה."
     }
   };
   const TV_LOCALE = {ru:'ru', en:'en', de:'de', uk:'en', he:'en'};
@@ -1643,14 +1735,35 @@
   // ---------- фоновый "живой" график за шапкой ----------
   // Чисто декоративная анимация (не реальные рыночные данные) — блуждающая линия,
   // которая создаёт ощущение "живого" терминала за брендом вместо статичной шапки.
+  // Декоративный график в хиро-блоке — настоящие зелёные/красные свечи (не
+  // реальные рыночные данные, просто фон), которые едут слева направо как
+  // на живом графике. CSS-маска на .hero-canvas прячет нижнюю часть холста,
+  // поэтому свечи остаются за заголовком и не наезжают на текст .sub.
   function initHeroChart(){
     const canvas = document.getElementById('heroChart');
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let points = [];
+    let candles = [];
     let width = 0, height = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const CANDLE_W = 5, CANDLE_GAP = 4;
+    const STEP = CANDLE_W + CANDLE_GAP;
+
+    function makeCandle(prevClose, midY, spanY){
+      const open = prevClose;
+      const drift = (Math.random()-0.48) * spanY * 0.16;
+      let close = open + drift;
+      close = Math.max(midY - spanY/2, Math.min(midY + spanY/2, close));
+      const wick = spanY * 0.09;
+      // на канвасе меньший y — выше на экране, поэтому "high" (максимум цены)
+      // это меньшее значение y, а "low" — большее
+      return {
+        open, close,
+        high: Math.min(open,close) - Math.random()*wick,
+        low: Math.max(open,close) + Math.random()*wick,
+      };
+    }
 
     function resize(){
       const rect = canvas.parentElement.getBoundingClientRect();
@@ -1659,37 +1772,51 @@
       canvas.width = width*dpr; canvas.height = height*dpr;
       canvas.style.width = width+'px'; canvas.style.height = height+'px';
       ctx.setTransform(dpr,0,0,dpr,0,0);
-      const n = Math.max(40, Math.round(width/14));
-      if(points.length !== n){
-        points = new Array(n).fill(0).map((_,i)=> height*0.55 + Math.sin(i*0.4)*height*0.12);
+      const n = Math.max(24, Math.ceil(width/STEP)+2);
+      // Свечи держим в узкой полосе у самого верха хиро-блока (на уровне
+      // заголовка RiskControl), чтобы маска надёжно скрывала их до текста
+      // тега-лайна и подзаголовка на любой ширине экрана.
+      const midY = height*0.09;
+      const spanY = height*0.12;
+      if(candles.length !== n){
+        candles = [];
+        let prev = midY;
+        for(let i=0;i<n;i++){
+          const c = makeCandle(prev, midY, spanY);
+          candles.push(c);
+          prev = c.close;
+        }
       }
     }
     function step(){
-      const last = points[points.length-1];
-      const next = Math.max(height*0.12, Math.min(height*0.88, last + (Math.random()-0.5)*height*0.1));
-      points.push(next);
-      points.shift();
+      const midY = height*0.09;
+      const spanY = height*0.12;
+      const prev = candles[candles.length-1].close;
+      candles.push(makeCandle(prev, midY, spanY));
+      candles.shift();
     }
     function draw(){
       if(width<=0 || height<=0) return;
       ctx.clearRect(0,0,width,height);
-      const accent = (getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#6d5ef5').trim();
-      const stepX = width/(points.length-1);
-      ctx.beginPath();
-      points.forEach((y,i)=>{ const x=i*stepX; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = accent;
-      ctx.lineWidth = 1.6;
-      ctx.shadowColor = accent;
-      ctx.shadowBlur = 8;
-      ctx.stroke();
-      ctx.lineTo(width,height); ctx.lineTo(0,height); ctx.closePath();
-      const grad = ctx.createLinearGradient(0,0,0,height);
-      grad.addColorStop(0, accent+'30');
-      grad.addColorStop(1, accent+'00');
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = grad;
-      ctx.fill();
+      const green = (getComputedStyle(document.documentElement).getPropertyValue('--green')||'#0ecb81').trim();
+      const red = (getComputedStyle(document.documentElement).getPropertyValue('--red')||'#f6465d').trim();
+      candles.forEach((c,i)=>{
+        const x = i*STEP;
+        const up = c.close <= c.open; // канвас: меньший y выше на экране
+        const color = up ? green : red;
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 1;
+        // фитиль
+        ctx.beginPath();
+        ctx.moveTo(x+CANDLE_W/2, c.high);
+        ctx.lineTo(x+CANDLE_W/2, c.low);
+        ctx.stroke();
+        // тело свечи
+        const bodyTop = Math.min(c.open, c.close);
+        const bodyH = Math.max(1.5, Math.abs(c.close - c.open));
+        ctx.fillRect(x, bodyTop, CANDLE_W, bodyH);
+      });
     }
     resize();
     draw();
