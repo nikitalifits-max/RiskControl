@@ -1891,12 +1891,13 @@
 
     async function loadReal(){
       try{
-        // 15-минутные свечи вместо 4-часовых: на них гораздо заметнее реальные
-        // колебания цены — 4ч-свечи почти не меняются за сессию просмотра и
-        // выглядят "замёрзшими". limit=200 — с запасом, чтобы хватило свечей
-        // заполнить всю ширину полосы целиком даже на широких экранах.
+        // 1-минутные свечи (минимальный интервал у Bybit) вместо 15-минутных —
+        // так историческая "затравка" по масштабу гораздо ближе к 5-секундным
+        // живым свечам, которые досоздаёт rollNewCandle, и переход между ними
+        // не выглядит как внезапная смена масштаба. limit=200 — с запасом,
+        // чтобы хватило свечей заполнить всю ширину полосы даже на широких экранах.
         const json = await fetchJsonWithRetry(
-          'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=15&limit=200',
+          'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=1&limit=200',
           {retries:1, baseDelay:600}
         );
         const list = json && json.result && json.result.list;
