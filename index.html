@@ -1829,10 +1829,10 @@
     // Реальные свечи масштабируем по их собственному диапазону цен в полосу
     // отрисовки — берём столько последних свечей, сколько влезает по ширине.
     function scaledRealCandles(){
-      // Показываем не больше ~40 последних свечей: если брать слишком длинную
-      // историю, редкое сильное движение растягивает шкалу и все остальные
-      // свечи визуально сплющиваются в почти одинаковые полоски. На более
-      // узком окне (последние ~6-7 дней по 4ч) колебания выглядят живее.
+      // Показываем не больше ~40 последних свечей (15м × 40 ≈ 10 часов): если
+      // брать слишком длинную историю, редкое сильное движение растягивает
+      // шкалу и все остальные свечи визуально сплющиваются в одинаковые
+      // полоски. На более узком и коротком окне колебания выглядят живее.
       const n = Math.max(10, Math.min(realCandles.length, Math.min(40, Math.ceil(width/STEP))));
       const slice = realCandles.slice(-n);
       const lo = Math.min(...slice.map(c=>c.low));
@@ -1850,7 +1850,8 @@
       ctx.clearRect(0,0,width,height);
       const green = (getComputedStyle(document.documentElement).getPropertyValue('--green')||'#0ecb81').trim();
       const red = (getComputedStyle(document.documentElement).getPropertyValue('--red')||'#f6465d').trim();
-      const cs = realCandles && realCandles.length>=10 ? scaledRealCandles() : fakeCandles;
+      const usingReal = realCandles && realCandles.length>=10;
+      const cs = usingReal ? scaledRealCandles() : fakeCandles;
       cs.forEach((c,i)=>{
         const x = i*STEP;
         const up = c.close <= c.open; // канвас: меньший y выше на экране
@@ -1868,12 +1869,34 @@
         const bodyH = Math.max(1.5, Math.abs(c.close - c.open));
         ctx.fillRect(x, bodyTop, CANDLE_W, bodyH);
       });
+      // Пульсирующая точка на последней свече — видимый признак "живого"
+      // графика даже в те секунды, когда цена BTC ещё не успела шелохнуться.
+      if(usingReal && cs.length){
+        const last = cs[cs.length-1];
+        const x = (cs.length-1)*STEP + CANDLE_W/2;
+        const y = last.close;
+        const color = last.close <= last.open ? green : red;
+        const pulse = 0.5 + 0.5*Math.sin(performance.now()/450);
+        ctx.beginPath();
+        ctx.arc(x, y, 2 + pulse*2.2, 0, Math.PI*2);
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.18 + pulse*0.22;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI*2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
     }
 
     async function loadReal(){
       try{
+        // 15-минутные свечи вместо 4-часовых: за то же окно (~10 часов вместо
+        // недели) на них гораздо заметнее реальные колебания цены — 4ч-свечи
+        // почти не меняются в течение сессии просмотра и выглядят "замёрзшими".
         const json = await fetchJsonWithRetry(
-          'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=240&limit=50',
+          'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=15&limit=60',
           {retries:1, baseDelay:600}
         );
         const list = json && json.result && json.result.list;
@@ -1890,22 +1913,49 @@
       draw();
     }
 
+    // Живая "дорисовка" последней свечи текущей рыночной ценой BTCUSDT — сама
+    // история 15-минуток обновляется редко, а вот последняя цена меняется
+    // постоянно, и именно она должна быть видна как настоящее движение.
+    async function tickLivePrice(){
+      if(!realCandles || !realCandles.length) return;
+      try{
+        const json = await fetchJsonWithRetry(
+          'https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT',
+          {retries:0}
+        );
+        const t = json && json.result && json.result.list && json.result.list[0];
+        const price = t && parseFloat(t.lastPrice);
+        if(!price || !isFinite(price)) return;
+        const last = realCandles[realCandles.length-1];
+        last.close = price;
+        last.high = Math.max(last.high, price);
+        last.low = Math.min(last.low, price);
+      }catch(e){ /* тихо игнорируем — это лишь декоративное обновление */ }
+    }
+
     resize();
     draw();
     loadReal();
     window.addEventListener('resize', ()=>{ resize(); draw(); });
     if(reduceMotion) return;
-    // Пока не пришли настоящие данные (или если Bybit недоступен) — тихонько
-    // анимируем запасной график, как и раньше.
-    let lastTick = 0;
+    // Основной цикл рисования: пока нет настоящих данных — анимируем запасной
+    // сгенерированный график волнами; когда настоящие данные есть — держим
+    // лёгкую пульсацию на последней свече, чтобы график всегда выглядел живым,
+    // а не статичной картинкой.
+    let lastFakeTick = 0;
     function loop(ts){
-      if(!realCandles && (!lastTick || ts-lastTick>900)){ stepFake(); draw(); lastTick=ts; }
+      if(!realCandles){
+        if(!lastFakeTick || ts-lastFakeTick>900){ stepFake(); draw(); lastFakeTick=ts; }
+      } else {
+        draw();
+      }
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
-    // Раз в пару минут подтягиваем свежую 4ч-свечу с Bybit, чтобы реальный
-    // график в хиро-блоке не оставался «замороженным» надолго.
-    setInterval(loadReal, 2*60*1000);
+    // Раз в минуту подтягиваем свежие 15-минутки, а между этим — каждые
+    // несколько секунд подтягиваем живую цену для последней свечи.
+    setInterval(loadReal, 60*1000);
+    setInterval(tickLivePrice, 4000);
   }
 
   window.addEventListener('load', ()=>{
