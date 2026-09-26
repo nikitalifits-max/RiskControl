@@ -1913,11 +1913,11 @@
       draw();
     }
 
-    // Живая "дорисовка" последней свечи текущей рыночной ценой BTCUSDT — сама
-    // история 15-минуток обновляется редко, а вот последняя цена меняется
-    // постоянно, и именно она должна быть видна как настоящее движение.
-    async function tickLivePrice(){
-      if(!realCandles || !realCandles.length) return;
+    // Получаем текущую рыночную цену BTCUSDT — на ней строится "живая" часть
+    // графика: не настоящие биржевые свечи раз в 15 минут/4 часа (это слишком
+    // редко и выглядит "замёрзшим"), а собственные короткие свечи, которые
+    // формируются из этой же реальной цены каждые несколько секунд.
+    async function fetchLivePrice(){
       try{
         const json = await fetchJsonWithRetry(
           'https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT',
@@ -1925,12 +1925,48 @@
         );
         const t = json && json.result && json.result.list && json.result.list[0];
         const price = t && parseFloat(t.lastPrice);
-        if(!price || !isFinite(price)) return;
+        return (price && isFinite(price)) ? price : null;
+      }catch(e){ return null; }
+    }
+
+    // Текущая ещё формирующаяся свеча копит min/max цены между "закрытиями".
+    let sessionOpen = null, sessionHigh = null, sessionLow = null, sessionClose = null;
+    function seedSession(price){
+      sessionOpen = sessionHigh = sessionLow = sessionClose = price;
+    }
+
+    // Каждые ~2 секунды подтягиваем реальную цену и подрисовываем ею текущую
+    // (последнюю) свечу — небольшое дрожание внутри свечи между её закрытиями.
+    async function tickLivePrice(){
+      const price = await fetchLivePrice();
+      if(price==null) return;
+      if(sessionOpen==null) seedSession(price);
+      sessionHigh = Math.max(sessionHigh, price);
+      sessionLow = Math.min(sessionLow, price);
+      sessionClose = price;
+      if(realCandles && realCandles.length){
         const last = realCandles[realCandles.length-1];
-        last.close = price;
-        last.high = Math.max(last.high, price);
-        last.low = Math.min(last.low, price);
-      }catch(e){ /* тихо игнорируем — это лишь декоративное обновление */ }
+        last.close = sessionClose;
+        last.high = Math.max(last.high, sessionHigh);
+        last.low = Math.min(last.low, sessionLow);
+      }
+    }
+
+    // Каждые 5 секунд "закрываем" текущую свечу и открываем новую от той же
+    // цены — так на графике постоянно и заметно появляются новые свечи, а не
+    // раз в 15 минут или 4 часа, как настоящие биржевые таймфреймы.
+    const CANDLE_LIFE_MS = 5000;
+    const MAX_REAL_CANDLES = 400;
+    function rollNewCandle(){
+      if(!realCandles || !realCandles.length || sessionClose==null) return;
+      const last = realCandles[realCandles.length-1];
+      last.high = Math.max(last.high, sessionHigh);
+      last.low = Math.min(last.low, sessionLow);
+      last.close = sessionClose;
+      const openPrice = sessionClose;
+      realCandles.push({ open: openPrice, high: openPrice, low: openPrice, close: openPrice });
+      if(realCandles.length > MAX_REAL_CANDLES) realCandles.shift();
+      seedSession(openPrice);
     }
 
     resize();
@@ -1939,9 +1975,9 @@
     window.addEventListener('resize', ()=>{ resize(); draw(); });
     if(reduceMotion) return;
     // Основной цикл рисования: пока нет настоящих данных — анимируем запасной
-    // сгенерированный график волнами; когда настоящие данные есть — держим
-    // лёгкую пульсацию на последней свече, чтобы график всегда выглядел живым,
-    // а не статичной картинкой.
+    // сгенерированный график волнами; когда настоящие данные есть — постоянно
+    // перерисовываем (пульсация на последней свече), а сами свечи обновляет
+    // и добавляет tickLivePrice/rollNewCandle по своим интервалам.
     let lastFakeTick = 0;
     function loop(ts){
       if(!realCandles){
@@ -1952,10 +1988,12 @@
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
-    // Раз в минуту подтягиваем свежие 15-минутки, а между этим — каждые
-    // несколько секунд подтягиваем живую цену для последней свечи.
-    setInterval(loadReal, 60*1000);
-    setInterval(tickLivePrice, 4000);
+    // Если настоящую историю не удалось загрузить сразу — пробуем повторно
+    // раз в минуту, пока не получится; как только реальные свечи появились и
+    // начали "крутиться" через rollNewCandle, историю больше не перезатираем.
+    setInterval(()=>{ if(!realCandles) loadReal(); }, 60*1000);
+    setInterval(tickLivePrice, 2000);
+    setInterval(rollNewCandle, CANDLE_LIFE_MS);
   }
 
   window.addEventListener('load', ()=>{
