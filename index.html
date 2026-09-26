@@ -1744,47 +1744,53 @@
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let candles = [];
     let width = 0, height = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     // Свечи покрупнее и пореже — так рисунок читается как график с более
     // старшим таймфреймом (4ч), а не как мелкий тикающий шум.
     const CANDLE_W = 8, CANDLE_GAP = 5;
     const STEP = CANDLE_W + CANDLE_GAP;
-    // Небольшой "импульс" тренда, который держится несколько свечей подряд —
-    // на 4ч графике движения идут заметными волнами вверх/вниз, а не
-    // случайным дрожанием от свечи к свече.
-    let trendDir = 1, trendLeft = 0;
 
+    // Основной источник — настоящие 4-часовые свечи BTCUSDT с Bybit (тот же
+    // API, которым пользуется остальной сайт), чтобы рисунок в хиро-блоке
+    // был реальным графиком биткоина, а не сгенерированной имитацией.
+    let realCandles = null; // [{open,high,low,close}] в хронологическом порядке
+    // Запасной генератор — только если Bybit недоступен (блокировка, офлайн,
+    // локальный просмотр файла): те же волны/тренды, что были раньше, чтобы
+    // хиро-блок не оставался пустым.
+    let fakeCandles = [];
+    let trendDir = 1, trendLeft = 0;
     function nextTrend(){
       trendDir = Math.random() < 0.5 ? -1 : 1;
-      trendLeft = 3 + Math.floor(Math.random()*5); // 3-7 свечей в одну сторону
+      trendLeft = 3 + Math.floor(Math.random()*5);
     }
-
-    function makeCandle(prevClose, midY, spanY){
+    function makeFakeCandle(prevClose, midY, spanY){
       if(trendLeft <= 0) nextTrend();
       trendLeft--;
       const open = prevClose;
-      const isDoji = Math.random() < 0.18; // изредка — маленькая свеча-нерешительность
+      const isDoji = Math.random() < 0.18;
       const bodyFrac = isDoji ? (0.03 + Math.random()*0.06) : (0.16 + Math.random()*0.42);
-      // немного шанс на свечу против тренда (откат) — реалистичнее, чем ровная лестница
       const dir = Math.random() < 0.78 ? trendDir : -trendDir;
       let close = open + dir * bodyFrac * spanY;
-      // мягкая тяга к центру полосы, чтобы график не «убегал» к краю за много свечей
       close += (midY - open) * 0.08;
       close = Math.max(midY - spanY/2, Math.min(midY + spanY/2, close));
       const bodyTop = Math.min(open, close), bodyBot = Math.max(open, close);
       const wickUp = Math.random()*spanY*0.22;
       const wickDown = Math.random()*spanY*0.22;
-      // на канвасе меньший y — выше на экране, поэтому "high" (максимум цены)
-      // это меньшее значение y, а "low" — большее; итог жёстко зажимаем в
-      // полосе с небольшим запасом, чтобы фитили точно не вылезли за маску
       const bandTop = midY - spanY*0.6, bandBot = midY + spanY*0.6;
       return {
         open, close,
         high: Math.max(bandTop, bodyTop - wickUp),
         low: Math.min(bandBot, bodyBot + wickDown),
       };
+    }
+
+    // Полоса под свечи: узко у самого верха хиро-блока (на уровне заголовка
+    // RiskControl), чтобы CSS-маска на канвасе надёжно скрывала их до текста
+    // тега-лайна и подзаголовка на любой ширине экрана.
+    function band(){
+      const midY = height*0.075, spanY = height*0.13;
+      return { top: midY - spanY/2, bottom: midY + spanY/2, midY, spanY };
     }
 
     function resize(){
@@ -1794,36 +1800,53 @@
       canvas.width = width*dpr; canvas.height = height*dpr;
       canvas.style.width = width+'px'; canvas.style.height = height+'px';
       ctx.setTransform(dpr,0,0,dpr,0,0);
+      const { midY } = band();
       const n = Math.max(20, Math.ceil(width/STEP)+2);
-      // Свечи держим в узкой полосе у самого верха хиро-блока (на уровне
-      // заголовка RiskControl), чтобы маска надёжно скрывала их до текста
-      // тега-лайна и подзаголовка на любой ширине экрана.
-      const midY = height*0.075;
-      const spanY = height*0.13;
-      if(candles.length !== n){
-        candles = [];
+      if(fakeCandles.length !== n){
+        fakeCandles = [];
         nextTrend();
         let prev = midY;
         for(let i=0;i<n;i++){
-          const c = makeCandle(prev, midY, spanY);
-          candles.push(c);
+          const { midY, spanY } = band();
+          const c = makeFakeCandle(prev, midY, spanY);
+          fakeCandles.push(c);
           prev = c.close;
         }
       }
     }
-    function step(){
-      const midY = height*0.075;
-      const spanY = height*0.13;
-      const prev = candles[candles.length-1].close;
-      candles.push(makeCandle(prev, midY, spanY));
-      candles.shift();
+    function stepFake(){
+      const { midY, spanY } = band();
+      const prev = fakeCandles[fakeCandles.length-1].close;
+      fakeCandles.push(makeFakeCandle(prev, midY, spanY));
+      fakeCandles.shift();
     }
+
+    // Реальные свечи масштабируем по их собственному диапазону цен в полосу
+    // отрисовки — берём столько последних свечей, сколько влезает по ширине.
+    function scaledRealCandles(){
+      // Показываем не больше ~40 последних свечей: если брать слишком длинную
+      // историю, редкое сильное движение растягивает шкалу и все остальные
+      // свечи визуально сплющиваются в почти одинаковые полоски. На более
+      // узком окне (последние ~6-7 дней по 4ч) колебания выглядят живее.
+      const n = Math.max(10, Math.min(realCandles.length, Math.min(40, Math.ceil(width/STEP))));
+      const slice = realCandles.slice(-n);
+      const lo = Math.min(...slice.map(c=>c.low));
+      const hi = Math.max(...slice.map(c=>c.high));
+      const range = Math.max(hi - lo, 1e-9);
+      const { top, bottom } = band();
+      const toY = v => bottom - ((v - lo) / range) * (bottom - top);
+      return slice.map(c=>({
+        open: toY(c.open), close: toY(c.close), high: toY(c.high), low: toY(c.low),
+      }));
+    }
+
     function draw(){
       if(width<=0 || height<=0) return;
       ctx.clearRect(0,0,width,height);
       const green = (getComputedStyle(document.documentElement).getPropertyValue('--green')||'#0ecb81').trim();
       const red = (getComputedStyle(document.documentElement).getPropertyValue('--red')||'#f6465d').trim();
-      candles.forEach((c,i)=>{
+      const cs = realCandles && realCandles.length>=10 ? scaledRealCandles() : fakeCandles;
+      cs.forEach((c,i)=>{
         const x = i*STEP;
         const up = c.close <= c.open; // канвас: меньший y выше на экране
         const color = up ? green : red;
@@ -1841,16 +1864,43 @@
         ctx.fillRect(x, bodyTop, CANDLE_W, bodyH);
       });
     }
+
+    async function loadReal(){
+      try{
+        const json = await fetchJsonWithRetry(
+          'https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=240&limit=50',
+          {retries:1, baseDelay:600}
+        );
+        const list = json && json.result && json.result.list;
+        if(!Array.isArray(list) || list.length<10) throw new Error('empty klines');
+        // bybit отдаёт свечи от новых к старым: [start,open,high,low,close,...]
+        realCandles = list.slice().reverse().map(k=>({
+          open: parseFloat(k[1]), high: parseFloat(k[2]), low: parseFloat(k[3]), close: parseFloat(k[4]),
+        }));
+      }catch(e){
+        // Bybit недоступен (блокировка региона, офлайн, локальный просмотр файла) —
+        // остаёмся на запасном сгенерированном графике, сайт из-за этого не ломается.
+        realCandles = null;
+      }
+      draw();
+    }
+
     resize();
     draw();
+    loadReal();
     window.addEventListener('resize', ()=>{ resize(); draw(); });
     if(reduceMotion) return;
+    // Пока не пришли настоящие данные (или если Bybit недоступен) — тихонько
+    // анимируем запасной график, как и раньше.
     let lastTick = 0;
     function loop(ts){
-      if(!lastTick || ts-lastTick>900){ step(); draw(); lastTick=ts; }
+      if(!realCandles && (!lastTick || ts-lastTick>900)){ stepFake(); draw(); lastTick=ts; }
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
+    // Раз в пару минут подтягиваем свежую 4ч-свечу с Bybit, чтобы реальный
+    // график в хиро-блоке не оставался «замороженным» надолго.
+    setInterval(loadReal, 2*60*1000);
   }
 
   window.addEventListener('load', ()=>{
