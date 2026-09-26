@@ -73,14 +73,17 @@
   @media(prefers-reduced-motion:reduce){.ticker-track{animation:none;}}
 
   /* ---------- фоновый "живой" график за шапкой ---------- */
-  .hero{position:relative;overflow:hidden;}
-  /* Свечи — декоративные, только в верхней части хиро-блока (за заголовком),
-     маска плавно скрывает их до того, как дойдёт до текста ".sub", чтобы они
-     шли ЗА текстом, а не поверх/сквозь него. */
-  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none;
-    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 10%, transparent 22%);
-    mask-image:linear-gradient(to bottom, #000 0%, #000 10%, transparent 22%);}
+  .hero{position:relative;}
+  /* Свечи рисуются в отдельной полосе ФИКСИРОВАННОЙ высоты над заголовком —
+     не поверх текста и не мимо тонкой маски, а в собственном месте с
+     достаточной высотой, чтобы тела и фитили свечей были действительно видны,
+     как на настоящем графике, а не превращались в тонкую сплющенную полоску. */
+  .hero-chart-strip{position:relative;height:64px;overflow:hidden;margin-bottom:2px;
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);}
+  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.6;pointer-events:none;}
   .hero-content{position:relative;z-index:1;}
+  @media(max-width:640px){.hero-chart-strip{height:44px;}}
   .wrap{max-width:1320px;margin:0 auto;padding:20px 16px 40px;}
   .v{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600;}
   .v.green{color:var(--green);} .v.red{color:var(--red);} .v.warn{color:var(--warn);}
@@ -305,7 +308,7 @@
 </div>
 <div class="wrap">
   <div class="hero">
-    <canvas id="heroChart" class="hero-canvas"></canvas>
+    <div class="hero-chart-strip"><canvas id="heroChart" class="hero-canvas"></canvas></div>
     <div class="header-row hero-content">
       <div>
         <h1><span class="wm-risk">Risk</span><span class="wm-control">Control</span></h1>
@@ -1785,12 +1788,14 @@
       };
     }
 
-    // Полоса под свечи: узко у самого верха хиро-блока (на уровне заголовка
-    // RiskControl), чтобы CSS-маска на канвасе надёжно скрывала их до текста
-    // тега-лайна и подзаголовка на любой ширине экрана.
+    // Полоса под свечи занимает почти всю высоту отдельной полосы-графика
+    // (.hero-chart-strip, задана в CSS фиксированной высотой) — эта полоса
+    // стоит НАД заголовком отдельным блоком, а не наложена на текст, поэтому
+    // тут можно смело использовать почти всю высоту для реального масштаба.
     function band(){
-      const midY = height*0.075, spanY = height*0.13;
-      return { top: midY - spanY/2, bottom: midY + spanY/2, midY, spanY };
+      const top = height*0.06, bottom = height*0.88;
+      const spanY = bottom - top, midY = (top+bottom)/2;
+      return { top, bottom, midY, spanY };
     }
 
     function resize(){
