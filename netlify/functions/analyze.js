@@ -1,19 +1,24 @@
 // netlify/functions/analyze.js
 //
 // Серверная функция для кнопки "Проверить с ИИ" на RiskControl.
-// Держит ключ Anthropic в переменной окружения (ANTHROPIC_API_KEY, задаётся
-// в Netlify: Site configuration -> Environment variables) — сайт и браузер
-// пользователя этот ключ никогда не видят.
+// Ходит через OpenRouter (openrouter.ai) вместо прямого API Anthropic — так
+// можно оплатить доступ криптой/картой через OpenRouter, а не только через
+// Anthropic Console. Ключ лежит в переменной окружения (OPENROUTER_API_KEY,
+// задаётся в Netlify: Site configuration -> Environment variables) — сайт и
+// браузер пользователя этот ключ никогда не видят.
 //
 // Принимает POST с текущими рыночными данными (цена, тренд, RSI, funding,
-// уровни, паттерн), просит Claude поискать свежие новости по монете через
-// встроенный web_search и написать короткий анализ на языке интерфейса.
+// уровни, паттерн), просит модель поискать свежие новости по монете через
+// встроенный в OpenRouter веб-поиск (суффикс ":online" у модели) и написать
+// короткий анализ на языке интерфейса.
 //
 // Явный дисклеймер в самом промпте — сайт уже честно говорит, что это не
 // сигнал к сделке (см. verdictDisclaimer в index.html), и ответ ИИ должен
 // быть в том же духе, а не выглядеть как обещание результата.
 
-const MODEL = 'claude-haiku-4-5-20251001';
+// ":online" на конце модели — встроенный веб-поиск OpenRouter (см. их
+// документацию по плагину "web"), без него не будет свежих новостей.
+const MODEL = 'anthropic/claude-haiku-4.5:online';
 const MAX_FIELD_LEN = 200;
 
 const LANG_NAMES = {
@@ -34,7 +39,7 @@ exports.handler = async function (event) {
     return { statusCode: 405, body: JSON.stringify({ error: 'method_not_allowed' }) };
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     // Ключ ещё не добавлен в Netlify — честно сообщаем об этом, а не падаем непонятно.
     return { statusCode: 503, body: JSON.stringify({ error: 'api_key_not_configured' }) };
@@ -82,70 +87,4 @@ exports.handler = async function (event) {
 - Объём позиции: ${positionSize}
 - Оценка цены ликвидации: ${liqPrice}
 
-Коротко (3-5 предложений) на ${responseLang} языке оцени: достаточен ли запас между стопом и ликвидацией при этом плече, не слишком ли агрессивно выбрано плечо относительно расстояния до стопа, и есть ли что-то в этих цифрах, что стоит перепроверить перед входом. Если можешь, через поиск кратко учти самые свежие новости по монете, если они могут резко повлиять на волатильность. Обязательно закончи одним предложением, что это не финансовый совет и не гарантия результата, а решение и риск — на пользователе.`;
-  } else if (focus === 'checklist') {
-    userPrompt = `Разбери подробнее технический чек-лист по монете ${symbol} (бессрочный фьючерс на Bybit, таймфрейм ${timeframe}), который уже автоматически посчитан на сайте:
-- Тренд (EMA20/EMA50): ${trendText}
-- RSI(14): ${rsiText}
-- Funding rate: ${fundingText}
-- Fibonacci/pivot уровни: ${fibText}
-- Паттерн свечей: ${patternText}
-
-Через поиск найди самые свежие новости по этой монете и крипторынку (за последние 24-48 часов). Напиши на ${responseLang} языке (5-7 предложений): что именно означает эта комбинация факторов, какой из них сейчас важнее остальных и почему, и что нового в новостях может эту картину изменить. Обязательно закончи одним предложением, что это не финансовый совет и не гарантия результата, а решение и риск — на пользователе.`;
-  } else {
-    userPrompt = `Проанализируй текущую техническую картину и самые свежие новости по монете ${symbol} (бессрочный фьючерс на Bybit, таймфрейм ${timeframe}).
-
-Технические данные с сайта (уже посчитаны автоматически):
-- Цена: ${price}, изменение за 24ч: ${change24h}
-- Тренд (EMA20/EMA50): ${trendText}
-- RSI(14): ${rsiText}
-- Funding rate: ${fundingText}
-- Fibonacci/pivot уровни: ${fibText}
-- Паттерн свечей: ${patternText}
-
-Через поиск найди самые свежие новости и события по этой монете и по крипторынку в целом (за последние 24-48 часов), которые могут повлиять на цену. Напиши короткий анализ (4-6 предложений) на ${responseLang} языке: что происходит технически, что нового в новостях, и как это в сумме выглядит — бычий, медвежий или смешанный расклад. Обязательно закончи одним предложением о том, что это не финансовый совет и не гарантия результата, а решение и риск — на пользователе.`;
-  }
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 700,
-        tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
-    });
-
-    const data = await resp.json();
-
-    if (!resp.ok) {
-      console.error('Anthropic API error:', resp.status, JSON.stringify(data));
-      return { statusCode: resp.status, body: JSON.stringify({ error: 'api_error' }) };
-    }
-
-    const text = (data.content || [])
-      .filter((block) => block.type === 'text')
-      .map((block) => block.text)
-      .join('\n\n')
-      .trim();
-
-    if (!text) {
-      return { statusCode: 502, body: JSON.stringify({ error: 'empty_response' }) };
-    }
-
-    return {
-      statusCode: 200,
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ text }),
-    };
-  } catch (err) {
-    console.error('AI analyze function failed:', err);
-    return { statusCode: 500, body: JSON.stringify({ error: 'fetch_failed' }) };
-  }
-};
+Коротко (3-5 предложений) на
