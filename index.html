@@ -255,6 +255,19 @@
   .ai-check-btn:disabled{opacity:.6;cursor:default;}
   .ai-check-hint{margin:8px 0 0;font-size:11.5px;line-height:1.4;color:var(--muted);text-align:center;}
   .ai-check-hint[hidden]{display:none;}
+
+  /* ---------- реферальный баннер (Bybit) ---------- */
+  .ref-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(135deg,var(--panel3),var(--panel2));border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin:0 0 18px;text-decoration:none;transition:border-color .15s,transform .1s;}
+  .ref-banner:hover{border-color:var(--accent);}
+  .ref-banner:active{transform:scale(.99);}
+  .ref-banner-left{display:flex;align-items:center;gap:10px;min-width:0;}
+  .ref-banner-icon{flex-shrink:0;color:var(--accent2);}
+  .ref-banner-text{font-size:13px;line-height:1.4;color:var(--text);}
+  .ref-banner-cta{flex-shrink:0;font-size:12px;font-weight:700;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
+  @media (max-width:480px){
+    .ref-banner{flex-direction:column;align-items:flex-start;}
+    .ref-banner-cta{align-self:flex-end;}
+  }
   .ai-result{margin-top:10px;}
   .ai-result-loading{font-size:13px;color:var(--muted);}
   .ai-result-text{font-size:13.5px;line-height:1.6;white-space:pre-wrap;background:var(--panel2);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 14px;}
@@ -329,6 +342,14 @@
       </div>
     </div>
   </div>
+
+  <a class="ref-banner" href="https://www.bybit.eu/invite?ref=BL4R0DM" target="_blank" rel="noopener">
+    <span class="ref-banner-left">
+      <svg class="ref-banner-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      <span class="ref-banner-text" data-i18n="refBannerText">Торгуешь на Bybit? Заходи по моей ссылке — бонус до 30 USDC и скидка на комиссии.</span>
+    </span>
+    <span class="ref-banner-cta" data-i18n="refBannerCta">Перейти →</span>
+  </a>
 
   <div class="nav">
     <button id="navCalcBtn" class="active" type="button" data-i18n="navCalc">Калькулятор</button>
@@ -619,6 +640,7 @@
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
       aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
       aiCheckHintRisk:"Заполни риск, вход, стоп и плечо, чтобы получить оценку ликвидации — тогда кнопка станет активной.",
+      refBannerText:"Торгуешь на Bybit? Заходи по моей ссылке — бонус до 30 USDC и скидка на комиссии.", refBannerCta:"Перейти →",
       methodH2:"Как формируется вердикт", methodTag:"методология",
       methodIntro:"Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
@@ -694,6 +716,7 @@
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
       aiCheckHintRisk:"Fill in risk, entry, stop and leverage to get a liquidation estimate — then this button unlocks.",
+      refBannerText:"Trading on Bybit? Sign up through my link — bonus up to 30 USDC and a fee discount.", refBannerCta:"Go →",
       methodH2:"How this is built", methodTag:"methodology",
       methodIntro:"This is the sum of 5 equally weighted technical factors, each from -1 to +1:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
@@ -769,6 +792,7 @@
       aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
       aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
       aiCheckHintRisk:"Trage Risiko, Einstieg, Stop und Hebel ein, um eine Liquidationsschätzung zu erhalten — dann wird dieser Button aktiv.",
+      refBannerText:"Handelst du auf Bybit? Melde dich über meinen Link an — Bonus bis zu 30 USDC und Gebührenrabatt.", refBannerCta:"Los →",
       methodH2:"Wie das zustande kommt", methodTag:"Methodik",
       methodIntro:"Das ist die Summe aus 5 gleich gewichteten technischen Faktoren, jeweils von -1 bis +1:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
@@ -844,6 +868,7 @@
       aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
       aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
       aiCheckHintRisk:"Заповни ризик, вхід, стоп і плече, щоб отримати оцінку ліквідації — тоді кнопка стане активною.",
+      refBannerText:"Торгуєш на Bybit? Заходь за моїм посиланням — бонус до 30 USDC і знижка на комісії.", refBannerCta:"Перейти →",
       methodH2:"Як це влаштовано", methodTag:"методологія",
       methodIntro:"Це сума 5 рівнозначних технічних факторів, кожен від -1 до +1:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
@@ -919,6 +944,7 @@
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
       aiCheckHintRisk:"מלא סיכון, כניסה, סטופ ומינוף כדי לקבל הערכת סילוק — אז הכפתור הזה יופעל.",
+      refBannerText:"סוחר בביביט? הירשם דרך הקישור שלי — בונוס עד 30 USDC והנחה על עמלות.", refBannerCta:"מעבר ←",
       methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
       methodIntro:"זה סכום של 5 גורמים טכניים שווי-משקל, כל אחד בין -1 ל-+1:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
