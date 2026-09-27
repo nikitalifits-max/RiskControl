@@ -253,6 +253,8 @@
   .ai-check-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
   .ai-check-btn:active:not(:disabled){transform:scale(.98);}
   .ai-check-btn:disabled{opacity:.6;cursor:default;}
+  .ai-check-hint{margin:8px 0 0;font-size:11.5px;line-height:1.4;color:var(--muted);text-align:center;}
+  .ai-check-hint[hidden]{display:none;}
   .ai-result{margin-top:10px;}
   .ai-result-loading{font-size:13px;color:var(--muted);}
   .ai-result-text{font-size:13.5px;line-height:1.6;white-space:pre-wrap;background:var(--panel2);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 14px;}
@@ -456,7 +458,8 @@
         </div>
         <p class="small" data-i18n="calcSmall">*Приближённая оценка (округлённая maintenance margin rate ~0.4%, без учёта funding/комиссий) — перед реальным входом сверяй точную цену ликвидации на своей бирже.</p>
         <div class="ai-check">
-          <button type="button" id="aiCheckBtnRisk" class="ai-check-btn"><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnRisk">ИИ-анализ риска этой сделки</span></button>
+          <button type="button" id="aiCheckBtnRisk" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnRisk">ИИ-анализ риска этой сделки</span></button>
+          <p class="ai-check-hint" id="aiCheckHintRisk" data-i18n="aiCheckHintRisk">Заполни риск, вход, стоп и плечо, чтобы получить оценку ликвидации — тогда кнопка станет активной.</p>
           <div id="aiResultRisk" class="ai-result" hidden>
             <div id="aiResultRiskLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
             <div id="aiResultRiskText" class="ai-result-text" hidden></div>
@@ -615,6 +618,7 @@
       aiCheckBtnRisk:"ИИ-анализ риска этой сделки", aiCheckBtnChecklist:"ИИ-разбор чек-листа",
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
       aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
+      aiCheckHintRisk:"Заполни риск, вход, стоп и плечо, чтобы получить оценку ликвидации — тогда кнопка станет активной.",
       methodH2:"Как формируется вердикт", methodTag:"методология",
       methodIntro:"Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
@@ -689,6 +693,7 @@
       aiCheckBtnRisk:"AI risk analysis of this trade", aiCheckBtnChecklist:"AI checklist breakdown",
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
+      aiCheckHintRisk:"Fill in risk, entry, stop and leverage to get a liquidation estimate — then this button unlocks.",
       methodH2:"How this is built", methodTag:"methodology",
       methodIntro:"This is the sum of 5 equally weighted technical factors, each from -1 to +1:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
@@ -763,6 +768,7 @@
       aiCheckBtnRisk:"KI-Risikoanalyse dieses Trades", aiCheckBtnChecklist:"KI-Analyse der Checkliste",
       aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
       aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
+      aiCheckHintRisk:"Trage Risiko, Einstieg, Stop und Hebel ein, um eine Liquidationsschätzung zu erhalten — dann wird dieser Button aktiv.",
       methodH2:"Wie das zustande kommt", methodTag:"Methodik",
       methodIntro:"Das ist die Summe aus 5 gleich gewichteten technischen Faktoren, jeweils von -1 bis +1:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
@@ -837,6 +843,7 @@
       aiCheckBtnRisk:"ШІ-аналіз ризику цієї угоди", aiCheckBtnChecklist:"ШІ-розбір чек-листа",
       aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
       aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
+      aiCheckHintRisk:"Заповни ризик, вхід, стоп і плече, щоб отримати оцінку ліквідації — тоді кнопка стане активною.",
       methodH2:"Як це влаштовано", methodTag:"методологія",
       methodIntro:"Це сума 5 рівнозначних технічних факторів, кожен від -1 до +1:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
@@ -911,6 +918,7 @@
       aiCheckBtnRisk:"ניתוח סיכון AI לעסקה הזו", aiCheckBtnChecklist:"ניתוח AI לרשימת הבדיקה",
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
+      aiCheckHintRisk:"מלא סיכון, כניסה, סטופ ומינוף כדי לקבל הערכת סילוק — אז הכפתור הזה יופעל.",
       methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
       methodIntro:"זה סכום של 5 גורמים טכניים שווי-משקל, כל אחד בין -1 ל-+1:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
@@ -1204,11 +1212,13 @@
 
     if(!riskAmount || riskAmount<=0 || !entry || !stop || entry===stop){
       outIds.forEach(id=>$(id).textContent='—');
+      updateAiRiskGate();
       return;
     }
     if((direction==='long' && stop>=entry) || (direction==='short' && stop<=entry)){
       banner.innerHTML = '<div class="banner bad">'+(direction==='long'?t('bannerStopLong'):t('bannerStopShort'))+'</div>';
       outIds.forEach(id=>$(id).textContent='—');
+      updateAiRiskGate();
       return;
     }
 
@@ -1261,6 +1271,19 @@
 
     const tp = direction==='long' ? entry + dist*rr : entry - dist*rr;
     $('oTP').textContent = fmtUsd(tp,2)+' (R:R '+fmt(rr,1)+')';
+    updateAiRiskGate();
+  }
+
+  // Кнопка "ИИ-анализ риска" даёт содержательный ответ только когда есть реальные
+  // цифры сделки (риск/вход/стоп/плечо и посчитанная от них цена ликвидации) —
+  // до этого блокируем её, чтобы не тратить запрос на "заполни данные".
+  function updateAiRiskGate(){
+    const btn = $('aiCheckBtnRisk');
+    if(!btn) return;
+    const hint = $('aiCheckHintRisk');
+    const ready = $('oSize').textContent !== '—' && $('oLiq').textContent !== '—';
+    if(!btn.dataset.aiBusy){ btn.disabled = !ready; }
+    if(hint) hint.hidden = ready;
   }
 
   ['risk','entry','stop','leverage','rr'].forEach(id=>{
@@ -1551,7 +1574,7 @@
   });
 
   // ---------- ИИ-анализ (данные + новости через Claude) — отдельная кнопка в каждой карточке ----------
-  // focus определяет, что именно уходит в промпт на сервере (см. netlify/functions/analyze.js):
+  // focus определяет, что именно уходит в промпт на сервере (см. api/analyze.js):
   //  'trade'     — карточка вердикта: общий технический расклад + свежие новости
   //  'risk'      — карточка калькулятора: сама сделка (вход/стоп/плечо/ликвидация)
   //  'checklist' — карточка рынка: подробный разбор 5 факторов чек-листа
@@ -1593,12 +1616,13 @@
       textEl.hidden = true;
       errorEl.hidden = true;
       btn.disabled = true;
+      btn.dataset.aiBusy = '1';
       const labelEl = btn.querySelector('.btn-label');
       const originalLabel = labelEl.textContent;
       labelEl.textContent = t('aiCheckBtnLoading');
       try{
         const payload = buildAiPayload(focus);
-        const res = await fetch('/.netlify/functions/analyze', {
+        const res = await fetch('/api/analyze', {
           method: 'POST',
           headers: {'content-type':'application/json'},
           body: JSON.stringify(payload)
@@ -1613,7 +1637,9 @@
         loadingEl.hidden = true;
         errorEl.hidden = false;
       } finally {
+        delete btn.dataset.aiBusy;
         btn.disabled = false;
+        if(focus === 'risk') updateAiRiskGate();
         labelEl.textContent = originalLabel;
       }
     });
