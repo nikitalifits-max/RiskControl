@@ -87,4 +87,68 @@ exports.handler = async function (event) {
 - Объём позиции: ${positionSize}
 - Оценка цены ликвидации: ${liqPrice}
 
-Коротко (3-5 предложений) на
+Коротко (3-5 предложений) на ${responseLang} языке оцени: достаточен ли запас между стопом и ликвидацией при этом плече, не слишком ли агрессивно выбрано плечо относительно расстояния до стопа, и есть ли что-то в этих цифрах, что стоит перепроверить перед входом. Если можешь, через поиск кратко учти самые свежие новости по монете, если они могут резко повлиять на волатильность. Обязательно закончи одним предложением, что это не финансовый совет и не гарантия результата, а решение и риск — на пользователе.`;
+  } else if (focus === 'checklist') {
+    userPrompt = `Разбери подробнее технический чек-лист по монете ${symbol} (бессрочный фьючерс на Bybit, таймфрейм ${timeframe}), который уже автоматически посчитан на сайте:
+- Тренд (EMA20/EMA50): ${trendText}
+- RSI(14): ${rsiText}
+- Funding rate: ${fundingText}
+- Fibonacci/pivot уровни: ${fibText}
+- Паттерн свечей: ${patternText}
+
+Через поиск найди самые свежие новости по этой монете и крипторынку (за последние 24-48 часов). Напиши на ${responseLang} языке (5-7 предложений): что именно означает эта комбинация факторов, какой из них сейчас важнее остальных и почему, и что нового в новостях может эту картину изменить. Обязательно закончи одним предложением, что это не финансовый совет и не гарантия результата, а решение и риск — на пользователе.`;
+  } else {
+    userPrompt = `Проанализируй текущую техническую картину и самые свежие новости по монете ${symbol} (бессрочный фьючерс на Bybit, таймфрейм ${timeframe}).
+
+Технические данные с сайта (уже посчитаны автоматически):
+- Цена: ${price}, изменение за 24ч: ${change24h}
+- Тренд (EMA20/EMA50): ${trendText}
+- RSI(14): ${rsiText}
+- Funding rate: ${fundingText}
+- Fibonacci/pivot уровни: ${fibText}
+- Паттерн свечей: ${patternText}
+
+Через поиск найди самые свежие новости и события по этой монете и по крипторынку в целом (за последние 24-48 часов), которые могут повлиять на цену. Напиши короткий анализ (4-6 предложений) на ${responseLang} языке: что происходит технически, что нового в новостях, и как это в сумме выглядит — бычий, медвежий или смешанный расклад. Обязательно закончи одним предложением о том, что это не финансовый совет и не гарантия результата, а решение и риск — на пользователе.`;
+  }
+
+  try {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': `Bearer ${apiKey}`,
+        // Рекомендовано OpenRouter — помогает им идентифицировать источник запроса,
+        // на функциональность сайта не влияет.
+        'http-referer': 'https://3457893.netlify.app',
+        'x-title': 'RiskControl',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 700,
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      console.error('OpenRouter API error:', resp.status, JSON.stringify(data));
+      return { statusCode: resp.status, body: JSON.stringify({ error: 'api_error' }) };
+    }
+
+    const text = ((data.choices || [])[0]?.message?.content || '').trim();
+
+    if (!text) {
+      return { statusCode: 502, body: JSON.stringify({ error: 'empty_response' }) };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ text }),
+    };
+  } catch (err) {
+    console.error('AI analyze function failed:', err);
+    return { statusCode: 500, body: JSON.stringify({ error: 'fetch_failed' }) };
+  }
+};
