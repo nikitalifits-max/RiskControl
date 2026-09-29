@@ -8,14 +8,56 @@
 // платить криптой/картой через OpenRouter. Ключ лежит в переменной окружения
 // (OPENROUTER_API_KEY, задаётся в Vercel: Project Settings -> Environment
 // Variables) — сайт и браузер пользователя этот ключ никогда не видят.
+// Запросы принимаются только со своего сайта и не чаще лимита (см. ниже) — чтобы
+// посторонние не могли тратить баланс OpenRouter.
 //
 // Просит модель поискать свежие новости по монете через встроенный в
 // OpenRouter веб-поиск (суффикс ":online" у модели) и написать короткий,
 // строго структурированный ответ (вердикт одним словом + 1-2 предложения),
 // чтобы не тратить лишние деньги на длинные ответы.
 
+// ":online" = встроенный веб-поиск OpenRouter (для свежих новостей). Для оценки риска
+// сделки новости не нужны — там используем модель без поиска: дешевле и быстрее.
 const MODEL = 'anthropic/claude-haiku-4.5:online';
+const MODEL_NO_SEARCH = 'anthropic/claude-haiku-4.5';
 const MAX_FIELD_LEN = 200;
+
+// ---- защита от чужого использования (каждый запрос стоит денег с баланса OpenRouter) ----
+// 1) Запросы из браузера принимаем только со своего же сайта (Origin == домен сайта).
+// 2) Простое ограничение частоты: не больше RATE_MAX запросов с одного IP за RATE_WINDOW_MS
+//    и не больше GLOBAL_MAX запросов в час на один экземпляр функции.
+// Это не абсолютная защита (у Vercel может работать несколько экземпляров функции),
+// поэтому дополнительно стоит поставить лимит расходов на сам ключ в OpenRouter.
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 10;
+const GLOBAL_WINDOW_MS = 60 * 60 * 1000;
+const GLOBAL_MAX = 300;
+const hitsByIp = new Map();
+let globalHits = [];
+
+function clientIp(req) {
+  const xff = String((req.headers && req.headers['x-forwarded-for']) || '');
+  return (xff.split(',')[0] || '').trim() || String((req.headers && req.headers['x-real-ip']) || '') || 'unknown';
+}
+function rateLimited(ip, now) {
+  globalHits = globalHits.filter((ts) => now - ts < GLOBAL_WINDOW_MS);
+  if (globalHits.length >= GLOBAL_MAX) return true;
+  const list = (hitsByIp.get(ip) || []).filter((ts) => now - ts < RATE_WINDOW_MS);
+  if (list.length >= RATE_MAX) { hitsByIp.set(ip, list); return true; }
+  list.push(now);
+  hitsByIp.set(ip, list);
+  globalHits.push(now);
+  if (hitsByIp.size > 5000) hitsByIp.clear(); // не даём карте разрастись
+  return false;
+}
+function sameOrigin(req) {
+  const origin = req.headers && req.headers.origin;
+  if (!origin) return true; // не браузер (или очень старый) — таких ограничивает только лимит частоты
+  let originHost;
+  try { originHost = new URL(origin).host; } catch (e) { return false; }
+  const host = String((req.headers['x-forwarded-host'] || req.headers.host || '')).split(',')[0].trim();
+  return !!host && originHost === host;
+}
 
 const LANG_NAMES = {
   ru: 'русском',
@@ -33,6 +75,15 @@ function clip(value, fallback) {
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'method_not_allowed' });
+    return;
+  }
+
+  if (!sameOrigin(req)) {
+    res.status(403).json({ error: 'forbidden_origin' });
+    return;
+  }
+  if (rateLimited(clientIp(req), Date.now())) {
+    res.status(429).json({ error: 'rate_limited' });
     return;
   }
 
@@ -141,11 +192,11 @@ module.exports = async function handler(req, res) {
         'authorization': `Bearer ${apiKey}`,
         // Рекомендовано OpenRouter — помогает им идентифицировать источник запроса,
         // на функциональность сайта не влияет, точный домен не важен.
-        'http-referer': 'https://riskcontrol.vercel.app',
+        'http-referer': 'https://www.riskctrl.app',
         'x-title': 'RiskControl',
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: focus === 'risk' ? MODEL_NO_SEARCH : MODEL,
         max_tokens: 220,
         messages: [{ role: 'user', content: userPrompt }],
       }),
@@ -155,7 +206,9 @@ module.exports = async function handler(req, res) {
 
     if (!resp.ok) {
       console.error('OpenRouter API error:', resp.status, JSON.stringify(data));
-      res.status(resp.status).json({ error: 'api_error' });
+      // ошибки на стороне OpenRouter (нет баланса, их лимиты и т.п.) отдаём как 502,
+      // чтобы сайт не путал их с нашим собственным ограничением частоты (429)
+      res.status(502).json({ error: 'api_error', upstream: resp.status });
       return;
     }
 
