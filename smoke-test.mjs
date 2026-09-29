@@ -85,6 +85,23 @@ async function mockBybitApi(page) {
         time: Date.now()
       });
     }
+    if (url.includes('/open-interest')) {
+      const now = Date.now();
+      return json({
+        retCode: 0, retMsg: 'OK',
+        result: { category: 'linear', symbol: sym, list: Array.from({ length: 25 }, (_, i) => ({
+          openInterest: String(50000 - i * 150), timestamp: String(now - i * 3600000)
+        })), nextPageCursor: '' },
+        time: now
+      });
+    }
+    if (url.includes('/account-ratio')) {
+      return json({
+        retCode: 0, retMsg: 'OK',
+        result: { list: [{ symbol: sym, buyRatio: '0.55', sellRatio: '0.45', timestamp: String(Date.now()) }], nextPageCursor: '' },
+        time: Date.now()
+      });
+    }
     if (url.includes('/kline')) {
       const now = Date.now();
       const rows = [];
@@ -246,6 +263,19 @@ async function main() {
     /long|short|none/.test(verdictClass) && verdictTitle.length > 0,
     `class=${verdictClass}, title=${verdictTitle}`
   );
+  // модель рынка: 10–11 факторов с состоянием, оценка по шкале и полоса оценки
+  const factorTexts = await page.$$eval('#verdictFactors .checklist-item .factor-val', (els) => els.map((e) => e.textContent.trim()));
+  check(
+    'вердикт считается по 10+ факторам (тренд, старший ТФ, MACD, RSI, объём, OI, funding, лонг/шорт, уровни, паттерн, BTC)',
+    factorTexts.length >= 10 && factorTexts.every((x) => x.length > 0 && !/undefined|NaN/.test(x)),
+    `factors=${factorTexts.length}: ${factorTexts.join(' | ')}`
+  );
+  const oiFactor = await page.$eval('#verdictFactors [data-factor="oi"] .factor-val', (el) => el.textContent.trim()).catch(() => '');
+  check('open interest и лонг/шорт загружаются (фактор OI посчитан)', oiFactor.length > 0 && !/нет данных/.test(oiFactor), `oi=${oiFactor}`);
+  const verdictSub = await page.$eval('#verdictSub', (el) => el.textContent.trim());
+  check('под вердиктом показана оценка от −100 до +100', /[-+]?\d+/.test(verdictSub) && /100/.test(verdictSub) && !/NaN|undefined/.test(verdictSub), `sub=${verdictSub}`);
+  const methodItems = await page.$$eval('#methodList li', (els) => els.length);
+  check('методология перечисляет все 11 факторов с весами', methodItems === 11, `items=${methodItems}`);
   const verdictTf = await page.$eval('#verdictTfValue', (el) => el.textContent.trim());
   check('вердикт показывает используемый таймфрейм', verdictTf.length > 0 && verdictTf !== '—', `tf=${verdictTf}`);
 
@@ -277,10 +307,11 @@ async function main() {
   // на файле эти проверки пропускаются, а не считаются ошибкой.
   if (isHttpTarget) {
     const aiCallCounts = {};
+    const aiPayloads = {};
     await page.route('**/api/analyze', async (route) => {
       const req = route.request();
       let focus = 'unknown';
-      try { focus = JSON.parse(req.postData() || '{}').focus || 'unknown'; } catch (e) {}
+      try { const b = JSON.parse(req.postData() || '{}'); focus = b.focus || 'unknown'; aiPayloads[focus] = b; } catch (e) {}
       aiCallCounts[focus] = (aiCallCounts[focus] || 0) + 1;
       if (aiCallCounts[focus] === 1) {
         return route.fulfill({
@@ -318,6 +349,8 @@ async function main() {
       const errorVisible = await page.$eval(error, (el) => !el.hidden).catch(() => false);
       check(`при ошибке ИИ-функции "${name}" показывается понятное сообщение вместо тишины`, errorVisible);
     }
+    const tradeSummary = (aiPayloads.trade && aiPayloads.trade.marketSummary) || '';
+    check('ИИ получает полную сводку рынка (все факторы с цифрами и уровни)', /Оценка алгоритма/.test(tradeSummary) && /Open Interest/.test(tradeSummary) && tradeSummary.length < 3000, `len=${tradeSummary.length}`);
   } else {
     console.log('  \x1b[33m…\x1b[0m проверки кнопок "Проверить с ИИ" пропущены (нужен настоящий адрес сайта, не файл)');
   }
