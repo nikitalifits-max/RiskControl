@@ -9,6 +9,8 @@
 <meta property="og:title" content="RiskControl — калькулятор риска и плеча для фьючерсов">
 <meta property="og:description" content="Считает объём позиции по риску на сделку, проверяет безопасность плеча относительно цены ликвидации и даёт сводку рыночных факторов перед входом в сделку.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://www.riskctrl.app/">
+<link rel="canonical" href="https://www.riskctrl.app/">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RiskControl — калькулятор риска и плеча для фьючерсов">
 <meta name="twitter:description" content="Калькулятор объёма позиции и плеча по риску для крипто-фьючерсов с проверкой безопасности ликвидации.">
@@ -66,7 +68,9 @@
   /* ---------- бегущая строка сверху — терминальный, а не "статичный SaaS" штрих ---------- */
   .ticker-marquee{overflow:hidden;white-space:nowrap;background:var(--panel);border-bottom:1px solid var(--border-soft);}
   .ticker-track{display:inline-block;padding:7px 0;animation:marquee 26s linear infinite;}
-  html[dir="rtl"] .ticker-track{animation-direction:reverse;}
+  /* бегущая строка всегда крутится слева направо (и на иврите тоже) — иначе в RTL она периодически пустеет */
+  .ticker-marquee{direction:ltr;}
+  .ticker-track span{unicode-bidi:isolate;}
   .ticker-track span{display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 18px;}
   .ticker-track .sep{color:var(--accent);padding:0;}
   @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
@@ -93,6 +97,8 @@
   h1{font-family:var(--font-display);font-size:34px;margin:0 0 8px;display:flex;align-items:center;gap:1px;font-weight:700;letter-spacing:-.02em;line-height:1;}
   .wm-risk{color:var(--text);}
   .wm-control{color:var(--accent);}
+  /* логотип всегда читается как "RiskControl", даже на иврите (RTL) */
+  html[dir="rtl"] h1{direction:ltr;justify-content:flex-end;}
   h1::after{content:"";display:inline-block;width:.42em;height:.86em;background:var(--accent);margin-left:.1em;vertical-align:-0.1em;animation:cursor-blink 1.1s steps(1,end) infinite;}
   @keyframes cursor-blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
   @media(prefers-reduced-motion:reduce){h1::after{animation:none;opacity:.5;}}
@@ -179,7 +185,10 @@
   .out{margin-top:16px;border-top:1px solid var(--border-soft);padding-top:14px;}
   .out-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;}
   .out-row .k{color:var(--muted);}
-  .out-row .v{font-size:13.5px;}
+  .out-row .v{font-size:13.5px;direction:ltr;unicode-bidi:isolate;}
+  /* цифры с $ и % не переворачиваются в RTL */
+  .market-row > span:last-child, .levels-table td, #verdictTfValue{unicode-bidi:isolate;}
+  .market-row > span:last-child, .levels-table td{direction:ltr;}
   .banner{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.4;}
   .banner.ok{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);}
   .banner.bad{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);}
@@ -262,11 +271,14 @@
   .ref-banner:active{transform:scale(.99);}
   .ref-banner-left{display:flex;align-items:center;gap:10px;min-width:0;}
   .ref-banner-icon{flex-shrink:0;color:var(--accent2);}
+  .ref-banner-ad{flex-shrink:0;font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:1px 5px;}
   .ref-banner-text{font-size:13px;line-height:1.4;color:var(--text);}
   .ref-banner-cta{flex-shrink:0;font-size:12px;font-weight:700;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
   @media (max-width:480px){
     .ref-banner{flex-direction:column;align-items:flex-start;}
     .ref-banner-cta{align-self:flex-end;}
+    .ref-banner-left{flex-wrap:wrap;row-gap:6px;}
+    .ref-banner-text{flex-basis:100%;}
   }
   .ai-result{margin-top:10px;}
   .ai-result-loading{font-size:13px;color:var(--muted);}
@@ -343,10 +355,11 @@
     </div>
   </div>
 
-  <a class="ref-banner" href="https://www.bybit.eu/invite?ref=BL4R0DM" target="_blank" rel="noopener">
+  <a class="ref-banner" href="https://www.bybit.eu/invite?ref=BL4R0DM" target="_blank" rel="noopener sponsored">
     <span class="ref-banner-left">
       <svg class="ref-banner-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-      <span class="ref-banner-text" data-i18n="refBannerText">Торгуешь на Bybit? Заходи по моей ссылке — бонус до 30 USDC и скидка на комиссии.</span>
+      <span class="ref-banner-ad" data-i18n="refBannerAd">Реклама</span>
+      <span class="ref-banner-text" data-i18n="refBannerText">Нет аккаунта на Bybit? Зарегистрируйся по моей ссылке — так ты поддержишь развитие RiskControl.</span>
     </span>
     <span class="ref-banner-cta" data-i18n="refBannerCta">Перейти →</span>
   </a>
@@ -360,7 +373,7 @@
     <label style="margin-top:0;" data-i18n="symbolLabel">Монета / пара (Bybit)</label>
     <div class="symbol-row">
       <div class="symbol-input-wrap">
-        <input type="text" id="symbol" value="BTCUSDT" placeholder="..." autocomplete="off" role="combobox" aria-expanded="false" aria-controls="symbolSuggest" aria-autocomplete="list">
+        <input type="text" id="symbol" value="BTCUSDT" placeholder="BTC, SOL, PEPE…" data-i18n-placeholder="phSymbol" autocapitalize="characters" spellcheck="false" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="symbolSuggest" aria-autocomplete="list">
         <div class="symbol-suggest" id="symbolSuggest" role="listbox"></div>
       </div>
       <button id="btnApplySymbol" type="button" class="btn btn-accent" data-i18n="applyBtn">Применить</button>
@@ -412,7 +425,8 @@
     </div>
     <p class="small" data-i18n="verdictDisclaimer">Автоматическая оценка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Не финансовый совет — решение всегда за тобой.</p>
     <div class="ai-check">
-      <button type="button" id="aiCheckBtn" class="ai-check-btn"><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtn">Проверить с ИИ — данные + свежие новости</span></button>
+      <button type="button" id="aiCheckBtn" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtn">Проверить с ИИ — данные + свежие новости</span></button>
+      <p class="ai-check-hint" id="aiCheckHintTrade" data-i18n="aiCheckHintMarket" hidden>Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.</p>
       <div id="aiResult" class="ai-result" hidden>
         <div id="aiResultLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
         <div id="aiResultText" class="ai-result-text" hidden></div>
@@ -429,11 +443,11 @@
         <h2><span data-i18n="calcH2">Калькулятор объёма и плеча</span> <span class="tag" data-i18n="calcTag">риск-менеджмент</span></h2>
 
         <label data-i18n="riskLabel">Риск на сделку, $</label>
-        <input type="number" id="risk" step="any" placeholder="...">
+        <input type="number" id="risk" step="any" inputmode="decimal" placeholder="например, 10" data-i18n-placeholder="phRisk">
 
         <div class="toggle">
-          <button id="btnLong" class="long active">Long</button>
-          <button id="btnShort" class="short">Short</button>
+          <button id="btnLong" type="button" class="long active">Long</button>
+          <button id="btnShort" type="button" class="short">Short</button>
         </div>
 
         <label data-i18n="feeModeLabel">Тип ордера на вход/выход</label>
@@ -449,22 +463,22 @@
               <button id="entryLiveBtn" class="active" type="button" style="padding:6px;font-size:12px;" data-i18n="entryLiveLabel">Live цена</button>
               <button id="entryManualBtn" type="button" style="padding:6px;font-size:12px;" data-i18n="entryManualLabel">Ручной ввод</button>
             </div>
-            <input type="number" id="entry" step="any" placeholder="..." readonly>
+            <input type="number" id="entry" step="any" inputmode="decimal" placeholder="цена входа" data-i18n-placeholder="phEntry" readonly>
           </div>
           <div>
             <label data-i18n="stopLabel">Цена стопа</label>
-            <input type="number" id="stop" step="any" placeholder="...">
+            <input type="number" id="stop" step="any" inputmode="decimal" placeholder="уровень стоп-лосса" data-i18n-placeholder="phStop">
           </div>
         </div>
 
         <div class="row">
           <div>
             <label data-i18n="leverageLabel">Плечо (x)</label>
-            <input type="number" id="leverage" step="any" placeholder="...">
+            <input type="number" id="leverage" step="any" inputmode="decimal" placeholder="например, 5" data-i18n-placeholder="phLeverage">
           </div>
           <div>
             <label data-i18n="rrLabel">Желаемое R:R для тейк-профита</label>
-            <input type="number" id="rr" value="2" step="any">
+            <input type="number" id="rr" value="2" step="any" inputmode="decimal">
           </div>
         </div>
 
@@ -482,7 +496,7 @@
           <button type="button" id="aiCheckBtnRisk" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnRisk">ИИ-анализ риска этой сделки</span></button>
           <p class="ai-check-hint" id="aiCheckHintRisk" data-i18n="aiCheckHintRisk">Заполни риск, вход, стоп и плечо, чтобы получить оценку ликвидации — тогда кнопка станет активной.</p>
           <div id="aiResultRisk" class="ai-result" hidden>
-            <div id="aiResultRiskLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
+            <div id="aiResultRiskLoading" class="ai-result-loading" data-i18n="aiCheckLoadingRisk" hidden>Анализирую параметры сделки — обычно несколько секунд…</div>
             <div id="aiResultRiskText" class="ai-result-text" hidden></div>
             <div id="aiResultRiskError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
           </div>
@@ -528,7 +542,8 @@
           <table class="levels-table" id="levelsTable"></table>
           <p class="small" data-i18n="marketSmall">Fibonacci и pivot уровни считаются автоматически по последним свечам выбранного таймфрейма (по последнему выраженному свингу high/low).</p>
           <div class="ai-check">
-            <button type="button" id="aiCheckBtnChecklist" class="ai-check-btn"><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnChecklist">ИИ-разбор чек-листа</span></button>
+            <button type="button" id="aiCheckBtnChecklist" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnChecklist">ИИ-разбор чек-листа</span></button>
+            <p class="ai-check-hint" id="aiCheckHintChecklist" data-i18n="aiCheckHintMarket" hidden>Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.</p>
             <div id="aiResultChecklist" class="ai-result" hidden>
               <div id="aiResultChecklistLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
               <div id="aiResultChecklistText" class="ai-result-text" hidden></div>
@@ -581,7 +596,7 @@
   </div>
 </div>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
+<script src="https://s3.tradingview.com/tv.js" defer></script>
 <script>
 (function(){
   // ---------- translations ----------
@@ -603,7 +618,6 @@
       rrLabel:"Желаемое R:R для тейк-профита",
       outDistK:"Расстояние до стопа", outSizeK:"Объём для входа", outValueK:"Стоимость позиции",
       outMarginK:"Требуемая маржа", outLiqK:"Оценка цены ликвидации*", outTPK:"Тейк-профит",
-      unitsSuffix:"ед.",
       calcSmall:"*Объём округляется вниз до шага лота выбранной пары на Bybit и учитывает комиссию за вход и выход по выбранному типу ордера, чтобы фактический убыток на стопе не превышал заданный риск. Цена ликвидации использует реальную ставку maintenance margin с Bybit для текущего размера позиции, если она загрузилась (иначе — приближение ~0.4%); funding не учитывается — перед реальным входом сверяй точную цену ликвидации на своей бирже.",
       sizeBelowMin:"Расчётный объём ({size}) меньше минимального лота биржи для этой пары ({min}) — увеличь риск на сделку или расширь стоп, иначе сделку с таким риском открыть не получится.",
       bannerStopLong:"Стоп должен быть ниже цены входа для лонга.",
@@ -640,7 +654,7 @@
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
       aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
       aiCheckHintRisk:"Заполни риск, вход, стоп и плечо, чтобы получить оценку ликвидации — тогда кнопка станет активной.",
-      refBannerText:"Торгуешь на Bybit? Заходи по моей ссылке — бонус до 30 USDC и скидка на комиссии.", refBannerCta:"Перейти →",
+      refBannerText:"Нет аккаунта на Bybit? Зарегистрируйся по моей ссылке — так ты поддержишь развитие RiskControl.", refBannerCta:"Перейти →",
       methodH2:"Как формируется вердикт", methodTag:"методология",
       methodIntro:"Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
@@ -651,7 +665,7 @@
       methodThreshold:"Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.",
       methodSmall:"Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои.",
       aboutH2:"О проекте", aboutTag:"независимый инструмент",
-      aboutText:"RiskControl — независимый некоммерческий проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без регистрации и без сбора личных данных. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.",
+      aboutText:"RiskControl — независимый бесплатный проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без регистрации и без сбора личных данных. Баннер Bybit вверху — реферальная ссылка: если зарегистрируешься по ней, автор может получить вознаграждение от биржи; на расчёты это никак не влияет. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.",
       glossaryH2:"Глоссарий терминов", glossaryTag:"если что-то непонятно",
       glossLeverageTerm:"Плечо (leverage)", glossLeverageDef:"Множитель, увеличивающий размер позиции относительно внесённой маржи. Плечо 10x значит, что и прибыль, и убыток по сделке умножаются в 10 раз.",
       glossMarginTerm:"Маржа", glossMarginDef:"Сумма собственных средств, которую биржа замораживает как залог под открытую позицию с плечом.",
@@ -660,7 +674,9 @@
       glossRsiTerm:"RSI (14)", glossRsiDef:"Индикатор импульса от 0 до 100. Выше 70 — актив считается перекупленным, ниже 30 — перепроданным.",
       glossTrendTerm:"Тренд (EMA20/EMA50)", glossTrendDef:"Скользящие средние показывают направление рынка: цена выше обеих EMA — тренд бычий, ниже — медвежий.",
       glossFibTerm:"Fibonacci / pivot уровни", glossFibDef:"Ценовые уровни, рядом с которыми движение часто замедляется или разворачивается — используются как ориентиры поддержки и сопротивления.",
-      glossPatternTerm:"Паттерн свечей", glossPatternDef:"Узнаваемая форма одной или нескольких свечей на графике (пробой, поглощение, пин-бар), которая намекает на возможное продолжение или разворот движения."
+      glossPatternTerm:"Паттерн свечей", glossPatternDef:"Узнаваемая форма одной или нескольких свечей на графике (пробой, поглощение, пин-бар), которая намекает на возможное продолжение или разворот движения.",
+      aiCheckLoadingRisk:"Анализирую параметры сделки — обычно несколько секунд…", aiCheckHintMarket:"Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.", refBannerAd:"Реклама", verdictErrorTitle:"Нет данных с Bybit", verdictErrorSub:"Не удалось загрузить рынок — проверь соединение, попробую снова автоматически.", verdictBadSymbolTitle:"Пара {sym} не найдена на Bybit", verdictBadSymbolSub:"Проверь тикер: нужен бессрочный фьючерс USDT, например BTCUSDT, SOLUSDT или 1000PEPEUSDT.",
+      pageTitle:"RiskControl — калькулятор риска и плеча для фьючерсов", phSymbol:"BTC, SOL, PEPE…", phRisk:"например, 10", phStop:"уровень стоп-лосса", phLeverage:"например, 5", phEntry:"цена входа"
     },
     en:{
       sub:"Size your risk before you enter: exact position size, safe leverage, and liquidation price — in seconds, from live Bybit data. Not financial advice — the decision is always yours.",
@@ -679,7 +695,6 @@
       rrLabel:"Desired R:R for take-profit",
       outDistK:"Distance to stop", outSizeK:"Position size", outValueK:"Position value",
       outMarginK:"Required margin", outLiqK:"Estimated liquidation price*", outTPK:"Take-profit",
-      unitsSuffix:"units",
       calcSmall:"*Position size is rounded down to the pair's Bybit lot step and accounts for the entry/exit fee for the order type you picked, so the actual loss at the stop doesn't exceed the risk you set. The liquidation price uses Bybit's real maintenance margin rate for the current position size when it loads (otherwise a ~0.4% approximation); funding is excluded — verify the exact liquidation price on your exchange before entering a real trade.",
       sizeBelowMin:"The calculated size ({size}) is below the exchange's minimum order size for this pair ({min}) — increase the risk per trade or widen the stop, otherwise a trade with this risk can't be opened.",
       bannerStopLong:"Stop must be below the entry price for a long.",
@@ -716,7 +731,7 @@
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
       aiCheckHintRisk:"Fill in risk, entry, stop and leverage to get a liquidation estimate — then this button unlocks.",
-      refBannerText:"Trading on Bybit? Sign up through my link — bonus up to 30 USDC and a fee discount.", refBannerCta:"Go →",
+      refBannerText:"No Bybit account yet? Sign up through my link — it helps support RiskControl.", refBannerCta:"Go →",
       methodH2:"How this is built", methodTag:"methodology",
       methodIntro:"This is the sum of 5 equally weighted technical factors, each from -1 to +1:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
@@ -727,7 +742,7 @@
       methodThreshold:"Sum ≥ +3 or ≤ -3 — the technical backdrop is considered one-sided (bullish/bearish). From -2 to +2 — the picture is mixed, no clear lean.",
       methodSmall:"All factors are computed automatically from Bybit data for the selected coin and timeframe. Important: this is not financial advice or a trade signal — in honest backtesting on historical data (several coins, over 300 days, validated on data the algorithm had not seen before), this factor set did not show a reliable edge over the market after costs. Use it as technical context alongside your own analysis; the decision and the risk are always yours.",
       aboutH2:"About this tool", aboutTag:"independent project",
-      aboutText:"RiskControl is an independent, non-commercial project with no affiliation to any exchange, including Bybit, whose public data it uses for its calculations. The site's job is a single screen for sizing risk and position before a trade, with no sign-up and no personal data collected. It's an evolving side project — as with any tool, double-check the key numbers yourself before a real trade.",
+      aboutText:"RiskControl is an independent, free project with no affiliation to any exchange, including Bybit, whose public data it uses for its calculations. The site's job is a single screen for sizing risk and position before a trade, with no sign-up and no personal data collected. The Bybit banner at the top is a referral link: if you sign up through it, the author may receive a reward from the exchange; this has no effect on the calculations. It's an evolving side project — as with any tool, double-check the key numbers yourself before a real trade.",
       glossaryH2:"Glossary", glossaryTag:"if something's unclear",
       glossLeverageTerm:"Leverage", glossLeverageDef:"A multiplier that scales your position size relative to the margin you put up. 10x leverage means both profit and loss on the trade are multiplied by 10.",
       glossMarginTerm:"Margin", glossMarginDef:"The amount of your own funds the exchange locks up as collateral for a leveraged position.",
@@ -736,7 +751,9 @@
       glossRsiTerm:"RSI (14)", glossRsiDef:"A momentum indicator from 0 to 100. Above 70 is considered overbought, below 30 oversold.",
       glossTrendTerm:"Trend (EMA20/EMA50)", glossTrendDef:"Moving averages that show market direction: price above both EMAs is a bullish trend, below both is bearish.",
       glossFibTerm:"Fibonacci / pivot levels", glossFibDef:"Price levels where movement often slows down or reverses — used as reference points for support and resistance.",
-      glossPatternTerm:"Candlestick pattern", glossPatternDef:"A recognizable shape formed by one or more candles (breakout, engulfing, pin bar) that hints at a possible continuation or reversal."
+      glossPatternTerm:"Candlestick pattern", glossPatternDef:"A recognizable shape formed by one or more candles (breakout, engulfing, pin bar) that hints at a possible continuation or reversal.",
+      aiCheckLoadingRisk:"Analyzing your trade setup — usually a few seconds…", aiCheckHintMarket:"The button unlocks once market data for the selected pair has loaded.", refBannerAd:"Ad", verdictErrorTitle:"No data from Bybit", verdictErrorSub:"Couldn't load market data — check your connection, I'll retry automatically.", verdictBadSymbolTitle:"{sym} not found on Bybit", verdictBadSymbolSub:"Check the ticker: it must be a USDT perpetual, e.g. BTCUSDT, SOLUSDT or 1000PEPEUSDT.",
+      pageTitle:"RiskControl — risk & leverage calculator for crypto futures", phSymbol:"BTC, SOL, PEPE…", phRisk:"e.g. 10", phStop:"your stop-loss level", phLeverage:"e.g. 5", phEntry:"entry price"
     },
     de:{
       sub:"Berechne dein Risiko, bevor du einsteigst: genaue Positionsgröße, sicherer Hebel und Liquidationspreis — in Sekunden, mit Live-Daten von Bybit. Keine Finanzberatung — die Entscheidung triffst immer du.",
@@ -755,7 +772,6 @@
       rrLabel:"Gewünschtes R:R für Take-Profit",
       outDistK:"Abstand zum Stop", outSizeK:"Positionsgröße", outValueK:"Positionswert",
       outMarginK:"Erforderliche Margin", outLiqK:"Geschätzter Liquidationspreis*", outTPK:"Take-Profit",
-      unitsSuffix:"Einheiten",
       calcSmall:"*Die Positionsgröße wird auf den Lot-Schritt des Paares bei Bybit abgerundet und berücksichtigt die Ein-/Ausstiegsgebühr für den gewählten Order-Typ, damit der tatsächliche Verlust am Stop das eingestellte Risiko nicht übersteigt. Der Liquidationspreis nutzt die reale Maintenance-Margin-Rate von Bybit für die aktuelle Positionsgröße, sofern geladen (sonst eine Schätzung von ~0,4 %); Funding bleibt unberücksichtigt — vor einem echten Einstieg den genauen Liquidationspreis auf deiner Börse prüfen.",
       sizeBelowMin:"Die berechnete Größe ({size}) liegt unter der Mindestordergröße der Börse für dieses Paar ({min}) — erhöhe das Risiko pro Trade oder vergrößere den Stop, sonst lässt sich ein Trade mit diesem Risiko nicht eröffnen.",
       bannerStopLong:"Der Stop muss beim Long unter dem Einstiegspreis liegen.",
@@ -792,7 +808,7 @@
       aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
       aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
       aiCheckHintRisk:"Trage Risiko, Einstieg, Stop und Hebel ein, um eine Liquidationsschätzung zu erhalten — dann wird dieser Button aktiv.",
-      refBannerText:"Handelst du auf Bybit? Melde dich über meinen Link an — Bonus bis zu 30 USDC und Gebührenrabatt.", refBannerCta:"Los →",
+      refBannerText:"Noch kein Bybit-Konto? Registriere dich über meinen Link — damit unterstützt du RiskControl.", refBannerCta:"Los →",
       methodH2:"Wie das zustande kommt", methodTag:"Methodik",
       methodIntro:"Das ist die Summe aus 5 gleich gewichteten technischen Faktoren, jeweils von -1 bis +1:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
@@ -803,7 +819,7 @@
       methodThreshold:"Summe ≥ +3 oder ≤ -3 — das technische Bild gilt als eindeutig (bullisch/bärisch). Von -2 bis +2 — das Bild ist gemischt, keine klare Tendenz.",
       methodSmall:"Alle Faktoren werden automatisch aus Bybit-Daten für die gewählte Münze und den Zeitrahmen berechnet. Wichtig: Das ist keine Finanzberatung und kein Handelssignal — in ehrlichen Backtests auf historischen Daten (mehrere Coins, über 300 Tage, geprüft an zuvor ungesehenen Daten) zeigte diese Faktorenkombination nach Kosten keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als technischen Anhaltspunkt neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir.",
       aboutH2:"Über dieses Tool", aboutTag:"unabhängiges Projekt",
-      aboutText:"RiskControl ist ein unabhängiges, nicht-kommerzielles Projekt ohne Verbindung zu irgendeiner Börse, einschließlich Bybit, dessen öffentliche Daten für die Berechnungen genutzt werden. Die Seite bietet einen einzigen Bildschirm zur Risiko- und Positionsgrößenberechnung vor einem Trade — ohne Registrierung und ohne Erhebung persönlicher Daten. Die Seite wird laufend weiterentwickelt; wie bei jedem Tool solltest du die wichtigsten Zahlen vor einem echten Trade selbst gegenprüfen.",
+      aboutText:"RiskControl ist ein unabhängiges, kostenloses Projekt ohne Verbindung zu irgendeiner Börse, einschließlich Bybit, dessen öffentliche Daten für die Berechnungen genutzt werden. Die Seite bietet einen einzigen Bildschirm zur Risiko- und Positionsgrößenberechnung vor einem Trade — ohne Registrierung und ohne Erhebung persönlicher Daten. Das Bybit-Banner oben ist ein Empfehlungslink: Wenn du dich darüber registrierst, kann der Autor eine Prämie von der Börse erhalten; auf die Berechnungen hat das keinen Einfluss. Die Seite wird laufend weiterentwickelt; wie bei jedem Tool solltest du die wichtigsten Zahlen vor einem echten Trade selbst gegenprüfen.",
       glossaryH2:"Glossar", glossaryTag:"falls etwas unklar ist",
       glossLeverageTerm:"Hebel (Leverage)", glossLeverageDef:"Ein Multiplikator, der die Positionsgröße im Verhältnis zur hinterlegten Margin vergrößert. 10x Hebel bedeutet, dass Gewinn und Verlust des Trades mit 10 multipliziert werden.",
       glossMarginTerm:"Margin", glossMarginDef:"Der Betrag der eigenen Mittel, den die Börse als Sicherheit für eine gehebelte Position einbehält.",
@@ -812,7 +828,9 @@
       glossRsiTerm:"RSI (14)", glossRsiDef:"Ein Momentum-Indikator von 0 bis 100. Über 70 gilt als überkauft, unter 30 als überverkauft.",
       glossTrendTerm:"Trend (EMA20/EMA50)", glossTrendDef:"Gleitende Durchschnitte, die die Marktrichtung zeigen: Preis über beiden EMAs ist ein bullischer Trend, unter beiden ein bärischer.",
       glossFibTerm:"Fibonacci-/Pivot-Level", glossFibDef:"Preisniveaus, an denen sich die Bewegung häufig verlangsamt oder umkehrt — genutzt als Orientierung für Unterstützung und Widerstand.",
-      glossPatternTerm:"Kerzenmuster", glossPatternDef:"Eine erkennbare Form aus einer oder mehreren Kerzen (Ausbruch, Engulfing, Pin Bar), die auf eine mögliche Fortsetzung oder Umkehr hindeutet."
+      glossPatternTerm:"Kerzenmuster", glossPatternDef:"Eine erkennbare Form aus einer oder mehreren Kerzen (Ausbruch, Engulfing, Pin Bar), die auf eine mögliche Fortsetzung oder Umkehr hindeutet.",
+      aiCheckLoadingRisk:"Analysiere dein Trade-Setup — meist ein paar Sekunden…", aiCheckHintMarket:"Der Button wird aktiv, sobald die Marktdaten für das gewählte Paar geladen sind.", refBannerAd:"Anzeige", verdictErrorTitle:"Keine Daten von Bybit", verdictErrorSub:"Marktdaten konnten nicht geladen werden — prüfe die Verbindung, ich versuche es automatisch erneut.", verdictBadSymbolTitle:"{sym} auf Bybit nicht gefunden", verdictBadSymbolSub:"Prüfe den Ticker: Es muss ein USDT-Perpetual sein, z. B. BTCUSDT, SOLUSDT oder 1000PEPEUSDT.",
+      pageTitle:"RiskControl — Risiko- und Hebelrechner für Krypto-Futures", phSymbol:"BTC, SOL, PEPE…", phRisk:"z. B. 10", phStop:"dein Stop-Loss-Kurs", phLeverage:"z. B. 5", phEntry:"Einstiegskurs"
     },
     uk:{
       sub:"Порахуй ризик до входу в угоду: точний обсяг позиції, безпечне плече і ціна ліквідації — за секунди, за живими даними Bybit. Не фінансова порада — рішення завжди за тобою.",
@@ -831,7 +849,6 @@
       rrLabel:"Бажаний R:R для тейк-профіту",
       outDistK:"Відстань до стопу", outSizeK:"Обсяг для входу", outValueK:"Вартість позиції",
       outMarginK:"Необхідна маржа", outLiqK:"Оцінка ціни ліквідації*", outTPK:"Тейк-профіт",
-      unitsSuffix:"од.",
       calcSmall:"*Обсяг округлюється вниз до кроку лота обраної пари на Bybit і враховує комісію за вхід і вихід за обраним типом ордера, щоб фактичний збиток на стопі не перевищував заданий ризик. Ціна ліквідації використовує реальну ставку maintenance margin з Bybit для поточного розміру позиції, якщо вона завантажилась (інакше — наближення ~0,4%); funding не враховується — перед реальним входом звіряй точну ціну ліквідації на своїй біржі.",
       sizeBelowMin:"Розрахований обсяг ({size}) менший за мінімальний лот біржі для цієї пари ({min}) — збільш ризик на угоду або розшир стоп, інакше угоду з таким ризиком відкрити не вийде.",
       bannerStopLong:"Стоп має бути нижче ціни входу для лонгу.",
@@ -868,7 +885,7 @@
       aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
       aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
       aiCheckHintRisk:"Заповни ризик, вхід, стоп і плече, щоб отримати оцінку ліквідації — тоді кнопка стане активною.",
-      refBannerText:"Торгуєш на Bybit? Заходь за моїм посиланням — бонус до 30 USDC і знижка на комісії.", refBannerCta:"Перейти →",
+      refBannerText:"Ще немає акаунта на Bybit? Зареєструйся за моїм посиланням — так ти підтримаєш розвиток RiskControl.", refBannerCta:"Перейти →",
       methodH2:"Як це влаштовано", methodTag:"методологія",
       methodIntro:"Це сума 5 рівнозначних технічних факторів, кожен від -1 до +1:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
@@ -879,7 +896,7 @@
       methodThreshold:"Сума ≥ +3 або ≤ -3 — технічний фон вважається однозначним (бичачим/ведмежим). Від -2 до +2 — картина змішана, явного перевесу немає.",
       methodSmall:"Усі фактори рахуються автоматично за даними Bybit для обраної монети й таймфрейму. Важливо: це не фінансова порада і не сигнал до угоди — у чесному тестуванні на історичних даних (кілька монет, понад 300 днів, з перевіркою на даних, які алгоритм раніше не бачив) цей набір факторів не показав надійної переваги над ринком після врахування комісій. Використовуй це як технічний орієнтир поряд зі своїм аналізом — рішення і ризик завжди твої.",
       aboutH2:"Про проект", aboutTag:"незалежний інструмент",
-      aboutText:"RiskControl — незалежний некомерційний проєкт, не пов'язаний з жодною біржею, включно з Bybit, чиї публічні дані він використовує для розрахунків. Завдання сайту — один екран для розрахунку ризику й обсягу позиції перед угодою, без реєстрації та без збору особистих даних. Сайт поступово допрацьовується; як і з будь-яким інструментом — перед реальною угодою перевіряй ключові цифри самостійно.",
+      aboutText:"RiskControl — незалежний безкоштовний проєкт, не пов'язаний з жодною біржею, включно з Bybit, чиї публічні дані він використовує для розрахунків. Завдання сайту — один екран для розрахунку ризику й обсягу позиції перед угодою, без реєстрації та без збору особистих даних. Банер Bybit угорі — реферальне посилання: якщо зареєструєшся за ним, автор може отримати винагороду від біржі; на розрахунки це ніяк не впливає. Сайт поступово допрацьовується; як і з будь-яким інструментом — перед реальною угодою перевіряй ключові цифри самостійно.",
       glossaryH2:"Глосарій термінів", glossaryTag:"якщо щось незрозуміло",
       glossLeverageTerm:"Плече (leverage)", glossLeverageDef:"Множник, що збільшує розмір позиції відносно внесеної маржі. Плече 10x означає, що і прибуток, і збиток за угодою множаться на 10.",
       glossMarginTerm:"Маржа", glossMarginDef:"Сума власних коштів, яку біржа заморожує як заставу під відкриту позицію з плечем.",
@@ -888,7 +905,9 @@
       glossRsiTerm:"RSI (14)", glossRsiDef:"Індикатор імпульсу від 0 до 100. Вище 70 — актив вважається перекупленим, нижче 30 — перепроданим.",
       glossTrendTerm:"Тренд (EMA20/EMA50)", glossTrendDef:"Ковзні середні показують напрямок ринку: ціна вища за обидві EMA — тренд бичачий, нижча — ведмежий.",
       glossFibTerm:"Fibonacci / pivot рівні", glossFibDef:"Цінові рівні, поряд з якими рух часто сповільнюється або розвертається — використовуються як орієнтири підтримки й опору.",
-      glossPatternTerm:"Патерн свічок", glossPatternDef:"Впізнавана форма однієї або кількох свічок (пробій, поглинання, пін-бар), яка натякає на можливе продовження або розворот руху."
+      glossPatternTerm:"Патерн свічок", glossPatternDef:"Впізнавана форма однієї або кількох свічок (пробій, поглинання, пін-бар), яка натякає на можливе продовження або розворот руху.",
+      aiCheckLoadingRisk:"Аналізую параметри угоди — зазвичай кілька секунд…", aiCheckHintMarket:"Кнопка стане активною, коли завантажаться ринкові дані для обраної пари.", refBannerAd:"Реклама", verdictErrorTitle:"Немає даних з Bybit", verdictErrorSub:"Не вдалося завантажити ринок — перевір з'єднання, спробую знову автоматично.", verdictBadSymbolTitle:"Пару {sym} не знайдено на Bybit", verdictBadSymbolSub:"Перевір тікер: потрібен безстроковий ф'ючерс USDT, наприклад BTCUSDT, SOLUSDT або 1000PEPEUSDT.",
+      pageTitle:"RiskControl — калькулятор ризику та плеча для ф'ючерсів", phSymbol:"BTC, SOL, PEPE…", phRisk:"наприклад, 10", phStop:"рівень стоп-лосу", phLeverage:"наприклад, 5", phEntry:"ціна входу"
     },
     he:{
       sub:"חשב את הסיכון לפני הכניסה לעסקה: גודל פוזיציה מדויק, מינוף בטוח ומחיר חיסול — תוך שניות, לפי נתונים חיים מבייביט. אין בכך ייעוץ פיננסי — ההחלטה תמיד שלך.",
@@ -907,7 +926,6 @@
       rrLabel:"יחס R:R רצוי ל-Take Profit",
       outDistK:"מרחק לסטופ", outSizeK:"גודל הפוזיציה", outValueK:"שווי הפוזיציה",
       outMarginK:"מרג׳ין נדרש", outLiqK:"מחיר חיסול משוער*", outTPK:"Take Profit",
-      unitsSuffix:"יחידות",
       calcSmall:"*גודל הפוזיציה מעוגל כלפי מטה לצעד הלוט של הזוג ב-Bybit ומביא בחשבון את עמלת הכניסה/יציאה לפי סוג ההוראה שנבחר, כך שההפסד בפועל בסטופ לא יעלה על הסיכון שהגדרת. מחיר החיסול משתמש בשיעור ה-maintenance margin האמיתי מ-Bybit עבור גודל הפוזיציה הנוכחי כשהוא נטען (אחרת הערכה של כ-0.4%); מימון אינו נכלל — לפני כניסה אמיתית ודא/י את מחיר החיסול המדויק בבורסה שלך.",
       sizeBelowMin:"הגודל המחושב ({size}) קטן מגודל ההזמנה המינימלי של הבורסה לזוג הזה ({min}) — הגדל/י את הסיכון לעסקה או הרחב/י את הסטופ, אחרת לא ניתן יהיה לפתוח עסקה בסיכון הזה.",
       bannerStopLong:"הסטופ חייב להיות מתחת למחיר הכניסה בפוזיציית לונג.",
@@ -944,7 +962,7 @@
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
       aiCheckHintRisk:"מלא סיכון, כניסה, סטופ ומינוף כדי לקבל הערכת סילוק — אז הכפתור הזה יופעל.",
-      refBannerText:"סוחר בביביט? הירשם דרך הקישור שלי — בונוס עד 30 USDC והנחה על עמלות.", refBannerCta:"מעבר ←",
+      refBannerText:"אין לך עדיין חשבון ב-Bybit? הירשם דרך הקישור שלי — כך תתמוך ב-RiskControl.", refBannerCta:"מעבר ←",
       methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
       methodIntro:"זה סכום של 5 גורמים טכניים שווי-משקל, כל אחד בין -1 ל-+1:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
@@ -955,7 +973,7 @@
       methodThreshold:"סכום ≥ +3 או ≤ -3 — הרקע הטכני נחשב חד-משמעי (עולה/יורד). בין -2 ל-+2 — התמונה מעורבת, אין נטייה ברורה.",
       methodSmall:"כל הגורמים מחושבים אוטומטית לפי נתוני Bybit עבור המטבע ומסגרת הזמן שנבחרו. חשוב: אין בכך ייעוץ פיננסי ולא איתות למסחר — בבדיקה הוגנת על נתונים היסטוריים (כמה מטבעות, יותר מ-300 יום, נבדק על נתונים שלא נראו קודם), שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק אחרי עמלות. השתמש בזה כרקע טכני לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך.",
       aboutH2:"אודות הכלי", aboutTag:"פרויקט עצמאי",
-      aboutText:"RiskControl הוא פרויקט עצמאי ולא מסחרי, ללא קשר לאף בורסה, כולל Bybit שאת הנתונים הציבוריים שלה הוא משתמש בהם לחישובים. תפקיד האתר הוא מסך אחד לחישוב סיכון וגודל פוזיציה לפני עסקה, ללא הרשמה וללא איסוף נתונים אישיים. האתר משתפר בהדרגה; כמו בכל כלי — בדוק בעצמך את המספרים המרכזיים לפני עסקה אמיתית.",
+      aboutText:"RiskControl הוא פרויקט עצמאי וחינמי, ללא קשר לאף בורסה, כולל Bybit שאת הנתונים הציבוריים שלה הוא משתמש בהם לחישובים. תפקיד האתר הוא מסך אחד לחישוב סיכון וגודל פוזיציה לפני עסקה, ללא הרשמה וללא איסוף נתונים אישיים. הבאנר של Bybit למעלה הוא קישור הפניה: אם תירשם דרכו, היוצר עשוי לקבל תגמול מהבורסה; זה לא משפיע על החישובים. האתר משתפר בהדרגה; כמו בכל כלי — בדוק בעצמך את המספרים המרכזיים לפני עסקה אמיתית.",
       glossaryH2:"מילון מונחים", glossaryTag:"אם משהו לא ברור",
       glossLeverageTerm:"מינוף (leverage)", glossLeverageDef:"מכפיל שמגדיל את גודל הפוזיציה ביחס למרג'ין שהופקד. מינוף פי 10 אומר שגם הרווח וגם ההפסד בעסקה מוכפלים פי 10.",
       glossMarginTerm:"מרג'ין", glossMarginDef:"סכום הכסף העצמי שהבורסה מקפיאה כבטוחה עבור פוזיציה עם מינוף.",
@@ -964,10 +982,12 @@
       glossRsiTerm:"RSI (14)", glossRsiDef:"אינדיקטור מומנטום בין 0 ל-100. מעל 70 נחשב לקניית יתר, מתחת ל-30 למכירת יתר.",
       glossTrendTerm:"מגמה (EMA20/EMA50)", glossTrendDef:"ממוצעים נעים שמראים את כיוון השוק: מחיר מעל שני ה-EMA הוא מגמה עולה, מתחת לשניהם — יורדת.",
       glossFibTerm:"רמות Fibonacci / פיבוט", glossFibDef:"רמות מחיר שלידן התנועה לרוב מאטה או מתהפכת — משמשות כנקודות ייחוס לתמיכה והתנגדות.",
-      glossPatternTerm:"תבנית נרות", glossPatternDef:"צורה מזוהה של נר אחד או יותר (פריצה, בליעה, פין-בר) שמרמזת על המשך אפשרי או היפוך של התנועה."
+      glossPatternTerm:"תבנית נרות", glossPatternDef:"צורה מזוהה של נר אחד או יותר (פריצה, בליעה, פין-בר) שמרמזת על המשך אפשרי או היפוך של התנועה.",
+      aiCheckLoadingRisk:"מנתח את פרמטרי העסקה — בדרך כלל כמה שניות…", aiCheckHintMarket:"הכפתור יופעל לאחר שנתוני השוק של הזוג שנבחר ייטענו.", refBannerAd:"פרסומת", verdictErrorTitle:"אין נתונים מ-Bybit", verdictErrorSub:"לא ניתן לטעון נתוני שוק — בדוק את החיבור, אנסה שוב אוטומטית.", verdictBadSymbolTitle:"{sym} לא נמצא ב-Bybit", verdictBadSymbolSub:"בדוק את הסימול: נדרש חוזה פרפטואלי ב-USDT, לדוגמה BTCUSDT, SOLUSDT או 1000PEPEUSDT.",
+      pageTitle:"RiskControl — מחשבון סיכון ומינוף לחוזים עתידיים", phSymbol:"BTC, SOL, PEPE…", phRisk:"לדוגמה, 10", phStop:"רמת הסטופ-לוס", phLeverage:"לדוגמה, 5", phEntry:"מחיר כניסה"
     }
   };
-  const TV_LOCALE = {ru:'ru', en:'en', de:'de', uk:'en', he:'en'};
+  const TV_LOCALE = {ru:'ru', en:'en', de:'de_DE', uk:'uk', he:'he_IL'};
   let lang = 'ru';
   try{
     const saved = localStorage.getItem('tdLang');
@@ -979,7 +999,9 @@
   function applyI18n(){
     document.documentElement.lang = lang;
     document.documentElement.dir = lang==='he' ? 'rtl' : 'ltr';
-    document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n).replace('{sym}', currentSymbol||''); });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPlaceholder); });
+    document.title = t('pageTitle');
     document.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.title = t(el.dataset.i18nTitle); });
     document.querySelectorAll('[data-i18n-aria]').forEach(el=>{ el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
     $('langSelect').value = lang;
@@ -1006,10 +1028,16 @@
       try{
         const res = await fetch(url);
         const json = await res.json();
-        if(json.retCode!==0) throw new Error('bad retCode: '+json.retCode);
+        if(json.retCode!==0){
+          const err = new Error('bad retCode: '+json.retCode+' '+(json.retMsg||''));
+          err.retCode = json.retCode;
+          throw err;
+        }
         return json;
       }catch(e){
         lastErr = e;
+        // 10001 = неверные параметры (чаще всего несуществующая пара) — повтор не поможет
+        if(e && e.retCode===10001) break;
         if(attempt<retries){ await new Promise(r=>setTimeout(r, baseDelay*Math.pow(2,attempt))); }
       }
     }
@@ -1070,6 +1098,27 @@
   const $ = id => document.getElementById(id);
   const fmt = (n, d=2) => (n===null||n===undefined||isNaN(n)) ? '—' : Number(n).toLocaleString('en-US',{maximumFractionDigits:d, minimumFractionDigits:0});
   const fmtUsd = (n,d=2) => (n===null||n===undefined||isNaN(n)) ? '—' : '$'+fmt(n,d);
+  // Цены показываем с точностью шага цены (tickSize) выбранной пары: у BTC это 0.1,
+  // а у дешёвых монет вроде 1000PEPE — 0.0000001. Иначе при 2 знаках всё
+  // превращалось в "$0.01" и расчёт для таких монет был бесполезен.
+  let priceDp = null;
+  function dpFromTick(tick){
+    const s = String(tick||'');
+    if(!s || isNaN(+s) || +s<=0) return null;
+    if(s.includes('e-')) return parseInt(s.split('e-')[1],10);
+    const i = s.indexOf('.');
+    if(i<0) return 0;
+    return s.replace(/0+$/,'').length - i - 1;
+  }
+  function autoDp(p){
+    const a = Math.abs(p);
+    if(!a || !isFinite(a)) return 2;
+    if(a>=1000) return 2;
+    if(a>=1) return 4;
+    return Math.min(10, Math.ceil(-Math.log10(a))+3);
+  }
+  const fmtPrice = n => (n===null||n===undefined||isNaN(n)) ? '—' : fmt(n, priceDp!=null ? priceDp : autoDp(n));
+  const fmtUsdPrice = n => (n===null||n===undefined||isNaN(n)) ? '—' : '$'+fmtPrice(n);
   // короткая цветная вспышка на элементе при обновлении значения ("живой" тикер)
   function flashEl(el, dir){
     if(!el) return;
@@ -1201,9 +1250,11 @@
   async function fetchRiskLimit(symbol){
     try{
       const json = await fetchJsonWithRetry(`https://api.bybit.com/v5/market/risk-limit?category=linear&symbol=${symbol}`, {retries:2, baseDelay:500});
+      if(symbol!==currentSymbol) return;
       const list = json.result.list || [];
       riskLimitTiers = list.map(x=>({limit:parseFloat(x.riskLimitValue), mmr:parseFloat(x.maintainMargin)})).sort((a,b)=>a.limit-b.limit);
     }catch(e){
+      if(symbol!==currentSymbol) return;
       riskLimitTiers = null; // используем MMR_DEFAULT как запасной вариант
       console.error(e);
     }
@@ -1213,10 +1264,13 @@
   async function fetchInstrumentInfo(symbol){
     try{
       const json = await fetchJsonWithRetry(`https://api.bybit.com/v5/market/instruments-info?category=linear&symbol=${symbol}`, {retries:2, baseDelay:500});
+      if(symbol!==currentSymbol) return;
       const info = json.result.list && json.result.list[0];
       qtyStep = info ? parseFloat(info.lotSizeFilter.qtyStep) : null;
       minOrderQty = info ? parseFloat(info.lotSizeFilter.minOrderQty) : null;
+      if(info && info.priceFilter){ const dp = dpFromTick(info.priceFilter.tickSize); if(dp!=null) priceDp = dp; }
     }catch(e){
+      if(symbol!==currentSymbol) return;
       // после повторных попыток честно сбрасываем — округление по чужому лот-шагу от предыдущей
       // монеты хуже, чем его отсутствие
       qtyStep = null; minOrderQty = null;
@@ -1255,13 +1309,14 @@
     const effectiveDist = dist + entry*feeRate*2;
     let positionUnits = riskAmount/effectiveDist;
     if(qtyStep && qtyStep>0){
-      positionUnits = Math.floor(positionUnits/qtyStep)*qtyStep;
+      const stepDp = Math.max(0, dpFromTick(qtyStep) || 0);
+      positionUnits = +(Math.floor(positionUnits/qtyStep + 1e-9)*qtyStep).toFixed(stepDp);
     }
     const positionValue = positionUnits*entry;
     const belowMin = minOrderQty!=null && positionUnits < minOrderQty;
 
-    $('oDist').textContent = fmtUsd(dist)+' ('+fmt(distPct,2)+'%)';
-    $('oSize').textContent = fmt(positionUnits,6)+' '+t('unitsSuffix');
+    $('oDist').textContent = fmtUsdPrice(dist)+' ('+fmt(distPct,2)+'%)';
+    $('oSize').textContent = fmt(positionUnits,6)+' '+baseOf(currentSymbol);
     $('oValue').textContent = fmtUsd(positionValue);
 
     if(!isNaN(leverageIn) && leverageIn>0){
@@ -1277,7 +1332,7 @@
       } else {
         liqPrice = entry*(1 + 1/leverage - mmr);
       }
-      $('oLiq').textContent = fmtUsd(liqPrice,2);
+      $('oLiq').textContent = fmtUsdPrice(liqPrice);
 
       const unsafe = (direction==='long' && liqPrice >= stop) || (direction==='short' && liqPrice <= stop);
       if(unsafe){
@@ -1296,7 +1351,7 @@
     }
 
     const tp = direction==='long' ? entry + dist*rr : entry - dist*rr;
-    $('oTP').textContent = fmtUsd(tp,2)+' (R:R '+fmt(rr,1)+')';
+    $('oTP').textContent = fmtUsdPrice(tp)+' (R:R '+fmt(rr,1)+')';
     updateAiRiskGate();
   }
 
@@ -1392,10 +1447,30 @@
     subEl.dataset.i18n = subKey;
     subEl.textContent = t(subKey);
   }
+  // Состояние карточки вердикта, пока настоящего вердикта нет: ждём данные / Bybit
+  // недоступен / пара не найдена. Раньше при ошибке там навсегда висело "Собираю данные…".
+  function setVerdictPlaceholder(kind){
+    const keys = { waiting:['verdictWaitingTitle','verdictWaitingSub'], error:['verdictErrorTitle','verdictErrorSub'], badsymbol:['verdictBadSymbolTitle','verdictBadSymbolSub'] }[kind];
+    $('verdictCard').classList.remove('state-long','state-short','state-none');
+    const titleEl = $('verdictTitle'), subEl = $('verdictSub');
+    titleEl.className = 'verdict-title';
+    titleEl.dataset.i18n = keys[0];
+    subEl.dataset.i18n = keys[1];
+    titleEl.textContent = t(keys[0]).replace('{sym}', currentSymbol||'');
+    subEl.textContent = t(keys[1]);
+  }
+  // Кнопки "ИИ" в вердикте и на экране "Рынок" отправляют рыночные данные — без них
+  // запрос платный, но бесполезный, поэтому до загрузки данных кнопки неактивны.
+  function updateAiMarketGate(){
+    const failed = !hasMarketData && fetchState && (fetchState.type==='error' || fetchState.type==='badsymbol');
+    ['aiCheckBtn','aiCheckBtnChecklist'].forEach(id=>{ const b=$(id); if(b && !b.dataset.aiBusy) b.disabled = !hasMarketData; });
+    ['aiCheckHintTrade','aiCheckHintChecklist'].forEach(id=>{ const h=$(id); if(h) h.hidden = !failed; });
+  }
   function renderFetchStatus(){
     if(!fetchState) return;
     const el = $('fetchStatus');
     if(fetchState.type==='loading'){ el.textContent = t('statusLoading'); el.className = 'status'; }
+    else if(fetchState.type==='badsymbol'){ el.textContent = t('verdictBadSymbolTitle').replace('{sym}', currentSymbol||''); el.className = 'status err'; }
     else if(fetchState.type==='updated'){ el.textContent = t('statusUpdatedPrefix')+fetchState.time.toLocaleTimeString(); el.className = 'status live'; }
     else if(fetchState.type==='stale'){ el.textContent = t('statusStalePrefix')+fetchState.time.toLocaleTimeString(); el.className = 'status err'; }
     else { el.textContent = t('statusError'); el.className = 'status err'; }
@@ -1403,20 +1478,22 @@
 
   // ---------- market data (Bybit public API) ----------
   async function fetchMarket(){
-    const symbol = $('symbol').value.trim().toUpperCase();
+    const symbol = currentSymbol || 'BTCUSDT';
     const interval = $('interval').value;
-    fetchState = {type:'loading'};
-    renderFetchStatus();
+    if(!hasMarketData){ fetchState = {type:'loading'}; renderFetchStatus(); }
     try{
       const [tickerJson, klineJson] = await Promise.all([
         fetchJsonWithRetry(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${symbol}`),
         fetchJsonWithRetry(`https://api.bybit.com/v5/market/kline?category=linear&symbol=${symbol}&interval=${interval}&limit=150`)
       ]);
 
-      const t2 = tickerJson.result.list[0];
+      // пока ждали ответ, пользователь мог переключить пару — старый ответ выбрасываем
+      if(symbol!==currentSymbol) return;
+      const t2 = tickerJson.result.list && tickerJson.result.list[0];
+      if(!t2 || !(klineJson.result.list||[]).length){ const err = new Error('empty data for '+symbol); err.retCode = 10001; throw err; }
       const prevTickerPrice = lastTickerPrice;
       lastTickerPrice = parseFloat(t2.lastPrice);
-      $('mPrice').textContent = fmtUsd(lastTickerPrice);
+      $('mPrice').textContent = fmtUsdPrice(lastTickerPrice);
       // лёгкая вспышка цвета при изменении цены — "живой" тикер, а не застывшее число
       if(prevTickerPrice!==null && lastTickerPrice!==prevTickerPrice){
         flashEl($('mPrice'), lastTickerPrice>prevTickerPrice ? 'up' : 'down');
@@ -1455,10 +1532,10 @@
       const pivots = classicPivot(sw.high, sw.low, lastPrice);
 
       let html = '';
-      fibs.forEach(f=>{ html += `<tr><td>Fib ${f.r}</td><td>${fmt(f.price,2)}</td></tr>`; });
-      html += `<tr><td>Pivot PP</td><td>${fmt(pivots.pp,2)}</td></tr>`;
-      html += `<tr><td>R1 / S1</td><td>${fmt(pivots.r1,2)} / ${fmt(pivots.s1,2)}</td></tr>`;
-      html += `<tr><td>R2 / S2</td><td>${fmt(pivots.r2,2)} / ${fmt(pivots.s2,2)}</td></tr>`;
+      fibs.forEach(f=>{ html += `<tr><td>Fib ${f.r}</td><td>${fmtPrice(f.price)}</td></tr>`; });
+      html += `<tr><td>Pivot PP</td><td>${fmtPrice(pivots.pp)}</td></tr>`;
+      html += `<tr><td>R1 / S1</td><td>${fmtPrice(pivots.r1)} / ${fmtPrice(pivots.s1)}</td></tr>`;
+      html += `<tr><td>R2 / S2</td><td>${fmtPrice(pivots.r2)} / ${fmtPrice(pivots.s2)}</td></tr>`;
       $('levelsTable').innerHTML = html;
 
       // остальные 3 автоматических фактора вердикта
@@ -1476,11 +1553,16 @@
       renderFetchStatus();
       computeVerdict();
       calc();
+      updateAiMarketGate();
     }catch(e){
+      if(symbol!==currentSymbol) return;
       // после retry-попыток всё ещё не смогли обновиться — если раньше уже был успешный фетч,
       // не стираем дисплей: показываем время последних валидных данных вместо пустоты
-      fetchState = lastGoodFetchTime ? {type:'stale', time:lastGoodFetchTime} : {type:'error'};
+      if(e && e.retCode===10001 && !hasMarketData) fetchState = {type:'badsymbol'};
+      else fetchState = lastGoodFetchTime ? {type:'stale', time:lastGoodFetchTime} : {type:'error'};
       renderFetchStatus();
+      if(!hasMarketData) setVerdictPlaceholder(fetchState.type==='badsymbol' ? 'badsymbol' : 'error');
+      updateAiMarketGate();
       console.error(e);
     }
   }
@@ -1491,17 +1573,80 @@
       btn.classList.toggle('active', btn.dataset.coin === cur);
     });
   }
+  // ---------- пары Bybit: список, нормализация ввода ----------
+  // Полный список бессрочных USDT-фьючерсов с Bybit (грузится один раз). Нужен, чтобы
+  // "sol" превращался в SOLUSDT, "pepe" — в 1000PEPEUSDT (так он называется на Bybit),
+  // а в подсказках не было пар, которых на бирже нет.
+  let instruments = null; // Map symbol -> {tick, step, min}
+  const SYMBOL_ALIASES = {PEPEUSDT:'1000PEPEUSDT', BONKUSDT:'1000BONKUSDT', FLOKIUSDT:'1000FLOKIUSDT', SHIBUSDT:'SHIB1000USDT'};
+  async function loadInstruments(){
+    try{
+      const map = new Map();
+      let cursor = '';
+      for(let page=0; page<5; page++){
+        const json = await fetchJsonWithRetry('https://api.bybit.com/v5/market/instruments-info?category=linear&limit=1000'+(cursor ? '&cursor='+encodeURIComponent(cursor) : ''), {retries:2, baseDelay:600});
+        (json.result.list||[]).forEach(x=>{
+          if(x.status==='Trading' && x.quoteCoin==='USDT' && (!x.contractType || x.contractType==='LinearPerpetual')){
+            map.set(x.symbol, {tick: x.priceFilter && x.priceFilter.tickSize, step: x.lotSizeFilter && x.lotSizeFilter.qtyStep, min: x.lotSizeFilter && x.lotSizeFilter.minOrderQty});
+          }
+        });
+        cursor = json.result.nextPageCursor;
+        if(!cursor) break;
+      }
+      if(map.size) instruments = map;
+    }catch(e){ console.error(e); }
+  }
+  function resolveSymbol(raw){
+    let s = String(raw||'').toUpperCase().replace(/\s+/g,'').replace(/\.P$/,'').replace(/[\/\-_:]/g,'');
+    if(s.startsWith('BYBIT')) s = s.slice(5);
+    if(!s) return 'BTCUSDT';
+    if(!/USDT$/.test(s)) s += 'USDT';
+    if(instruments){
+      if(instruments.has(s)) return s;
+      const base = s.slice(0,-4);
+      for(const c of ['1000'+base+'USDT', base+'1000USDT', '10000'+base+'USDT', '1000000'+base+'USDT']){ if(instruments.has(c)) return c; }
+      return s;
+    }
+    return SYMBOL_ALIASES[s] || s;
+  }
+  function baseOf(sym){ return String(sym||'').replace(/USDT$/,''); }
+
+  let currentSymbol = null;
+  // При смене пары старые цифры другой монеты не должны оставаться на экране —
+  // иначе можно посчитать сделку по SOL с ценой входа от BTC.
+  function resetMarketView(){
+    hasMarketData = false; lastTickerPrice = null; lastCandles = null; lastGoodFetchTime = null;
+    autoTrend = autoFunding = autoRsi = autoFib = autoPattern = 0;
+    ['mPrice','mChange','mFunding','mOI','mTrend','cTrendVal','cFundingVal','cRsiVal','cFibVal','cPatternVal'].forEach(id=>{ $(id).textContent = '—'; });
+    $('levelsTable').innerHTML = '';
+    if(entryMode==='live') $('entry').value = '';
+    $('stop').value = '';
+    ['aiResult','aiResultChecklist','aiResultRisk'].forEach(id=>{ $(id).hidden = true; });
+    setVerdictPlaceholder('waiting');
+  }
   function applySymbol(){
-    $('symbol').value = $('symbol').value.trim().toUpperCase();
-    initChart();
+    const sym = resolveSymbol($('symbol').value);
+    $('symbol').value = sym;
+    if(sym !== currentSymbol){
+      const first = currentSymbol===null;
+      currentSymbol = sym;
+      if(!first) resetMarketView();
+      qtyStep = null; minOrderQty = null; riskLimitTiers = null; priceDp = null;
+      const inst = instruments && instruments.get(sym);
+      if(inst){ qtyStep = parseFloat(inst.step)||null; minOrderQty = parseFloat(inst.min)||null; priceDp = dpFromTick(inst.tick); }
+      initChart();
+      fetchInstrumentInfo(sym);
+      fetchRiskLimit(sym);
+      updateAiMarketGate();
+    }
     fetchMarket();
-    fetchInstrumentInfo($('symbol').value);
-    fetchRiskLimit($('symbol').value);
     updateQuickCoinsActive();
+    calc();
     saveState();
   }
   $('btnApplySymbol').addEventListener('click', ()=>{ hideSuggest(); applySymbol(); });
-  $('symbol').addEventListener('change', applySymbol);
+  // change срабатывает и при уходе фокуса — не перезапускаем всё, если пара та же
+  $('symbol').addEventListener('change', ()=>{ if(resolveSymbol($('symbol').value)!==currentSymbol) applySymbol(); });
   $('interval').addEventListener('change', fetchMarket);
   document.querySelectorAll('#quickCoins button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -1545,8 +1690,8 @@
     suggestIndex = -1;
     if(!matches.length){ hideSuggest(); return; }
     suggestBox.innerHTML = matches.map((m,i)=>(
-      '<div class="sug-item" role="option" data-idx="'+i+'" data-symbol="'+m.t+'USDT">'+
-        '<span class="sug-name">'+m.n+'</span><span class="sug-ticker">'+m.t+'USDT</span>'+
+      '<div class="sug-item" role="option" data-idx="'+i+'" data-symbol="'+m.sym+'">'+
+        '<span class="sug-name">'+m.n+'</span><span class="sug-ticker">'+m.sym+'</span>'+
       '</div>'
     )).join('');
     suggestBox.classList.add('open');
@@ -1569,8 +1714,16 @@
   $('symbol').addEventListener('input', ()=>{
     const q = $('symbol').value.trim().toUpperCase();
     if(!q){ hideSuggest(); return; }
-    const matches = COIN_LIST.filter(c => c.t.startsWith(q) || c.n.toUpperCase().startsWith(q) || c.n.toUpperCase().includes(q)).slice(0,8);
-    renderSuggest(matches);
+    let matches = COIN_LIST.filter(c => c.t.startsWith(q) || c.n.toUpperCase().includes(q)).map(c=>({n:c.n, sym:resolveSymbol(c.t)}));
+    if(instruments){
+      // только пары, которые реально торгуются на Bybit, + любые другие тикеры из списка биржи
+      matches = matches.filter(m=>instruments.has(m.sym));
+      for(const s of instruments.keys()){
+        if(matches.length>=8) break;
+        if(s.startsWith(q) && !matches.some(m=>m.sym===s)) matches.push({n:baseOf(s), sym:s});
+      }
+    }
+    renderSuggest(matches.slice(0,8));
   });
   $('symbol').addEventListener('keydown', (e)=>{
     const open = suggestBox.classList.contains('open');
@@ -1578,7 +1731,13 @@
     if(open && e.key==='ArrowUp'){ e.preventDefault(); highlightSuggest(Math.max(suggestIndex-1, 0)); return; }
     if(e.key==='Enter'){
       e.preventDefault();
-      if(open && suggestIndex>=0){ $('symbol').value = suggestItems[suggestIndex].t+'USDT'; }
+      if(open && suggestIndex>=0){ $('symbol').value = suggestItems[suggestIndex].sym; }
+      else if(open && suggestItems.length){
+        // Enter без выбора: если введённое не является реальной парой — берём первую подсказку
+        const typed = resolveSymbol($('symbol').value);
+        const known = instruments ? instruments.has(typed) : suggestItems.some(m=>m.sym===typed);
+        if(!known) $('symbol').value = suggestItems[0].sym;
+      }
       hideSuggest();
       applySymbol();
       return;
@@ -1605,7 +1764,7 @@
   //  'risk'      — карточка калькулятора: сама сделка (вход/стоп/плечо/ликвидация)
   //  'checklist' — карточка рынка: подробный разбор 5 факторов чек-листа
   function buildAiPayload(focus){
-    const base = { focus, symbol: $('symbol').value || 'BTCUSDT', lang: lang };
+    const base = { focus, symbol: currentSymbol || 'BTCUSDT', lang: lang };
     if(focus==='risk'){
       return Object.assign(base, {
         direction: direction==='short' ? 'шорт' : 'лонг',
@@ -1665,7 +1824,7 @@
       } finally {
         delete btn.dataset.aiBusy;
         btn.disabled = false;
-        if(focus === 'risk') updateAiRiskGate();
+        if(focus === 'risk') updateAiRiskGate(); else updateAiMarketGate();
         labelEl.textContent = originalLabel;
       }
     });
@@ -1683,7 +1842,8 @@
     }
     new TradingView.widget({
       autosize: true,
-      symbol: 'BYBIT:'+($('symbol').value.trim().toUpperCase()||'BTCUSDT'),
+      // .P = бессрочный фьючерс (тот же рынок, что в калькуляторе); без .P TradingView показывает спот
+      symbol: 'BYBIT:'+(currentSymbol||'BTCUSDT')+'.P',
       interval: '60',
       timezone: 'Europe/Berlin',
       theme: theme==='dark' ? 'dark' : 'light',
@@ -1712,6 +1872,7 @@
     updateVerdictTf();
     computeVerdict();
     renderFetchStatus();
+    updateAiMarketGate();
     calc();
     initChart();
   }
@@ -1722,7 +1883,7 @@
     try{
       localStorage.setItem('tdState', JSON.stringify({
         risk: $('risk').value, stop: $('stop').value, leverage: $('leverage').value, rr: $('rr').value,
-        symbol: $('symbol').value, interval: $('interval').value,
+        symbol: currentSymbol || $('symbol').value, interval: $('interval').value,
         direction, entryMode, feeMode,
         manualEntry: entryMode==='manual' ? $('entry').value : null,
         theme
@@ -1991,6 +2152,7 @@
     // Каждые ~2 секунды подтягиваем реальную цену и подрисовываем ею текущую
     // (последнюю) свечу — небольшое дрожание внутри свечи между её закрытиями.
     async function tickLivePrice(){
+      if(document.hidden) return;
       const price = await fetchLivePrice();
       if(price==null) return;
       if(sessionOpen==null) seedSession(price);
@@ -2011,6 +2173,7 @@
     const CANDLE_LIFE_MS = 5000;
     const MAX_REAL_CANDLES = 400;
     function rollNewCandle(){
+      if(document.hidden) return;
       if(!realCandles || !realCandles.length || sessionClose==null) return;
       const last = realCandles[realCandles.length-1];
       last.high = Math.max(last.high, sessionHigh);
@@ -2050,11 +2213,14 @@
   }
 
   window.addEventListener('load', ()=>{
-    initChart();
     initHeroChart();
-    fetchMarket();
-    fetchInstrumentInfo($('symbol').value.trim().toUpperCase());
-    fetchRiskLimit($('symbol').value.trim().toUpperCase());
+    applySymbol();
+    // когда придёт полный список пар Bybit — поправим сохранённый тикер, если он
+    // записан не так, как на бирже (например PEPEUSDT -> 1000PEPEUSDT)
+    loadInstruments().then(()=>{
+      const r = resolveSymbol($('symbol').value);
+      if(r!==currentSymbol){ $('symbol').value = r; applySymbol(); }
+    });
     if(!document.hidden) startPolling();
   });
 })();
