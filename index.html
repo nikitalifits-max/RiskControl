@@ -1783,7 +1783,7 @@
   };
   const FACTOR_ORDER = ['trend','htf','macd','rsi','volume','oi','funding','ls','levels','pattern','btc'];
   const escHtml = v => String(v).replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-  const sgn = (n, d) => (n===null || n===undefined || !isFinite(n)) ? '—' : '\u2066'+(n>0 ? '+' : '')+fmt(n, d)+'\u2069';
+  const sgn = (n, d) => { if(n===null || n===undefined || !isFinite(n)) return '—'; const r = +n.toFixed(d) || 0; return '\u2066'+(r>0 ? '+' : '')+fmt(r, d)+'\u2069'; };
   function trendKey(s){ return s>=1 ? 'stTrendUp' : s>0 ? 'stTrendUpWeak' : s<=-1 ? 'stTrendDown' : s<0 ? 'stTrendDownWeak' : 'stSideways'; }
   function factorStateKey(x, tr){
     const s = x.s;
