@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/analyze
 
-Sitemap: https://joyful-crostata-027e18.netlify.app/sitemap.xml
-
+Sitemap: https://www.riskctrl.app/sitemap.xml
