@@ -17,7 +17,7 @@
 //   npx playwright install chromium
 //
 // Запуск:
-//   node smoke-test.mjs https://joyful-crostata-027e18.netlify.app
+//   node smoke-test.mjs https://www.riskctrl.app
 //   node smoke-test.mjs ./index.html          (можно и по локальному файлу)
 //
 // Если аргумент не указан — по умолчанию проверяет локальный ./index.html
@@ -51,11 +51,12 @@ async function mockBybitApi(page) {
     const json = (body) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
 
+    const sym = new URL(url).searchParams.get('symbol') || 'BTCUSDT';
     if (url.includes('/tickers')) {
       return json({
         retCode: 0, retMsg: 'OK',
         result: { category: 'linear', list: [{
-          symbol: 'BTCUSDT', lastPrice: '65000', price24hPcnt: '0.015',
+          symbol: sym, lastPrice: '65000', price24hPcnt: '0.015',
           fundingRate: '0.0001', openInterest: '50000'
         }] },
         time: Date.now()
@@ -64,19 +65,22 @@ async function mockBybitApi(page) {
     if (url.includes('/instruments-info')) {
       return json({
         retCode: 0, retMsg: 'OK',
-        result: { category: 'linear', list: [{
-          symbol: 'BTCUSDT',
-          lotSizeFilter: { qtyStep: '0.001', minOrderQty: '0.001' }
-        }] },
+        result: { category: 'linear', list: ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT', '1000PEPEUSDT'].map((s) => ({
+          symbol: s, status: 'Trading', contractType: 'LinearPerpetual', quoteCoin: 'USDT',
+          priceFilter: { tickSize: '0.10' },
+          leverageFilter: { minLeverage: '1', maxLeverage: '100.00' },
+          lotSizeFilter: { qtyStep: '0.001', minOrderQty: '0.001', minNotionalValue: '5' }
+        })).filter((x) => !url.includes('symbol=') || x.symbol === sym) },
         time: Date.now()
       });
     }
     if (url.includes('/risk-limit')) {
       return json({
         retCode: 0, retMsg: 'OK',
+        // названия полей — как в настоящем API Bybit (maintenanceMargin, а не maintainMargin)
         result: { category: 'linear', list: [
-          { riskLimitValue: '2000000', maintainMargin: '0.005' },
-          { riskLimitValue: '5000000', maintainMargin: '0.01' }
+          { riskLimitValue: '2000000', maintenanceMargin: '0.005', initialMargin: '0.01', maxLeverage: '100.00', mmDeduction: '' },
+          { riskLimitValue: '5000000', maintenanceMargin: '0.01', initialMargin: '0.02', maxLeverage: '50.00', mmDeduction: '10000' }
         ] },
         time: Date.now()
       });
@@ -196,6 +200,44 @@ async function main() {
     `oSize=${oSize}`
   );
 
+  // 7b) цена ликвидации реально считается (раньше из-за неверного поля Bybit тут было "—")
+  const oLiq = await page.$eval('#oLiq', (el) => el.textContent);
+  const liqNum = parseFloat(oLiq.replace(/[$,]/g, ''));
+  check('цена ликвидации посчитана (лонг 10x: ~58 800)', liqNum > 58000 && liqNum < 59500, `oLiq=${oLiq}`);
+  const okBanner = await page.$('#banner .banner.ok');
+  check('при безопасном плече показано "Плечо в порядке"', !!okBanner);
+
+  // 7c) слишком большое плечо — предупреждение, а не "всё в порядке"
+  await page.fill('#leverage', '150');
+  await page.waitForTimeout(150);
+  const badBanner = await page.$('#banner .banner.bad');
+  check('плечо 150x даёт предупреждение (ликвидация раньше стопа / больше максимума)', !!badBanner);
+  await page.fill('#leverage', '10');
+
+  // 7d) запятая вместо точки (клавиатура iPad) понимается правильно, а не как 10x риск
+  await page.fill('#risk', '25,5');
+  await page.waitForTimeout(150);
+  const sizeComma = parseFloat(await page.$eval('#oSize', (el) => el.textContent));
+  check('риск "25,5" с запятой считается как 25.5', sizeComma > 0.02 && sizeComma <= 0.026, `oSize=${sizeComma}`);
+
+  // 7e) депозит + риск в процентах
+  await page.fill('#deposit', '1000');
+  await page.click('#riskPctBtn');
+  await page.fill('#risk', '2.5');
+  await page.waitForTimeout(150);
+  const riskHint = await page.$eval('#riskHint', (el) => el.textContent);
+  const sizePct = parseFloat(await page.$eval('#oSize', (el) => el.textContent));
+  check('риск 2.5% от депозита 1000 = $25', /\$25/.test(riskHint) && sizePct > 0.02 && sizePct <= 0.025, `hint=${riskHint}, oSize=${sizePct}`);
+  await page.click('#riskUsdBtn');
+  await page.fill('#deposit', '');
+  await page.fill('#risk', '25');
+
+  // 7f) калькулятор — первый экран: карточка вердикта живёт на экране "Рынок"
+  const verdictOnCalc = await page.isVisible('#verdictCard');
+  check('на экране "Калькулятор" нет блока вердикта (калькулятор первым)', !verdictOnCalc);
+  await page.click('#navMarketBtn');
+  await page.waitForTimeout(300);
+
   // 8) вердикт по сделке посчитался (не завис на "собираю данные") и показывает таймфрейм
   const verdictTitle = await page.$eval('#verdictTitle', (el) => el.textContent.trim());
   const verdictClass = await page.$eval('#verdictTitle', (el) => el.className);
@@ -207,7 +249,7 @@ async function main() {
   const verdictTf = await page.$eval('#verdictTfValue', (el) => el.textContent.trim());
   check('вердикт показывает используемый таймфрейм', verdictTf.length > 0 && verdictTf !== '—', `tf=${verdictTf}`);
 
-  // 9) кнопка "Изменить" у вердикта переключает на экран "Рынок" и подсвечивает таймфрейм
+  // 9) кнопка "Изменить" у вердикта (экран "Рынок") фокусирует и подсвечивает таймфрейм
   await page.click('#verdictChangeBtn');
   await page.waitForTimeout(300);
   const marketVisibleAfterChange = await page.$eval('#pageMarket', (el) => !el.hidden);
@@ -229,13 +271,13 @@ async function main() {
 
   // 10+) три отдельные кнопки "Проверить с ИИ" (вердикт / риск сделки / чек-лист) — по одной
   // в каждой ключевой карточке. Эти проверки подменяют относительный запрос
-  // (/.netlify/functions/analyze), поэтому честно работают только при проверке настоящего
+  // (/api/analyze), поэтому честно работают только при проверке настоящего
   // сайта (http/https). При проверке локального файла (file://) браузер не даёт корректно
   // подменить относительный путь — это ограничение самого теста, а не баг сайта, поэтому
   // на файле эти проверки пропускаются, а не считаются ошибкой.
   if (isHttpTarget) {
     const aiCallCounts = {};
-    await page.route('**/.netlify/functions/analyze', async (route) => {
+    await page.route('**/api/analyze', async (route) => {
       const req = route.request();
       let focus = 'unknown';
       try { focus = JSON.parse(req.postData() || '{}').focus || 'unknown'; } catch (e) {}
@@ -255,7 +297,7 @@ async function main() {
     });
 
     const aiButtons = [
-      { name: 'вердикт', btn: '#aiCheckBtn', text: '#aiResultText', error: '#aiResultError', nav: null },
+      { name: 'вердикт', btn: '#aiCheckBtn', text: '#aiResultText', error: '#aiResultError', nav: '#navMarketBtn' },
       { name: 'риск сделки', btn: '#aiCheckBtnRisk', text: '#aiResultRiskText', error: '#aiResultRiskError', nav: '#navCalcBtn' },
       { name: 'чек-лист', btn: '#aiCheckBtnChecklist', text: '#aiResultChecklistText', error: '#aiResultChecklistError', nav: '#navMarketBtn' },
     ];
