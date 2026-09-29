@@ -229,6 +229,21 @@
   .checklist-item{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px 12px;border:1px solid var(--border-soft);border-radius:8px;background:var(--panel2);}
   .checklist-item .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
   .checklist-item .hint{color:var(--muted);font-size:10.5px;display:block;line-height:1.4;}
+  .checklist-item .label > span:first-child{display:block;}
+  .checklist-item .label .hint{text-transform:none;letter-spacing:0;font-weight:400;margin-top:2px;}
+  .factor-val{font-weight:600;font-size:13px;}
+  .factor-det{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);unicode-bidi:plaintext;}
+  .v.muted{color:var(--muted);font-weight:500;}
+  .score-bar{margin-top:14px;max-width:520px;}
+  .score-track{position:relative;height:8px;border-radius:4px;background:var(--panel2);border:1px solid var(--border-soft);overflow:hidden;}
+  .score-tick{position:absolute;top:0;bottom:0;width:1px;background:var(--border-soft);}
+  .score-mid{position:absolute;top:-1px;bottom:-1px;left:50%;width:2px;margin-left:-1px;background:var(--border);}
+  .score-fill{position:absolute;top:0;bottom:0;left:50%;width:0;background:var(--muted2);transition:left .4s ease,width .4s ease;}
+  .score-fill.pos{background:var(--green);} .score-fill.neg{background:var(--red);}
+  .score-scale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+  @media(prefers-reduced-motion:reduce){.score-fill{transition:none;}}
+  #methodList li{margin-bottom:4px;}
+  #methodList .mw{color:var(--muted);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap;}
   .glossary-item{padding:9px 0;border-bottom:1px solid var(--border-soft);}
   .glossary-item:last-child{border-bottom:none;}
   .glossary-item b{display:block;color:var(--text);font-size:13px;font-weight:700;margin-bottom:2px;}
@@ -520,33 +535,16 @@
         <div class="verdict-sub" id="verdictSub" data-i18n="verdictWaitingSub">Жди первую загрузку рыночных данных</div>
       </div>
     </div>
+    <div class="score-bar" dir="ltr" aria-hidden="true">
+      <div class="score-track"><span class="score-tick" style="left:27.5%"></span><span class="score-tick" style="left:42.5%"></span><span class="score-tick" style="left:57.5%"></span><span class="score-tick" style="left:72.5%"></span><span class="score-mid"></span><span class="score-fill" id="scoreFill"></span></div>
+      <div class="score-scale"><span data-i18n="scaleBear">медвежий</span><span>0</span><span data-i18n="scaleBull">бычий</span></div>
+    </div>
     <div class="verdict-tf">
       <span data-i18n="verdictTfPrefix">Учитывается таймфрейм:</span> <b id="verdictTfValue">—</b>
       <button type="button" id="verdictChangeBtn" class="link-btn" data-i18n="verdictChangeBtn">Изменить</button>
     </div>
     <div class="verdict-factors-label" data-i18n="verdictFactorsLabel">Почему так:</div>
-    <div class="verdict-factors" id="verdictFactors">
-      <div class="checklist-item">
-        <div class="label"><span data-i18n="itemTrendLabel">Тренд (EMA20/EMA50)</span><span class="hint" data-i18n="itemTrendHint">Цена относительно EMA20 и EMA50 на выбранном таймфрейме</span></div>
-        <div id="cTrendVal" style="font-weight:600;">—</div>
-      </div>
-      <div class="checklist-item">
-        <div class="label"><span data-i18n="itemFundingLabel">Funding rate</span><span class="hint" data-i18n="itemFundingHint">Экстремальная ставка финансирования — сигнал перекоса толпы</span></div>
-        <div id="cFundingVal" style="font-weight:600;">—</div>
-      </div>
-      <div class="checklist-item">
-        <div class="label"><span data-i18n="itemRsiLabel">RSI (14)</span><span class="hint" data-i18n="itemRsiHint">Перекупленность выше 70, перепроданность ниже 30</span></div>
-        <div id="cRsiVal" style="font-weight:600;">—</div>
-      </div>
-      <div class="checklist-item">
-        <div class="label"><span data-i18n="itemFibLabel">Fibonacci / pivot уровни</span><span class="hint" data-i18n="itemFibHint">Цена рядом с ближайшим уровнем поддержки или сопротивления</span></div>
-        <div id="cFibVal" style="font-weight:600;">—</div>
-      </div>
-      <div class="checklist-item">
-        <div class="label"><span data-i18n="itemPatternLabel">Паттерн / структура свечей</span><span class="hint" data-i18n="itemPatternHint">Пробой диапазона, поглощение, пин-бар или структура максимумов/минимумов</span></div>
-        <div id="cPatternVal" style="font-weight:600;">—</div>
-      </div>
-    </div>
+    <div class="verdict-factors" id="verdictFactors"></div>
     <p class="small" data-i18n="verdictDisclaimer">Автоматическая оценка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Не финансовый совет — решение всегда за тобой.</p>
     <div class="ai-check">
       <button type="button" id="aiCheckBtn" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtn">Проверить с ИИ — данные + свежие новости</span></button>
@@ -601,13 +599,7 @@
         <div class="card card-quiet">
           <h2><span data-i18n="methodH2">Как формируется вердикт</span> <span class="tag" data-i18n="methodTag">методология</span></h2>
           <p class="small" data-i18n="methodIntro" style="margin-top:0;font-size:13px;color:var(--text);">Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:</p>
-          <ul style="margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6;">
-            <li data-i18n="methodItem1">Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)</li>
-            <li data-i18n="methodItem2">Funding rate — экстремальная ставка в одну сторону (от ±0.1% за период) трактуется как перекос толпы (контрариан)</li>
-            <li data-i18n="methodItem3">RSI(14) — перекупленность выше 70 или перепроданность ниже 30</li>
-            <li data-i18n="methodItem4">Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления</li>
-            <li data-i18n="methodItem5">Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов</li>
-          </ul>
+          <ul id="methodList" style="margin:8px 0 0;padding-inline-start:18px;font-size:13px;line-height:1.55;"></ul>
           <p class="small" data-i18n="methodThreshold">Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.</p>
           <p class="small" data-i18n="methodSmall">Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои.</p>
         </div>
@@ -688,26 +680,44 @@
       cFibSupport:"▲ у поддержки", cFibResistance:"▼ у сопротивления",
       cPatternBull:"▲ бычий сигнал", cPatternBear:"▼ медвежий сигнал",
       verdictWaitingTitle:"Собираю данные…", verdictWaitingSub:"Подожди первую загрузку рыночных данных",
-      verdictLongTitle:"Технический фон: бычий", verdictShortTitle:"Технический фон: медвежий", verdictNoneTitle:"Технический фон смешанный",
+      verdictLongTitle:"Технический фон: скорее бычий", verdictShortTitle:"Технический фон: скорее медвежий", verdictNoneTitle:"Технический фон: нейтральный",
       verdictLongSub:"Большинство факторов указывают на рост", verdictShortSub:"Большинство факторов указывают на снижение", verdictNoneSub:"Факторы противоречат друг другу — явной картины нет",
       verdictTfPrefix:"Учитывается таймфрейм:", verdictChangeBtn:"Изменить",
       verdictFactorsLabel:"Из чего сложилось:",
-      verdictDisclaimer:"Автоматическая сводка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Это не сигнал к сделке и не гарантия результата — в честном тестировании на исторических данных этот набор факторов не показал устойчивого преимущества над рынком. Используй как один из ориентиров наравне со своим анализом; решение и риск — всегда твои.",
+      fTrendLabel:"Тренд ({tf})", fTrendHint:"Цена относительно EMA20 и EMA50", fHtfLabel:"Старший ТФ ({htf})", fHtfHint:"Тот же тренд на таймфрейме выше — фильтр от шума",
+      fMacdLabel:"MACD (12/26/9)", fMacdHint:"Направление и ускорение импульса", fMacdDetail:"гистограмма {h}", fRsiLabel:"RSI (14)",
+      fRsiHint:"Ниже 30 — перепродан, выше 70 — перекуплен, 55–70 и 30–45 — импульс", fVolLabel:"Объём", fVolHint:"Последние 3 свечи против среднего за 20", fVolDetail:"×{x} к среднему",
+      fOiLabel:"Open Interest", fOiHint:"Открываются или закрываются позиции (за 8 свечей)", fOiDetail:"OI {oi}% · цена {px}%", fFundingLabel:"Funding rate",
+      fFundingHint:"Кто переплачивает — контр-сигнал перекоса толпы", fLsLabel:"Лонги / шорты", fLsHint:"Доля аккаунтов Bybit в лонге — контр-сигнал", fLsDetail:"в лонге {pct}%",
+      fLevelsLabel:"Уровни Fib / pivot", fLevelsHint:"Цена рядом с поддержкой или сопротивлением", fLevelsDetail:"S {s} · R {r}", fPatternLabel:"Паттерн свечей",
+      fPatternHint:"Пробой диапазона, поглощение, пин-бар, структура", fBtcLabel:"Фон BTC ({tf})", fBtcHint:"Тренд биткоина — альткоины обычно идут за ним", stTrendUp:"▲ восходящий",
+      stTrendUpWeak:"▲ выше EMA, тренд слабый", stTrendDown:"▼ нисходящий", stTrendDownWeak:"▼ ниже EMA, тренд слабый", stSideways:"• боковик",
+      stMacdBullUp:"▲ импульс растёт", stMacdBullFade:"▲ бычий, затухает", stMacdBearDown:"▼ импульс падает", stMacdBearFade:"▼ медвежий, затухает",
+      stOversold:"▲ перепродан", stOverbought:"▼ перекуплен", stMomUp:"▲ бычий импульс", stMomDown:"▼ медвежий импульс",
+      stNeutral:"• нейтрально", stNoData:"нет данных", stVolUp:"▲ объём на росте", stVolDown:"▼ объём на падении",
+      stVolNormal:"• обычный объём", stOiLongsIn:"▲ новые лонги", stOiShortsIn:"▼ новые шорты", stOiShortsOut:"▲ шорты закрываются",
+      stOiLongsOut:"▼ лонги закрываются", stOiFlat:"• без изменений", stLongsHot:"▼ лонги переплачивают", stShortsHot:"▲ шорты переплачивают",
+      stFundingNormal:"• в норме", stCrowdLong:"▼ толпа в лонгах", stCrowdShort:"▲ толпа в шортах", stBalanced:"• баланс",
+      stNearSupport:"▲ у поддержки", stNearResistance:"▼ у сопротивления", stBetweenLevels:"• между уровнями", stPatternBull:"▲ бычий сигнал",
+      stPatternBear:"▼ медвежий сигнал", stNoPattern:"• сигнала нет", verdictStrongLongTitle:"Технический фон: сильный бычий", verdictStrongShortTitle:"Технический фон: сильный медвежий",
+      verdictScoreSub:"Оценка {score} по шкале от −100 до +100 · за рост {up}, за снижение {down}, нейтрально {flat}", scaleBear:"медвежий", scaleBull:"бычий", intervalW:"1н",
+      methodWeight:"вес ×{w}",
+      verdictDisclaimer:"Автоматическая сводка по 11 факторам: тренд, старший таймфрейм, MACD, RSI, объём, open interest, funding, соотношение лонгов и шортов, уровни, паттерн свечей и фон BTC. Это не сигнал к сделке и не гарантия результата; решение и риск — всегда твои.",
       aiCheckBtn:"Проверить с ИИ — данные + свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…",
-      aiCheckBtnRisk:"ИИ-анализ риска этой сделки", aiCheckBtnChecklist:"ИИ-разбор чек-листа",
+      aiCheckBtnRisk:"ИИ-анализ риска этой сделки", aiCheckBtnChecklist:"ИИ: аргументы за и против",
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
       aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
       aiCheckHintRisk:"Кнопка станет активной, когда заполнены риск, вход, стоп и плечо и в расчёте нет ошибок.",
       refBannerText:"Нет аккаунта на Bybit? Зарегистрируйся по моей ссылке — так ты поддержишь развитие RiskControl.", refBannerCta:"Перейти →",
       methodH2:"Как формируется вердикт", methodTag:"методология",
-      methodIntro:"Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:",
+      methodIntro:"Вердикт складывается из 11 факторов (у самого BTC — из 10). Каждый даёт от −1 до +1, умножается на свой вес, и всё сводится к одной оценке от −100 до +100:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
       methodItem2:"Funding rate — экстремальная ставка в одну сторону (от ±0.1% за период) трактуется как перекос толпы (контрариан)",
       methodItem3:"RSI(14) — перекупленность выше 70 или перепроданность ниже 30",
       methodItem4:"Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления",
       methodItem5:"Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов",
-      methodThreshold:"Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.",
-      methodSmall:"Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои.",
+      methodThreshold:"От +45 — сильный бычий фон, от +15 — скорее бычий, от −15 до +15 — нейтральный (явного перевеса нет), от −15 и ниже — скорее медвежий, от −45 — сильный медвежий. Если какие-то данные с Bybit не загрузились, фактор пропускается, а оценка считается по остальным.",
+      methodSmall:"Все данные — публичные данные Bybit по выбранной монете и таймфрейму, пересчитываются при каждом обновлении. Важно: это не финансовая рекомендация и не сигнал к входу. Модель не проверялась на исторических данных, а технические факторы сами по себе не гарантируют преимущества над рынком. Используй оценку как сводку контекста вместе со своим анализом — решение и риск всегда твои.",
       aboutH2:"О проекте", aboutTag:"независимый инструмент",
       aboutText:"RiskControl — независимый бесплатный проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без регистрации и без сбора личных данных. Баннер Bybit вверху — реферальная ссылка: если зарегистрируешься по ней, автор может получить вознаграждение от биржи; на расчёты это никак не влияет. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.",
       glossaryH2:"Глоссарий терминов", glossaryTag:"если что-то непонятно",
@@ -767,26 +777,44 @@
       cFibSupport:"▲ near support", cFibResistance:"▼ near resistance",
       cPatternBull:"▲ bullish signal", cPatternBear:"▼ bearish signal",
       verdictWaitingTitle:"Gathering data…", verdictWaitingSub:"Waiting for the first market data load",
-      verdictLongTitle:"Technical backdrop: bullish", verdictShortTitle:"Technical backdrop: bearish", verdictNoneTitle:"Technical backdrop: mixed",
+      verdictLongTitle:"Technical backdrop: leaning bullish", verdictShortTitle:"Technical backdrop: leaning bearish", verdictNoneTitle:"Technical backdrop: neutral",
       verdictLongSub:"Most factors point up", verdictShortSub:"Most factors point down", verdictNoneSub:"Factors contradict each other — no clear picture",
       verdictTfPrefix:"Timeframe used:", verdictChangeBtn:"Change",
       verdictFactorsLabel:"What it's made of:",
-      verdictDisclaimer:"Automatic summary from 5 factors: trend, funding, RSI, Fibonacci/pivot, candle pattern. This is not a trade signal or a guarantee of any result — in honest backtesting on historical data, this factor set did not show a reliable edge over the market. Use it as one input alongside your own analysis; the decision and the risk are always yours.",
+      fTrendLabel:"Trend ({tf})", fTrendHint:"Price vs EMA20 and EMA50", fHtfLabel:"Higher TF ({htf})", fHtfHint:"Same trend one timeframe up — filters out noise",
+      fMacdLabel:"MACD (12/26/9)", fMacdHint:"Direction and acceleration of momentum", fMacdDetail:"histogram {h}", fRsiLabel:"RSI (14)",
+      fRsiHint:"Below 30 oversold, above 70 overbought, 55–70 and 30–45 — momentum", fVolLabel:"Volume", fVolHint:"Last 3 candles vs the 20-candle average", fVolDetail:"×{x} vs average",
+      fOiLabel:"Open Interest", fOiHint:"Positions opening or closing (over 8 candles)", fOiDetail:"OI {oi}% · price {px}%", fFundingLabel:"Funding rate",
+      fFundingHint:"Who is overpaying — a contrarian crowding signal", fLsLabel:"Longs / shorts", fLsHint:"Share of Bybit accounts that are long — contrarian", fLsDetail:"{pct}% long",
+      fLevelsLabel:"Fib / pivot levels", fLevelsHint:"Price near support or resistance", fLevelsDetail:"S {s} · R {r}", fPatternLabel:"Candle pattern",
+      fPatternHint:"Range breakout, engulfing, pin bar, structure", fBtcLabel:"BTC backdrop ({tf})", fBtcHint:"Bitcoin's trend — altcoins usually follow it", stTrendUp:"▲ uptrend",
+      stTrendUpWeak:"▲ above EMAs, weak trend", stTrendDown:"▼ downtrend", stTrendDownWeak:"▼ below EMAs, weak trend", stSideways:"• sideways",
+      stMacdBullUp:"▲ momentum rising", stMacdBullFade:"▲ bullish, fading", stMacdBearDown:"▼ momentum falling", stMacdBearFade:"▼ bearish, fading",
+      stOversold:"▲ oversold", stOverbought:"▼ overbought", stMomUp:"▲ bullish momentum", stMomDown:"▼ bearish momentum",
+      stNeutral:"• neutral", stNoData:"no data", stVolUp:"▲ volume on the rise", stVolDown:"▼ volume on the drop",
+      stVolNormal:"• normal volume", stOiLongsIn:"▲ new longs", stOiShortsIn:"▼ new shorts", stOiShortsOut:"▲ shorts closing",
+      stOiLongsOut:"▼ longs closing", stOiFlat:"• unchanged", stLongsHot:"▼ longs overpaying", stShortsHot:"▲ shorts overpaying",
+      stFundingNormal:"• normal", stCrowdLong:"▼ crowd is long", stCrowdShort:"▲ crowd is short", stBalanced:"• balanced",
+      stNearSupport:"▲ at support", stNearResistance:"▼ at resistance", stBetweenLevels:"• between levels", stPatternBull:"▲ bullish signal",
+      stPatternBear:"▼ bearish signal", stNoPattern:"• no signal", verdictStrongLongTitle:"Technical backdrop: strongly bullish", verdictStrongShortTitle:"Technical backdrop: strongly bearish",
+      verdictScoreSub:"Score {score} on a −100 to +100 scale · {up} up, {down} down, {flat} neutral", scaleBear:"bearish", scaleBull:"bullish", intervalW:"1W",
+      methodWeight:"weight ×{w}",
+      verdictDisclaimer:"Automatic summary of 11 factors: trend, higher timeframe, MACD, RSI, volume, open interest, funding, long/short ratio, levels, candle pattern and the BTC backdrop. Not a trade signal and no guarantee of results; the decision and the risk are always yours.",
       aiCheckBtn:"Check with AI — data + fresh news", aiCheckBtnLoading:"Asking the AI…",
-      aiCheckBtnRisk:"AI risk analysis of this trade", aiCheckBtnChecklist:"AI checklist breakdown",
+      aiCheckBtnRisk:"AI risk analysis of this trade", aiCheckBtnChecklist:"AI: arguments for and against",
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
       aiCheckHintRisk:"The button unlocks once risk, entry, stop and leverage are filled in and the calculation shows no errors.",
       refBannerText:"No Bybit account yet? Sign up through my link — it helps support RiskControl.", refBannerCta:"Go →",
       methodH2:"How this is built", methodTag:"methodology",
-      methodIntro:"This is the sum of 5 equally weighted technical factors, each from -1 to +1:",
+      methodIntro:"The verdict combines 11 factors (10 for BTC itself). Each gives −1 to +1, is multiplied by its weight, and everything is condensed into one score from −100 to +100:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
       methodItem2:"Funding rate — an extreme rate in one direction (±0.1% per period or more) is read as crowd skew (contrarian)",
       methodItem3:"RSI(14) — overbought above 70 or oversold below 30",
       methodItem4:"Fibonacci/pivot — price near a support or resistance level",
       methodItem5:"Pattern/structure — range breakout, engulfing, pin bar, or the direction of the high/low structure",
-      methodThreshold:"Sum ≥ +3 or ≤ -3 — the technical backdrop is considered one-sided (bullish/bearish). From -2 to +2 — the picture is mixed, no clear lean.",
-      methodSmall:"All factors are computed automatically from Bybit data for the selected coin and timeframe. Important: this is not financial advice or a trade signal — in honest backtesting on historical data (several coins, over 300 days, validated on data the algorithm had not seen before), this factor set did not show a reliable edge over the market after costs. Use it as technical context alongside your own analysis; the decision and the risk are always yours.",
+      methodThreshold:"+45 and above — strongly bullish, +15 and above — leaning bullish, −15 to +15 — neutral (no clear edge), −15 and below — leaning bearish, −45 and below — strongly bearish. If some Bybit data fails to load, that factor is skipped and the score uses the rest.",
+      methodSmall:"All inputs are public Bybit data for the selected coin and timeframe, recalculated on every refresh. Important: this is not financial advice or an entry signal. The model has not been backtested, and technical factors alone don't guarantee an edge over the market. Use the score as a summary of context alongside your own analysis — the decision and the risk are always yours.",
       aboutH2:"About this tool", aboutTag:"independent project",
       aboutText:"RiskControl is an independent, free project with no affiliation to any exchange, including Bybit, whose public data it uses for its calculations. The site's job is a single screen for sizing risk and position before a trade, with no sign-up and no personal data collected. The Bybit banner at the top is a referral link: if you sign up through it, the author may receive a reward from the exchange; this has no effect on the calculations. It's an evolving side project — as with any tool, double-check the key numbers yourself before a real trade.",
       glossaryH2:"Glossary", glossaryTag:"if something's unclear",
@@ -846,26 +874,44 @@
       cFibSupport:"▲ nahe Unterstützung", cFibResistance:"▼ nahe Widerstand",
       cPatternBull:"▲ bullisches Signal", cPatternBear:"▼ bärisches Signal",
       verdictWaitingTitle:"Daten werden geladen…", verdictWaitingSub:"Bitte warte auf die erste Marktdaten-Ladung",
-      verdictLongTitle:"Technisches Bild: bullisch", verdictShortTitle:"Technisches Bild: bärisch", verdictNoneTitle:"Technisches Bild: gemischt",
+      verdictLongTitle:"Technisches Bild: eher bullisch", verdictShortTitle:"Technisches Bild: eher bärisch", verdictNoneTitle:"Technisches Bild: neutral",
       verdictLongSub:"Die meisten Faktoren deuten nach oben", verdictShortSub:"Die meisten Faktoren deuten nach unten", verdictNoneSub:"Die Faktoren widersprechen sich — kein klares Bild",
       verdictTfPrefix:"Verwendeter Zeitrahmen:", verdictChangeBtn:"Ändern",
       verdictFactorsLabel:"Woraus es sich zusammensetzt:",
-      verdictDisclaimer:"Automatische Zusammenfassung aus 5 Faktoren: Trend, Funding, RSI, Fibonacci/Pivot, Kerzenmuster. Das ist kein Handelssignal und keine Erfolgsgarantie — in ehrlichen Backtests auf historischen Daten zeigte diese Faktorenkombination keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als einen von mehreren Anhaltspunkten neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir.",
+      fTrendLabel:"Trend ({tf})", fTrendHint:"Preis im Vergleich zu EMA20 und EMA50", fHtfLabel:"Höherer TF ({htf})", fHtfHint:"Derselbe Trend eine Stufe höher — filtert Rauschen",
+      fMacdLabel:"MACD (12/26/9)", fMacdHint:"Richtung und Beschleunigung des Momentums", fMacdDetail:"Histogramm {h}", fRsiLabel:"RSI (14)",
+      fRsiHint:"Unter 30 überverkauft, über 70 überkauft, 55–70 und 30–45 — Momentum", fVolLabel:"Volumen", fVolHint:"Letzte 3 Kerzen gegenüber dem 20-Kerzen-Schnitt", fVolDetail:"×{x} zum Schnitt",
+      fOiLabel:"Open Interest", fOiHint:"Positionen werden eröffnet oder geschlossen (über 8 Kerzen)", fOiDetail:"OI {oi}% · Preis {px}%", fFundingLabel:"Funding rate",
+      fFundingHint:"Wer draufzahlt — Kontra-Signal für eine einseitige Masse", fLsLabel:"Longs / Shorts", fLsHint:"Anteil der Bybit-Konten im Long — Kontra-Signal", fLsDetail:"{pct}% long",
+      fLevelsLabel:"Fib-/Pivot-Level", fLevelsHint:"Preis nahe Unterstützung oder Widerstand", fLevelsDetail:"S {s} · R {r}", fPatternLabel:"Kerzenmuster",
+      fPatternHint:"Range-Ausbruch, Engulfing, Pin-Bar, Struktur", fBtcLabel:"BTC-Umfeld ({tf})", fBtcHint:"Bitcoin-Trend — Altcoins folgen ihm meist", stTrendUp:"▲ Aufwärtstrend",
+      stTrendUpWeak:"▲ über den EMAs, schwach", stTrendDown:"▼ Abwärtstrend", stTrendDownWeak:"▼ unter den EMAs, schwach", stSideways:"• seitwärts",
+      stMacdBullUp:"▲ Momentum steigt", stMacdBullFade:"▲ bullisch, lässt nach", stMacdBearDown:"▼ Momentum fällt", stMacdBearFade:"▼ bärisch, lässt nach",
+      stOversold:"▲ überverkauft", stOverbought:"▼ überkauft", stMomUp:"▲ bullisches Momentum", stMomDown:"▼ bärisches Momentum",
+      stNeutral:"• neutral", stNoData:"keine Daten", stVolUp:"▲ Volumen beim Anstieg", stVolDown:"▼ Volumen beim Rückgang",
+      stVolNormal:"• normales Volumen", stOiLongsIn:"▲ neue Longs", stOiShortsIn:"▼ neue Shorts", stOiShortsOut:"▲ Shorts schließen",
+      stOiLongsOut:"▼ Longs schließen", stOiFlat:"• unverändert", stLongsHot:"▼ Longs zahlen drauf", stShortsHot:"▲ Shorts zahlen drauf",
+      stFundingNormal:"• normal", stCrowdLong:"▼ Masse ist long", stCrowdShort:"▲ Masse ist short", stBalanced:"• ausgeglichen",
+      stNearSupport:"▲ an Unterstützung", stNearResistance:"▼ am Widerstand", stBetweenLevels:"• zwischen Levels", stPatternBull:"▲ bullisches Signal",
+      stPatternBear:"▼ bärisches Signal", stNoPattern:"• kein Signal", verdictStrongLongTitle:"Technisches Bild: stark bullisch", verdictStrongShortTitle:"Technisches Bild: stark bärisch",
+      verdictScoreSub:"Wert {score} auf einer Skala von −100 bis +100 · {up} aufwärts, {down} abwärts, {flat} neutral", scaleBear:"bärisch", scaleBull:"bullisch", intervalW:"1W",
+      methodWeight:"Gewicht ×{w}",
+      verdictDisclaimer:"Automatische Zusammenfassung aus 11 Faktoren: Trend, höherer Zeitrahmen, MACD, RSI, Volumen, Open Interest, Funding, Long/Short-Verhältnis, Levels, Kerzenmuster und BTC-Umfeld. Kein Handelssignal und keine Erfolgsgarantie; Entscheidung und Risiko liegen immer bei dir.",
       aiCheckBtn:"Mit KI prüfen — Daten + aktuelle Nachrichten", aiCheckBtnLoading:"Frage die KI…",
-      aiCheckBtnRisk:"KI-Risikoanalyse dieses Trades", aiCheckBtnChecklist:"KI-Analyse der Checkliste",
+      aiCheckBtnRisk:"KI-Risikoanalyse dieses Trades", aiCheckBtnChecklist:"KI: Argumente dafür und dagegen",
       aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
       aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
       aiCheckHintRisk:"Der Button wird aktiv, sobald Risiko, Einstieg, Stop und Hebel ausgefüllt sind und die Berechnung keine Fehler zeigt.",
       refBannerText:"Noch kein Bybit-Konto? Registriere dich über meinen Link — damit unterstützt du RiskControl.", refBannerCta:"Los →",
       methodH2:"Wie das zustande kommt", methodTag:"Methodik",
-      methodIntro:"Das ist die Summe aus 5 gleich gewichteten technischen Faktoren, jeweils von -1 bis +1:",
+      methodIntro:"Das Urteil kombiniert 11 Faktoren (bei BTC selbst 10). Jeder liefert −1 bis +1, wird mit seinem Gewicht multipliziert, und alles wird zu einem Wert von −100 bis +100 zusammengefasst:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
       methodItem2:"Funding Rate — eine extreme Rate in eine Richtung (ab ±0,1 % pro Periode) gilt als Marktschieflage (konträr)",
       methodItem3:"RSI(14) — überkauft über 70 oder überverkauft unter 30",
       methodItem4:"Fibonacci/Pivot — Preis nahe einem Unterstützungs- oder Widerstandslevel",
       methodItem5:"Muster/Struktur — Range-Breakout, Engulfing, Pin Bar oder Richtung der Hoch/Tief-Struktur",
-      methodThreshold:"Summe ≥ +3 oder ≤ -3 — das technische Bild gilt als eindeutig (bullisch/bärisch). Von -2 bis +2 — das Bild ist gemischt, keine klare Tendenz.",
-      methodSmall:"Alle Faktoren werden automatisch aus Bybit-Daten für die gewählte Münze und den Zeitrahmen berechnet. Wichtig: Das ist keine Finanzberatung und kein Handelssignal — in ehrlichen Backtests auf historischen Daten (mehrere Coins, über 300 Tage, geprüft an zuvor ungesehenen Daten) zeigte diese Faktorenkombination nach Kosten keinen verlässlichen Vorteil gegenüber dem Markt. Nutze es als technischen Anhaltspunkt neben deiner eigenen Analyse; Entscheidung und Risiko liegen immer bei dir.",
+      methodThreshold:"Ab +45 — stark bullisch, ab +15 — eher bullisch, −15 bis +15 — neutral (kein klarer Vorteil), ab −15 abwärts — eher bärisch, ab −45 — stark bärisch. Wenn Bybit-Daten nicht laden, wird der Faktor übersprungen und der Wert aus den übrigen berechnet.",
+      methodSmall:"Alle Daten sind öffentliche Bybit-Daten für die gewählte Münze und den Zeitrahmen und werden bei jeder Aktualisierung neu berechnet. Wichtig: Das ist keine Finanzberatung und kein Einstiegssignal. Das Modell wurde nicht an historischen Daten getestet, und technische Faktoren allein garantieren keinen Vorteil gegenüber dem Markt. Nutze den Wert als Zusammenfassung des Kontexts neben deiner eigenen Analyse — Entscheidung und Risiko liegen immer bei dir.",
       aboutH2:"Über dieses Tool", aboutTag:"unabhängiges Projekt",
       aboutText:"RiskControl ist ein unabhängiges, kostenloses Projekt ohne Verbindung zu irgendeiner Börse, einschließlich Bybit, dessen öffentliche Daten für die Berechnungen genutzt werden. Die Seite bietet einen einzigen Bildschirm zur Risiko- und Positionsgrößenberechnung vor einem Trade — ohne Registrierung und ohne Erhebung persönlicher Daten. Das Bybit-Banner oben ist ein Empfehlungslink: Wenn du dich darüber registrierst, kann der Autor eine Prämie von der Börse erhalten; auf die Berechnungen hat das keinen Einfluss. Die Seite wird laufend weiterentwickelt; wie bei jedem Tool solltest du die wichtigsten Zahlen vor einem echten Trade selbst gegenprüfen.",
       glossaryH2:"Glossar", glossaryTag:"falls etwas unklar ist",
@@ -925,26 +971,44 @@
       cFibSupport:"▲ біля підтримки", cFibResistance:"▼ біля опору",
       cPatternBull:"▲ бичачий сигнал", cPatternBear:"▼ ведмежий сигнал",
       verdictWaitingTitle:"Збираю дані…", verdictWaitingSub:"Зачекай, будь ласка, на перше завантаження ринкових даних",
-      verdictLongTitle:"Технічний фон: бичачий", verdictShortTitle:"Технічний фон: ведмежий", verdictNoneTitle:"Технічний фон змішаний",
+      verdictLongTitle:"Технічний фон: радше бичачий", verdictShortTitle:"Технічний фон: радше ведмежий", verdictNoneTitle:"Технічний фон: нейтральний",
       verdictLongSub:"Більшість факторів вказують на зростання", verdictShortSub:"Більшість факторів вказують на зниження", verdictNoneSub:"Фактори суперечать один одному — чіткої картини немає",
       verdictTfPrefix:"Враховується таймфрейм:", verdictChangeBtn:"Змінити",
       verdictFactorsLabel:"З чого це складається:",
-      verdictDisclaimer:"Автоматична зведення за 5 факторами: тренд, funding, RSI, Fibonacci/pivot, патерн свічок. Це не сигнал до угоди і не гарантія результату — у чесному тестуванні на історичних даних цей набір факторів не показав стійкої переваги над ринком. Використовуй як один з орієнтирів поряд зі своїм аналізом; рішення і ризик — завжди твої.",
+      fTrendLabel:"Тренд ({tf})", fTrendHint:"Ціна відносно EMA20 та EMA50", fHtfLabel:"Старший ТФ ({htf})", fHtfHint:"Той самий тренд на таймфреймі вище — фільтр від шуму",
+      fMacdLabel:"MACD (12/26/9)", fMacdHint:"Напрям і прискорення імпульсу", fMacdDetail:"гістограма {h}", fRsiLabel:"RSI (14)",
+      fRsiHint:"Нижче 30 — перепроданий, вище 70 — перекуплений, 55–70 і 30–45 — імпульс", fVolLabel:"Обсяг", fVolHint:"Останні 3 свічки проти середнього за 20", fVolDetail:"×{x} до середнього",
+      fOiLabel:"Open Interest", fOiHint:"Позиції відкриваються чи закриваються (за 8 свічок)", fOiDetail:"OI {oi}% · ціна {px}%", fFundingLabel:"Funding rate",
+      fFundingHint:"Хто переплачує — контрсигнал перекосу натовпу", fLsLabel:"Лонги / шорти", fLsHint:"Частка акаунтів Bybit у лонгу — контрсигнал", fLsDetail:"у лонгу {pct}%",
+      fLevelsLabel:"Рівні Fib / pivot", fLevelsHint:"Ціна біля підтримки чи опору", fLevelsDetail:"S {s} · R {r}", fPatternLabel:"Патерн свічок",
+      fPatternHint:"Пробій діапазону, поглинання, пін-бар, структура", fBtcLabel:"Фон BTC ({tf})", fBtcHint:"Тренд біткоїна — альткоїни зазвичай ідуть за ним", stTrendUp:"▲ висхідний",
+      stTrendUpWeak:"▲ вище EMA, тренд слабкий", stTrendDown:"▼ низхідний", stTrendDownWeak:"▼ нижче EMA, тренд слабкий", stSideways:"• боковик",
+      stMacdBullUp:"▲ імпульс зростає", stMacdBullFade:"▲ бичачий, згасає", stMacdBearDown:"▼ імпульс падає", stMacdBearFade:"▼ ведмежий, згасає",
+      stOversold:"▲ перепроданий", stOverbought:"▼ перекуплений", stMomUp:"▲ бичачий імпульс", stMomDown:"▼ ведмежий імпульс",
+      stNeutral:"• нейтрально", stNoData:"немає даних", stVolUp:"▲ обсяг на зростанні", stVolDown:"▼ обсяг на падінні",
+      stVolNormal:"• звичайний обсяг", stOiLongsIn:"▲ нові лонги", stOiShortsIn:"▼ нові шорти", stOiShortsOut:"▲ шорти закриваються",
+      stOiLongsOut:"▼ лонги закриваються", stOiFlat:"• без змін", stLongsHot:"▼ лонги переплачують", stShortsHot:"▲ шорти переплачують",
+      stFundingNormal:"• у нормі", stCrowdLong:"▼ натовп у лонгах", stCrowdShort:"▲ натовп у шортах", stBalanced:"• баланс",
+      stNearSupport:"▲ біля підтримки", stNearResistance:"▼ біля опору", stBetweenLevels:"• між рівнями", stPatternBull:"▲ бичачий сигнал",
+      stPatternBear:"▼ ведмежий сигнал", stNoPattern:"• сигналу немає", verdictStrongLongTitle:"Технічний фон: сильний бичачий", verdictStrongShortTitle:"Технічний фон: сильний ведмежий",
+      verdictScoreSub:"Оцінка {score} за шкалою від −100 до +100 · за зростання {up}, за зниження {down}, нейтрально {flat}", scaleBear:"ведмежий", scaleBull:"бичачий", intervalW:"1т",
+      methodWeight:"вага ×{w}",
+      verdictDisclaimer:"Автоматичне зведення за 11 факторами: тренд, старший таймфрейм, MACD, RSI, обсяг, open interest, funding, співвідношення лонгів і шортів, рівні, патерн свічок і фон BTC. Це не сигнал до угоди і не гарантія результату; рішення і ризик — завжди твої.",
       aiCheckBtn:"Перевірити з ШІ — дані + свіжі новини", aiCheckBtnLoading:"Питаю ШІ…",
-      aiCheckBtnRisk:"ШІ-аналіз ризику цієї угоди", aiCheckBtnChecklist:"ШІ-розбір чек-листа",
+      aiCheckBtnRisk:"ШІ-аналіз ризику цієї угоди", aiCheckBtnChecklist:"ШІ: аргументи за і проти",
       aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
       aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
       aiCheckHintRisk:"Кнопка стане активною, коли заповнено ризик, вхід, стоп і плече та в розрахунку немає помилок.",
       refBannerText:"Ще немає акаунта на Bybit? Зареєструйся за моїм посиланням — так ти підтримаєш розвиток RiskControl.", refBannerCta:"Перейти →",
       methodH2:"Як це влаштовано", methodTag:"методологія",
-      methodIntro:"Це сума 5 рівнозначних технічних факторів, кожен від -1 до +1:",
+      methodIntro:"Вердикт складається з 11 факторів (для самого BTC — з 10). Кожен дає від −1 до +1, множиться на свою вагу, і все зводиться до однієї оцінки від −100 до +100:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
       methodItem2:"Funding rate — екстремальна ставка в один бік (від ±0.1% за період) трактується як перекіс натовпу (контраріан)",
       methodItem3:"RSI(14) — перекупленість вище 70 або перепроданість нижче 30",
       methodItem4:"Fibonacci/pivot — ціна поруч із рівнем підтримки або опору",
       methodItem5:"Патерн/структура — пробій діапазону, поглинання, пін-бар або напрямок структури максимумів/мінімумів",
-      methodThreshold:"Сума ≥ +3 або ≤ -3 — технічний фон вважається однозначним (бичачим/ведмежим). Від -2 до +2 — картина змішана, явної переваги немає.",
-      methodSmall:"Усі фактори рахуються автоматично за даними Bybit для обраної монети й таймфрейму. Важливо: це не фінансова порада і не сигнал до угоди — у чесному тестуванні на історичних даних (кілька монет, понад 300 днів, з перевіркою на даних, які алгоритм раніше не бачив) цей набір факторів не показав надійної переваги над ринком після врахування комісій. Використовуй це як технічний орієнтир поряд зі своїм аналізом — рішення і ризик завжди твої.",
+      methodThreshold:"Від +45 — сильний бичачий фон, від +15 — радше бичачий, від −15 до +15 — нейтральний (явної переваги немає), від −15 і нижче — радше ведмежий, від −45 — сильний ведмежий. Якщо якісь дані з Bybit не завантажились, фактор пропускається, а оцінка рахується за рештою.",
+      methodSmall:"Усі дані — публічні дані Bybit для обраної монети й таймфрейму, перераховуються при кожному оновленні. Важливо: це не фінансова порада і не сигнал до входу. Модель не перевірялась на історичних даних, а технічні фактори самі по собі не гарантують переваги над ринком. Використовуй оцінку як зведення контексту поряд зі своїм аналізом — рішення і ризик завжди твої.",
       aboutH2:"Про проєкт", aboutTag:"незалежний інструмент",
       aboutText:"RiskControl — незалежний безкоштовний проєкт, не пов'язаний з жодною біржею, включно з Bybit, чиї публічні дані він використовує для розрахунків. Завдання сайту — один екран для розрахунку ризику й обсягу позиції перед угодою, без реєстрації та без збору особистих даних. Банер Bybit угорі — реферальне посилання: якщо зареєструєшся за ним, автор може отримати винагороду від біржі; на розрахунки це ніяк не впливає. Сайт поступово допрацьовується; як і з будь-яким інструментом — перед реальною угодою перевіряй ключові цифри самостійно.",
       glossaryH2:"Глосарій термінів", glossaryTag:"якщо щось незрозуміло",
@@ -1004,26 +1068,44 @@
       cFibSupport:"▲ קרוב לתמיכה", cFibResistance:"▼ קרוב להתנגדות",
       cPatternBull:"▲ איתות עולה", cPatternBear:"▼ איתות יורד",
       verdictWaitingTitle:"אוסף נתונים…", verdictWaitingSub:"ממתין לטעינת נתוני השוק הראשונה",
-      verdictLongTitle:"רקע טכני: עולה", verdictShortTitle:"רקע טכני: יורד", verdictNoneTitle:"רקע טכני מעורב",
+      verdictLongTitle:"רקע טכני: נוטה לעלייה", verdictShortTitle:"רקע טכני: נוטה לירידה", verdictNoneTitle:"רקע טכני: ניטרלי",
       verdictLongSub:"רוב הגורמים מצביעים למעלה", verdictShortSub:"רוב הגורמים מצביעים למטה", verdictNoneSub:"הגורמים סותרים זה את זה — אין תמונה ברורה",
       verdictTfPrefix:"מסגרת הזמן שנלקחת בחשבון:", verdictChangeBtn:"שנה",
       verdictFactorsLabel:"ממה זה מורכב:",
-      verdictDisclaimer:"סיכום אוטומטי מ-5 גורמים: מגמה, funding, RSI, Fibonacci/פיבוט, תבנית נרות. זה לא איתות למסחר ולא הבטחה לתוצאה כלשהי — בבדיקה הוגנת על נתונים היסטוריים, שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק. השתמש בזה כאחד השיקולים לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך.",
+      fTrendLabel:"מגמה ({tf})", fTrendHint:"המחיר ביחס ל-EMA20 ול-EMA50", fHtfLabel:"מסגרת גבוהה ({htf})", fHtfHint:"אותה מגמה במסגרת זמן אחת למעלה — מסנן רעש",
+      fMacdLabel:"MACD (12/26/9)", fMacdHint:"כיוון ותאוצה של המומנטום", fMacdDetail:"היסטוגרמה {h}", fRsiLabel:"RSI (14)",
+      fRsiHint:"מתחת ל-30 מכירת יתר, מעל 70 קניית יתר, 55–70 ו-30–45 — מומנטום", fVolLabel:"מחזור מסחר", fVolHint:"3 הנרות האחרונים מול הממוצע של 20", fVolDetail:"×{x} מהממוצע",
+      fOiLabel:"Open Interest", fOiHint:"פוזיציות נפתחות או נסגרות (לאורך 8 נרות)", fOiDetail:"OI {oi}% · מחיר {px}%", fFundingLabel:"Funding rate",
+      fFundingHint:"מי משלם יותר — איתות נגדי לעודף בצד אחד", fLsLabel:"לונגים / שורטים", fLsHint:"שיעור החשבונות בלונג ב-Bybit — איתות נגדי", fLsDetail:"{pct}% בלונג",
+      fLevelsLabel:"רמות Fib / פיבוט", fLevelsHint:"המחיר ליד תמיכה או התנגדות", fLevelsDetail:"S {s} · R {r}", fPatternLabel:"תבנית נרות",
+      fPatternHint:"פריצת טווח, בליעה, פין-בר, מבנה", fBtcLabel:"רקע BTC ({tf})", fBtcHint:"מגמת הביטקוין — מטבעות אחרים בדרך כלל הולכים אחריה", stTrendUp:"▲ מגמת עלייה",
+      stTrendUpWeak:"▲ מעל ה-EMA, מגמה חלשה", stTrendDown:"▼ מגמת ירידה", stTrendDownWeak:"▼ מתחת ל-EMA, מגמה חלשה", stSideways:"• דשדוש",
+      stMacdBullUp:"▲ המומנטום מתחזק", stMacdBullFade:"▲ עולה, נחלש", stMacdBearDown:"▼ המומנטום יורד", stMacdBearFade:"▼ יורד, נחלש",
+      stOversold:"▲ מכירת יתר", stOverbought:"▼ קניית יתר", stMomUp:"▲ מומנטום עולה", stMomDown:"▼ מומנטום יורד",
+      stNeutral:"• ניטרלי", stNoData:"אין נתונים", stVolUp:"▲ מחזור בעלייה", stVolDown:"▼ מחזור בירידה",
+      stVolNormal:"• מחזור רגיל", stOiLongsIn:"▲ לונגים חדשים", stOiShortsIn:"▼ שורטים חדשים", stOiShortsOut:"▲ שורטים נסגרים",
+      stOiLongsOut:"▼ לונגים נסגרים", stOiFlat:"• ללא שינוי", stLongsHot:"▼ הלונגים משלמים ביוקר", stShortsHot:"▲ השורטים משלמים ביוקר",
+      stFundingNormal:"• תקין", stCrowdLong:"▼ הקהל בלונג", stCrowdShort:"▲ הקהל בשורט", stBalanced:"• מאוזן",
+      stNearSupport:"▲ ליד תמיכה", stNearResistance:"▼ ליד התנגדות", stBetweenLevels:"• בין רמות", stPatternBull:"▲ איתות עולה",
+      stPatternBear:"▼ איתות יורד", stNoPattern:"• אין איתות", verdictStrongLongTitle:"רקע טכני: עולה בחוזקה", verdictStrongShortTitle:"רקע טכני: יורד בחוזקה",
+      verdictScoreSub:"ציון {score} בסולם ⁦−100⁩ עד ⁦+100⁩ · {up} לעלייה, {down} לירידה, {flat} ניטרליים", scaleBear:"יורד", scaleBull:"עולה", intervalW:"שבוע",
+      methodWeight:"משקל ×{w}",
+      verdictDisclaimer:"סיכום אוטומטי של 11 גורמים: מגמה, מסגרת זמן גבוהה, MACD, RSI, מחזור מסחר, open interest, funding, יחס לונג/שורט, רמות, תבנית נרות ורקע BTC. זה לא איתות למסחר ולא הבטחה לתוצאה; ההחלטה והסיכון תמיד שלך.",
       aiCheckBtn:"בדוק עם AI — נתונים + חדשות עדכניות", aiCheckBtnLoading:"שואל את ה-AI…",
-      aiCheckBtnRisk:"ניתוח סיכון AI לעסקה הזו", aiCheckBtnChecklist:"ניתוח AI לרשימת הבדיקה",
+      aiCheckBtnRisk:"ניתוח סיכון AI לעסקה הזו", aiCheckBtnChecklist:"AI: טיעונים בעד ונגד",
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
       aiCheckHintRisk:"הכפתור יופעל לאחר מילוי סיכון, כניסה, סטופ ומינוף, כשאין שגיאות בחישוב.",
       refBannerText:"אין לך עדיין חשבון ב-Bybit? הירשם דרך הקישור שלי — כך תתמוך ב-RiskControl.", refBannerCta:"מעבר ←",
       methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
-      methodIntro:"זה סכום של 5 גורמים טכניים שווי-משקל, כל אחד בין -1 ל-+1:",
+      methodIntro:"הוורדיקט משלב 11 גורמים (10 עבור BTC עצמו). כל אחד נותן בין ⁦−1⁩ ל-⁦+1⁩, מוכפל במשקל שלו, והכול מסוכם לציון אחד בין ⁦−100⁩ ל-⁦+100⁩:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
       methodItem2:"Funding rate — שיעור קיצוני בכיוון אחד (±0.1% לתקופה ומעלה) מתפרש כהטיה בקרב הקהל (קונטרארי)",
       methodItem3:"RSI(14) — קניית יתר מעל 70 או מכירת יתר מתחת ל-30",
       methodItem4:"Fibonacci/פיבוט — המחיר קרוב לרמת תמיכה או התנגדות",
       methodItem5:"תבנית/מבנה — פריצת טווח, בליעה, פין-בר, או כיוון מבנה השיאים/השפלים",
-      methodThreshold:"סכום ≥ +3 או ≤ -3 — הרקע הטכני נחשב חד-משמעי (עולה/יורד). בין -2 ל-+2 — התמונה מעורבת, אין נטייה ברורה.",
-      methodSmall:"כל הגורמים מחושבים אוטומטית לפי נתוני Bybit עבור המטבע ומסגרת הזמן שנבחרו. חשוב: אין בכך ייעוץ פיננסי ולא איתות למסחר — בבדיקה הוגנת על נתונים היסטוריים (כמה מטבעות, יותר מ-300 יום, נבדק על נתונים שלא נראו קודם), שילוב הגורמים הזה לא הראה יתרון אמין על פני השוק אחרי עמלות. השתמש בזה כרקע טכני לצד הניתוח שלך; ההחלטה והסיכון תמיד שלך.",
+      methodThreshold:"מ-⁦+45⁩ — עולה בחוזקה, מ-⁦+15⁩ — נוטה לעלייה, בין ⁦−15⁩ ל-⁦+15⁩ — ניטרלי (אין יתרון ברור), מ-⁦−15⁩ ומטה — נוטה לירידה, מ-⁦−45⁩ ומטה — יורד בחוזקה. אם חלק מנתוני Bybit לא נטענו, הגורם מדולג והציון מחושב לפי השאר.",
+      methodSmall:"כל הנתונים הם נתונים ציבוריים של Bybit עבור המטבע ומסגרת הזמן שנבחרו, ומחושבים מחדש בכל רענון. חשוב: אין בכך ייעוץ פיננסי ולא איתות כניסה. המודל לא נבדק על נתונים היסטוריים, וגורמים טכניים לבדם אינם מבטיחים יתרון על פני השוק. השתמש בציון כסיכום של ההקשר לצד הניתוח שלך — ההחלטה והסיכון תמיד שלך.",
       aboutH2:"אודות הכלי", aboutTag:"פרויקט עצמאי",
       aboutText:"RiskControl הוא פרויקט עצמאי וחינמי, ללא קשר לאף בורסה, כולל Bybit שאת הנתונים הציבוריים שלה הוא משתמש בהם לחישובים. תפקיד האתר הוא מסך אחד לחישוב סיכון וגודל פוזיציה לפני עסקה, ללא הרשמה וללא איסוף נתונים אישיים. הבאנר של Bybit למעלה הוא קישור הפניה: אם תירשם דרכו, היוצר עשוי לקבל תגמול מהבורסה; זה לא משפיע על החישובים. האתר משתפר בהדרגה; כמו בכל כלי — בדוק בעצמך את המספרים המרכזיים לפני עסקה אמיתית.",
       glossaryH2:"מילון מונחים", glossaryTag:"אם משהו לא ברור",
@@ -1066,11 +1148,8 @@
   let entryMode = 'live'; // 'live' | 'manual'
   let lastTickerPrice = null;
   let lastCandles = null;
-  let autoTrend = 0; // -1,0,1
-  let autoFunding = 0;
-  let autoRsi = 0;
-  let autoFib = 0;
-  let autoPattern = 0;
+  let autoTrend = 0; // -1,0,1 — строгий тренд EMA для строки "Тренд" в рыночных данных
+  let lastModel = null; // результат scoreMarket() для текущей пары и таймфрейма
   let hasMarketData = false;
   let fetchState = null; // {type:'loading'|'updated'|'stale'|'error', time?:Date}
   let lastGoodFetchTime = null; // время последнего успешного обновления — для отображения "устарело" вместо пустоты при сбое
@@ -1525,44 +1604,285 @@
     const trendText = autoTrend>0 ? t('trendUp') : autoTrend<0 ? t('trendDown') : t('trendFlat');
     const trendClass = autoTrend>0 ? 'green' : autoTrend<0 ? 'red' : 'warn';
     $('mTrend').innerHTML = '<span class="v '+trendClass+'">'+trendText+'</span>';
-    const cLabel = autoTrend>0 ? t('cTrendBull') : autoTrend<0 ? t('cTrendBear') : t('cNeutral');
-    $('cTrendVal').innerHTML = '<span class="v '+trendClass+'">'+cLabel+'</span>';
   }
-  function renderFunding(){
-    if(!hasMarketData) return;
-    const fundingLabel = autoFunding>0 ? t('cFundingOverShort') : autoFunding<0 ? t('cFundingOverLong') : t('cNeutral');
-    $('cFundingVal').innerHTML = '<span class="v">'+fundingLabel+'</span>';
+
+  // ---------- модель рынка: 11 взвешенных факторов ----------
+  // Раньше вердикт был суммой 5 равных факторов с порогом ±3 — почти всегда выходило
+  // "смешанный". Теперь каждый фактор даёт -1..+1 (с промежуточными ±0.5), умножается
+  // на вес, и всё сводится к одной оценке -100..+100 с пятью уровнями.
+  const HTF_OF = {'15':'60', '60':'240', '240':'D', 'D':'W'};           // "старший" таймфрейм
+  const PERIOD_OF = {'15':'15min', '60':'1h', '240':'4h', 'D':'1d'};     // период для OI и лонг/шорт
+  const FACTOR_W = {trend:1.5, htf:1.5, macd:1, rsi:1, volume:0.75, oi:1, funding:0.75, ls:0.75, levels:0.75, pattern:1, btc:1};
+  const OI_WINDOW = 8; // сравниваем open interest и цену с тем, что было 8 свечей назад
+  const extraCache = new Map();
+
+  function parseKlines(json){
+    const list = (json && json.result && json.result.list) || [];
+    // bybit: новые свечи первыми, каждая = [start,open,high,low,close,volume,turnover]
+    return list.slice().reverse().map(c=>({time:+c[0], open:+c[1], high:+c[2], low:+c[3], close:+c[4], volume:+c[5]}));
   }
-  function renderRsiFactor(){
-    if(!hasMarketData) return;
-    const label = autoRsi>0 ? t('cRsiOversold') : autoRsi<0 ? t('cRsiOverbought') : t('cNeutral');
-    $('cRsiVal').innerHTML = '<span class="v">'+label+'</span>';
+  // 1 — цена > EMA20 > EMA50, -1 — наоборот; ±0.5 — цена выше/ниже обеих EMA, но они ещё не выстроились
+  function trendState(candles){
+    if(!candles || candles.length<55) return null;
+    const closes = candles.map(c=>c.close);
+    const e20 = ema(closes,20), e50 = ema(closes,50);
+    const p = closes[closes.length-1], a = e20[e20.length-1], b = e50[e50.length-1];
+    if(!(p>0)) return null;
+    if(p>a && a>b) return 1;
+    if(p<a && a<b) return -1;
+    if(p>a && p>b) return 0.5;
+    if(p<a && p<b) return -0.5;
+    return 0;
   }
-  function renderFibFactor(){
-    if(!hasMarketData) return;
-    const label = autoFib>0 ? t('cFibSupport') : autoFib<0 ? t('cFibResistance') : t('cNeutral');
-    $('cFibVal').innerHTML = '<span class="v">'+label+'</span>';
+  function macdHist(closes){
+    if(!closes || closes.length<40) return null;
+    const e12 = ema(closes,12), e26 = ema(closes,26);
+    const macd = closes.map((_,i)=>e12[i]-e26[i]);
+    const sig = ema(macd.slice(25), 9);
+    const n = sig.length;
+    return {h: macd[macd.length-1]-sig[n-1], prev: macd[macd.length-2]-sig[n-2]};
   }
-  function renderPatternFactor(){
-    if(!hasMarketData) return;
-    const label = autoPattern>0 ? t('cPatternBull') : autoPattern<0 ? t('cPatternBear') : t('cNeutral');
-    $('cPatternVal').innerHTML = '<span class="v">'+label+'</span>';
+  function atrPct(candles, period){
+    if(!candles || candles.length<period+2) return null;
+    let sum = 0;
+    for(let i=candles.length-period;i<candles.length;i++){
+      const c = candles[i], pc = candles[i-1].close;
+      sum += Math.max(c.high-c.low, Math.abs(c.high-pc), Math.abs(c.low-pc));
+    }
+    const p = candles[candles.length-1].close;
+    return p>0 ? sum/period/p*100 : null;
   }
-  function intervalKey(v){ return v==='D' ? 'intervalD' : 'interval'+v; }
+  // уникальные уровни Fib/pivot вокруг цены: ближайшие поддержки (ниже) и сопротивления (выше)
+  function levelsAround(price, fibs, pivots){
+    const all = fibs.map(f=>f.price).concat([pivots.pp, pivots.r1, pivots.r2, pivots.s1, pivots.s2])
+      .filter(v=>isFinite(v) && v>0).sort((a,b)=>a-b);
+    const uniq = [];
+    all.forEach(v=>{ if(!uniq.length || Math.abs(v-uniq[uniq.length-1])/v > 0.0005) uniq.push(v); });
+    return {
+      sup: uniq.filter(v=>v<price).reverse(),
+      res: uniq.filter(v=>v>price)
+    };
+  }
+
+  // Дополнительные данные для модели. Каждый запрос необязательный: если Bybit его не отдал,
+  // соответствующий фактор просто пропускается. Кэш 60 с — цены обновляются каждые 15 с,
+  // а старший ТФ, OI и лонг/шорт так часто не меняются.
+  async function fetchExtra(symbol, interval){
+    const key = symbol+'|'+interval;
+    const hit = extraCache.get(key);
+    if(hit && Date.now()-hit.t < 60000) return hit.v;
+    const safe = p => p.catch(()=>null);
+    const opt = {retries:1, baseDelay:400};
+    const api = 'https://api.bybit.com/v5/market/';
+    const [htfJ, oiJ, lsJ, btcJ] = await Promise.all([
+      safe(fetchJsonWithRetry(`${api}kline?category=linear&symbol=${symbol}&interval=${HTF_OF[interval]||'D'}&limit=120`, opt)),
+      safe(fetchJsonWithRetry(`${api}open-interest?category=linear&symbol=${symbol}&intervalTime=${PERIOD_OF[interval]||'1h'}&limit=25`, opt)),
+      safe(fetchJsonWithRetry(`${api}account-ratio?category=linear&symbol=${symbol}&period=${PERIOD_OF[interval]||'1h'}&limit=1`, opt)),
+      symbol==='BTCUSDT' ? Promise.resolve(null) : safe(fetchJsonWithRetry(`${api}kline?category=linear&symbol=BTCUSDT&interval=${interval}&limit=150`, opt))
+    ]);
+    const oiList = oiJ && oiJ.result && oiJ.result.list;
+    const lsRow = lsJ && lsJ.result && lsJ.result.list && lsJ.result.list[0];
+    const buyRatio = lsRow ? parseFloat(lsRow.buyRatio) : NaN;
+    const v = {
+      htf: htfJ ? parseKlines(htfJ) : null,
+      oi: oiList && oiList.length ? oiList.map(x=>parseFloat(x.openInterest)).reverse().filter(x=>isFinite(x)) : null, // старые → новые
+      buyRatio: isFinite(buyRatio) && buyRatio>=0 && buyRatio<=1 ? buyRatio : null,
+      btc: btcJ ? parseKlines(btcJ) : null
+    };
+    extraCache.set(key, {t:Date.now(), v});
+    if(extraCache.size>40) extraCache.delete(extraCache.keys().next().value);
+    return v;
+  }
+
+  // Чистая функция: данные → факторы и итоговая оценка. d = {candles, htf, oi, buyRatio, btc, isBtc, funding(% за период), fibs, pivots}
+  function scoreMarket(d){
+    const f = [];
+    const add = (id, s, info) => f.push(Object.assign({id, w:FACTOR_W[id], s:(s===null || s===undefined || !isFinite(s)) ? null : s}, info||{}));
+    const c = d.candles || [];
+    const closes = c.map(x=>x.close);
+    const price = closes[closes.length-1];
+
+    add('trend', trendState(c));
+    add('htf', trendState(d.htf));
+
+    const mh = macdHist(closes);
+    let ms = null;
+    if(mh && isFinite(mh.h) && isFinite(mh.prev)){
+      ms = mh.h>0 ? (mh.h>=mh.prev ? 1 : 0.5) : mh.h<0 ? (mh.h<=mh.prev ? -1 : -0.5) : 0;
+    }
+    add('macd', ms, {hist: mh && price>0 ? mh.h/price*100 : null});
+
+    const r = rsi(closes, 14);
+    add('rsi', r===null ? null : r<30 ? 1 : r>70 ? -1 : r>=55 ? 0.5 : r<=45 ? -0.5 : 0, {rsi:r});
+
+    // объём: 3 последние закрытые свечи против средних 20 до них; направление — куда шла цена
+    let vs = null, vr = null;
+    const closed = c.slice(0,-1); // последняя свеча ещё формируется — её объём неполный
+    if(closed.length>=24){
+      const avg = a => a.reduce((sum,x)=>sum+x.volume,0)/a.length;
+      const base = avg(closed.slice(-23,-3));
+      if(base>0 && isFinite(base)){
+        vr = avg(closed.slice(-3))/base;
+        const dir = Math.sign(closed[closed.length-1].close - closed[closed.length-4].close);
+        vs = vr>=1.5 ? dir : vr>=1.2 ? dir*0.5 : 0;
+      }
+    }
+    add('volume', vs, {ratio:vr});
+
+    // open interest: растёт вместе с ценой — входят лонги; растёт на падении — входят шорты
+    let os = null, oiChg = null, pxChg = null;
+    const oi = d.oi;
+    if(oi && oi.length>OI_WINDOW && closes.length>OI_WINDOW){
+      const o0 = oi[oi.length-1-OI_WINDOW], o1 = oi[oi.length-1];
+      const p0 = closes[closes.length-1-OI_WINDOW];
+      if(o0>0 && p0>0){
+        oiChg = (o1/o0-1)*100;
+        pxChg = (price/p0-1)*100;
+        os = oiChg>1 ? (pxChg>=0 ? 1 : -1) : oiChg<-1 ? (pxChg>=0 ? 0.5 : -0.5) : 0;
+      }
+    }
+    add('oi', os, {oiChg, pxChg});
+
+    // funding (контр-сигнал): обычная ставка ~0.01% за период
+    const fr = isFinite(d.funding) ? d.funding : null;
+    add('funding', fr===null ? null : fr>=0.1 ? -1 : fr>=0.03 ? -0.5 : fr<=-0.1 ? 1 : fr<=-0.03 ? 0.5 : 0, {rate:fr});
+
+    // доля аккаунтов в лонге (контр-сигнал): когда толпа вся в одну сторону, рынок часто идёт против неё.
+    // Розница на Bybit почти всегда чуть в лонге (55–70%), поэтому "перекос" считаем от 70%, а не от 50%.
+    const br = d.buyRatio;
+    add('ls', br===null || br===undefined ? null : br>=0.8 ? -1 : br>=0.7 ? -0.5 : br<=0.35 ? 1 : br<=0.45 ? 0.5 : 0, {buyRatio:br});
+
+    // уровни: цена у поддержки / сопротивления (порог — 0.4% или пол-ATR, что больше)
+    const atr = atrPct(c, 14);
+    let lvS = null, lv = null;
+    if(d.fibs && d.pivots && price>0){
+      lv = levelsAround(price, d.fibs, d.pivots);
+      const thr = Math.max(0.4, atr ? atr*0.5 : 0);
+      const dS = lv.sup.length ? (price-lv.sup[0])/price*100 : Infinity;
+      const dR = lv.res.length ? (lv.res[0]-price)/price*100 : Infinity;
+      lvS = (dS<=thr && dS<=dR) ? 1 : (dR<=thr && dR<dS) ? -1 : 0;
+      lv.dS = isFinite(dS) ? dS : null; lv.dR = isFinite(dR) ? dR : null;
+    }
+    add('levels', lvS, {lv});
+
+    add('pattern', c.length>=25 ? detectPattern(c) : null);
+    if(!d.isBtc) add('btc', trendState(d.btc));
+
+    let sw = 0, ss = 0, up = 0, down = 0, flat = 0;
+    f.forEach(x=>{ if(x.s===null) return; sw += x.w; ss += x.w*x.s; if(x.s>0) up++; else if(x.s<0) down++; else flat++; });
+    const score = sw>0 ? (Math.round(ss/sw*100) || 0) : 0;
+    const level = sw===0 ? 0 : score>=45 ? 2 : score>=15 ? 1 : score<=-45 ? -2 : score<=-15 ? -1 : 0;
+    return {factors:f, score, level, up, down, flat, atr, price, rsi:r};
+  }
+
+  // ---------- отображение факторов ----------
+  const FACTOR_DEF = {
+    trend:['fTrendLabel','fTrendHint'], htf:['fHtfLabel','fHtfHint'], macd:['fMacdLabel','fMacdHint'], rsi:['fRsiLabel','fRsiHint'],
+    volume:['fVolLabel','fVolHint'], oi:['fOiLabel','fOiHint'], funding:['fFundingLabel','fFundingHint'], ls:['fLsLabel','fLsHint'],
+    levels:['fLevelsLabel','fLevelsHint'], pattern:['fPatternLabel','fPatternHint'], btc:['fBtcLabel','fBtcHint']
+  };
+  const FACTOR_ORDER = ['trend','htf','macd','rsi','volume','oi','funding','ls','levels','pattern','btc'];
+  const escHtml = v => String(v).replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const sgn = (n, d) => (n===null || n===undefined || !isFinite(n)) ? '—' : '\u2066'+(n>0 ? '+' : '')+fmt(n, d)+'\u2069';
+  function trendKey(s){ return s>=1 ? 'stTrendUp' : s>0 ? 'stTrendUpWeak' : s<=-1 ? 'stTrendDown' : s<0 ? 'stTrendDownWeak' : 'stSideways'; }
+  function factorStateKey(x, tr){
+    const s = x.s;
+    if(s===null) return 'stNoData';
+    switch(x.id){
+      case 'trend': case 'htf': case 'btc': return trendKey(s);
+      case 'macd': return s>=1 ? 'stMacdBullUp' : s>0 ? 'stMacdBullFade' : s<=-1 ? 'stMacdBearDown' : s<0 ? 'stMacdBearFade' : 'stNeutral';
+      case 'rsi': return s>=1 ? 'stOversold' : s<=-1 ? 'stOverbought' : s>0 ? 'stMomUp' : s<0 ? 'stMomDown' : 'stNeutral';
+      case 'volume': return s>0 ? 'stVolUp' : s<0 ? 'stVolDown' : 'stVolNormal';
+      case 'oi': return s>=1 ? 'stOiLongsIn' : s<=-1 ? 'stOiShortsIn' : s>0 ? 'stOiShortsOut' : s<0 ? 'stOiLongsOut' : 'stOiFlat';
+      case 'funding': return s<0 ? 'stLongsHot' : s>0 ? 'stShortsHot' : 'stFundingNormal';
+      case 'ls': return s<0 ? 'stCrowdLong' : s>0 ? 'stCrowdShort' : 'stBalanced';
+      case 'levels': return s>0 ? 'stNearSupport' : s<0 ? 'stNearResistance' : 'stBetweenLevels';
+      case 'pattern': return s>0 ? 'stPatternBull' : s<0 ? 'stPatternBear' : 'stNoPattern';
+    }
+    return 'stNeutral';
+  }
+  // числовая деталь под состоянием фактора (tr — функция перевода: t для экрана, TR.ru для ИИ)
+  function factorDetail(x, tr){
+    if(x.s===null) return '';
+    switch(x.id){
+      case 'rsi': return x.rsi!=null ? 'RSI '+fmt(x.rsi,0) : '';
+      case 'macd': return x.hist!=null ? (tr('fMacdDetail')).replace('{h}', sgn(x.hist,3)+'%') : '';
+      case 'volume': return x.ratio!=null ? tr('fVolDetail').replace('{x}', fmt(x.ratio,1)) : '';
+      case 'oi': return tr('fOiDetail').replace('{oi}', sgn(x.oiChg,1)).replace('{px}', sgn(x.pxChg,1));
+      case 'funding': return sgn(x.rate,4)+'%';
+      case 'ls': return tr('fLsDetail').replace('{pct}', fmt(x.buyRatio*100,0));
+      case 'levels': return x.lv ? tr('fLevelsDetail').replace('{s}', x.lv.dS!=null ? sgn(-x.lv.dS,1)+'%' : '—').replace('{r}', x.lv.dR!=null ? sgn(x.lv.dR,1)+'%' : '—') : '';
+    }
+    return '';
+  }
+  function factorLabel(id, tr, interval){
+    const iv = interval || $('interval').value;
+    return tr(FACTOR_DEF[id][0]).replace('{tf}', tr(intervalKey(iv))).replace('{htf}', tr(intervalKey(HTF_OF[iv]||'D')));
+  }
+  function renderFactors(){
+    const box = $('verdictFactors');
+    if(!box) return;
+    if(!hasMarketData || !lastModel){ box.innerHTML = ''; return; }
+    box.innerHTML = lastModel.factors.map(x=>{
+      const cls = x.s===null ? 'muted' : x.s>0 ? 'green' : x.s<0 ? 'red' : 'muted';
+      const det = factorDetail(x, t);
+      return '<div class="checklist-item" data-factor="'+x.id+'">'
+        + '<div class="label"><span>'+escHtml(factorLabel(x.id, t, lastModel.interval))+'</span><span class="hint">'+escHtml(t(FACTOR_DEF[x.id][1]))+'</span></div>'
+        + '<div class="factor-val"><span class="v '+cls+'">'+escHtml(t(factorStateKey(x)))+'</span></div>'
+        + (det ? '<div class="factor-det">'+escHtml(det)+'</div>' : '')
+        + '</div>';
+    }).join('');
+  }
+  // методология — тот же список факторов с весами, чтобы описание не расходилось с расчётом
+  function renderMethod(){
+    const ul = $('methodList');
+    if(!ul) return;
+    ul.innerHTML = FACTOR_ORDER.map(id=>'<li><b>'+escHtml(factorLabel(id, t))+'</b> — '+escHtml(t(FACTOR_DEF[id][1]))
+      +' <span class="mw">'+escHtml(t('methodWeight').replace('{w}', String(FACTOR_W[id])))+'</span></li>').join('');
+  }
+
+  // Сводка для ИИ: все факторы с цифрами, оценка и ближайшие уровни — на русском (язык промпта),
+  // ИИ отвечает на языке интерфейса.
+  function buildMarketSummary(){
+    const m = lastModel;
+    if(!m) return '';
+    const ru = k => TR.ru[k] || k;
+    const iv = m.interval || $('interval').value;
+    const titleKey = {'2':'verdictStrongLongTitle','1':'verdictLongTitle','0':'verdictNoneTitle','-1':'verdictShortTitle','-2':'verdictStrongShortTitle'}[String(m.level)];
+    const pct = (v) => (v>0?'+':'')+fmt(v,2)+'%';
+    const lines = [];
+    lines.push('Таймфрейм: '+ru(intervalKey(iv))+', старший таймфрейм: '+ru(intervalKey(HTF_OF[iv]||'D')));
+    lines.push('Цена: '+fmtPrice(m.price)+(isFinite(m.change24h) ? ' · за 24ч: '+pct(m.change24h) : '')+(m.atr ? ' · средний ход свечи (ATR14): '+fmt(m.atr,2)+'%' : ''));
+    lines.push('Оценка алгоритма сайта: '+(m.score>0?'+':'')+m.score+' по шкале от -100 до +100 → «'+ru(titleKey)+'» (факторов за рост: '+m.up+', за снижение: '+m.down+', нейтральных: '+m.flat+')');
+    lines.push('Факторы (вес · состояние · цифры · вклад):');
+    m.factors.forEach(x=>{
+      const det = factorDetail(x, ru).replace(/[\u2066\u2069]/g,'');
+      const st = ru(factorStateKey(x)).replace(/^[▲▼•]\s*/, '');
+      lines.push('- '+factorLabel(x.id, ru, iv)+' [вес '+x.w+']: '+st+(det ? ' ('+det+')' : '')+(x.s===null ? '' : ' → '+(x.s>0?'+':'')+x.s));
+    });
+    const lvF = m.factors.find(x=>x.id==='levels');
+    if(lvF && lvF.lv){
+      const fmtL = v => fmtPrice(v)+' ('+pct((v/m.price-1)*100)+')';
+      if(lvF.lv.sup.length) lines.push('Ближайшие поддержки (Fib/pivot): '+lvF.lv.sup.slice(0,2).map(fmtL).join(', '));
+      if(lvF.lv.res.length) lines.push('Ближайшие сопротивления (Fib/pivot): '+lvF.lv.res.slice(0,2).map(fmtL).join(', '));
+    }
+    if(m.swing) lines.push('Диапазон последних 60 свечей: '+fmtPrice(m.swing.low)+' – '+fmtPrice(m.swing.high));
+    return lines.join('\n');
+  }
+  function intervalKey(v){ return v==='D' ? 'intervalD' : v==='W' ? 'intervalW' : 'interval'+v; }
   function updateVerdictTf(){
     $('verdictTfValue').textContent = t(intervalKey($('interval').value));
   }
 
-  // ---------- вердикт по сделке ----------
-  // Сумма 5 равнозначных факторов (-1..+1 каждый): тренд, funding, RSI,
-  // Fibonacci/pivot, паттерн/структура свечей. |сумма|>=3 — решительный
-  // вердикт (LONG/SHORT), иначе — "не входить, сигналы противоречивые".
+  // ---------- вердикт по рынку ----------
+  // Оценка -100..+100 из scoreMarket(): ≥45 сильный бычий, ≥15 скорее бычий, -15..+15 нейтральный,
+  // ≤-15 скорее медвежий, ≤-45 сильный медвежий.
+  const VERDICT_TITLES = {'2':'verdictStrongLongTitle', '1':'verdictLongTitle', '0':'verdictNoneTitle', '-1':'verdictShortTitle', '-2':'verdictStrongShortTitle'};
   function computeVerdict(){
-    if(!hasMarketData) return;
-    const total = autoTrend + autoFunding + autoRsi + autoFib + autoPattern;
-    const cls = total>=3 ? 'long' : total<=-3 ? 'short' : 'none';
-    const titleKey = cls==='long' ? 'verdictLongTitle' : cls==='short' ? 'verdictShortTitle' : 'verdictNoneTitle';
-    const subKey = cls==='long' ? 'verdictLongSub' : cls==='short' ? 'verdictShortSub' : 'verdictNoneSub';
+    if(!hasMarketData || !lastModel) return;
+    const m = lastModel;
+    const cls = m.level>0 ? 'long' : m.level<0 ? 'short' : 'none';
+    const titleKey = VERDICT_TITLES[String(m.level)];
     $('verdictCard').classList.remove('state-long','state-short','state-none');
     $('verdictCard').classList.add('state-'+cls);
     const titleEl = $('verdictTitle');
@@ -1570,14 +1890,23 @@
     titleEl.textContent = t(titleKey);
     titleEl.className = 'verdict-title '+cls;
     const subEl = $('verdictSub');
-    subEl.dataset.i18n = subKey;
-    subEl.textContent = t(subKey);
+    delete subEl.dataset.i18n; // текст с цифрами — applyI18n не должен его перетирать
+    subEl.textContent = t('verdictScoreSub').replace('{score}', '\u2066'+(m.score>0?'+':'')+m.score+'\u2069')
+      .replace('{up}', m.up).replace('{down}', m.down).replace('{flat}', m.flat);
+    const fill = $('scoreFill');
+    if(fill){
+      const half = Math.min(50, Math.abs(m.score)/2);
+      fill.className = 'score-fill'+(m.score>0 ? ' pos' : m.score<0 ? ' neg' : '');
+      fill.style.left = (m.score<0 ? 50-half : 50)+'%';
+      fill.style.width = half+'%';
+    }
   }
   // Состояние карточки вердикта, пока настоящего вердикта нет: ждём данные / Bybit
   // недоступен / пара не найдена. Раньше при ошибке там навсегда висело "Собираю данные…".
   function setVerdictPlaceholder(kind){
     const keys = { waiting:['verdictWaitingTitle','verdictWaitingSub'], error:['verdictErrorTitle','verdictErrorSub'], badsymbol:['verdictBadSymbolTitle','verdictBadSymbolSub'] }[kind];
     $('verdictCard').classList.remove('state-long','state-short','state-none');
+    const fill = $('scoreFill'); if(fill){ fill.className = 'score-fill'; fill.style.left = '50%'; fill.style.width = '0'; }
     const titleEl = $('verdictTitle'), subEl = $('verdictSub');
     titleEl.className = 'verdict-title';
     titleEl.dataset.i18n = keys[0];
@@ -1608,13 +1937,14 @@
     const interval = $('interval').value;
     if(!hasMarketData){ fetchState = {type:'loading'}; renderFetchStatus(); }
     try{
-      const [tickerJson, klineJson] = await Promise.all([
+      const [tickerJson, klineJson, extra] = await Promise.all([
         fetchJsonWithRetry(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${symbol}`),
-        fetchJsonWithRetry(`https://api.bybit.com/v5/market/kline?category=linear&symbol=${symbol}&interval=${interval}&limit=150`)
+        fetchJsonWithRetry(`https://api.bybit.com/v5/market/kline?category=linear&symbol=${symbol}&interval=${interval}&limit=150`),
+        fetchExtra(symbol, interval) // старший ТФ, open interest, лонги/шорты, BTC — не ломают основное, если не загрузились
       ]);
 
-      // пока ждали ответ, пользователь мог переключить пару — старый ответ выбрасываем
-      if(symbol!==currentSymbol) return;
+      // пока ждали ответ, пользователь мог переключить пару или таймфрейм — старый ответ выбрасываем
+      if(symbol!==currentSymbol || interval!==$('interval').value) return;
       const t2 = tickerJson.result.list && tickerJson.result.list[0];
       if(!t2 || !(klineJson.result.list||[]).length){ const err = new Error('empty data for '+symbol); err.retCode = 10001; throw err; }
       const prevTickerPrice = lastTickerPrice;
@@ -1634,8 +1964,7 @@
       $('mOI').textContent = fmt(parseFloat(t2.openInterest),0);
 
       // klines: bybit returns newest first, each = [start,open,high,low,close,volume,turnover]
-      const raw = klineJson.result.list.slice().reverse();
-      const candles = raw.map(c=>({time:+c[0], open:+c[1], high:+c[2], low:+c[3], close:+c[4]}));
+      const candles = parseKlines(klineJson);
       lastCandles = candles;
       const closes = candles.map(c=>c.close);
       const ema20 = ema(closes,20), ema50 = ema(closes,50);
@@ -1646,14 +1975,8 @@
       else if(lastPrice<lastE20 && lastE20<lastE50){ autoTrend=-1; }
       else { autoTrend=0; }
 
-      // funding в % за период. Обычная ставка ~0.01%; ≥0.1% в одну сторону — уже экстремальный перекос толпы.
-      // (Раньше порог был 3% — такого на Bybit практически не бывает, и фактор никогда не срабатывал.)
-      const FUNDING_EXTREME = 0.1;
-      if(funding>=FUNDING_EXTREME){ autoFunding=-1; } else if(funding<=-FUNDING_EXTREME){ autoFunding=1; } else { autoFunding=0; }
-
       hasMarketData = true;
       renderTrend();
-      renderFunding();
 
       // levels
       const sw = swingHighLow(candles, 60);
@@ -1667,14 +1990,12 @@
       html += `<tr><td>R2 / S2</td><td>${fmtPrice(pivots.r2)} / ${fmtPrice(pivots.s2)}</td></tr>`;
       $('levelsTable').innerHTML = html;
 
-      // остальные 3 автоматических фактора вердикта
-      const rsiVal = rsi(closes, 14);
-      autoRsi = rsiVal===null ? 0 : (rsiVal<30 ? 1 : (rsiVal>70 ? -1 : 0));
-      autoFib = fibProximity(lastPrice, fibs, pivots);
-      autoPattern = detectPattern(candles);
-      renderRsiFactor();
-      renderFibFactor();
-      renderPatternFactor();
+      // модель рынка: 11 взвешенных факторов → оценка от -100 до +100
+      lastModel = scoreMarket({candles, htf: extra.htf, oi: extra.oi, buyRatio: extra.buyRatio, btc: extra.btc,
+        isBtc: symbol==='BTCUSDT', funding, fibs, pivots});
+      lastModel.interval = interval; lastModel.change24h = chg; lastModel.swing = sw;
+      renderFactors();
+      renderMethod();
       updateVerdictTf();
 
       lastGoodFetchTime = new Date();
@@ -1746,8 +2067,9 @@
   // иначе можно посчитать сделку по SOL с ценой входа от BTC.
   function resetMarketView(keepStop){
     hasMarketData = false; lastTickerPrice = null; lastCandles = null; lastGoodFetchTime = null;
-    autoTrend = autoFunding = autoRsi = autoFib = autoPattern = 0;
-    ['mPrice','mChange','mFunding','mOI','mTrend','cTrendVal','cFundingVal','cRsiVal','cFibVal','cPatternVal'].forEach(id=>{ $(id).textContent = '—'; });
+    autoTrend = 0; lastModel = null;
+    ['mPrice','mChange','mFunding','mOI','mTrend'].forEach(id=>{ $(id).textContent = '—'; });
+    $('verdictFactors').innerHTML = '';
     $('levelsTable').innerHTML = '';
     if(entryMode==='live') $('entry').value = '';
     if(!keepStop) $('stop').value = '';
@@ -1892,7 +2214,7 @@
   // focus определяет, что именно уходит в промпт на сервере (см. api/analyze.js):
   //  'trade'     — карточка вердикта: общий технический расклад + свежие новости
   //  'risk'      — карточка калькулятора: сама сделка (вход/стоп/плечо/ликвидация)
-  //  'checklist' — карточка рынка: подробный разбор 5 факторов чек-листа
+  //  'checklist' — карточка рынка: аргументы за рост / за снижение по всем факторам
   function buildAiPayload(focus){
     const base = { focus, symbol: currentSymbol || 'BTCUSDT', lang: lang };
     if(focus==='risk'){
@@ -1907,14 +2229,10 @@
       });
     }
     return Object.assign(base, {
-      timeframe: $('verdictTfValue').textContent,
+      timeframe: TR.ru[intervalKey($('interval').value)] || $('interval').value,
       price: $('mPrice').textContent,
       change24h: $('mChange').textContent,
-      trendText: $('cTrendVal').textContent,
-      fundingText: $('cFundingVal').textContent,
-      rsiText: $('cRsiVal').textContent,
-      fibText: $('cFibVal').textContent,
-      patternText: $('cPatternVal').textContent
+      marketSummary: buildMarketSummary()
     });
   }
   function wireAiCheck(focus, btnId, boxId, loadingId, textId, errorId){
@@ -1999,10 +2317,8 @@
     try{ localStorage.setItem('tdLang', lang); }catch(e){}
     applyI18n();
     renderTrend();
-    renderFunding();
-    renderRsiFactor();
-    renderFibFactor();
-    renderPatternFactor();
+    renderFactors();
+    renderMethod();
     updateVerdictTf();
     computeVerdict();
     renderFetchStatus();
@@ -2068,6 +2384,7 @@
   applyTheme();
   applyI18n();
   updateVerdictTf();
+  renderMethod();
   calc();
   updateQuickCoinsActive();
   // держим live-цену и рыночную панель свежими каждые 15с, но не дёргаем Bybit,
