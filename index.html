@@ -350,6 +350,13 @@
   .ai-result{margin-top:10px;}
   .ai-result-loading{font-size:13px;color:var(--muted);}
   .ai-result-text{font-size:13.5px;line-height:1.6;white-space:pre-wrap;background:var(--panel2);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 14px;}
+  .ai-more{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:600;color:var(--accent);background:transparent;border:1px solid var(--border-soft);border-radius:8px;cursor:pointer;}
+  .ai-more:hover{border-color:var(--accent);}
+  .ai-more:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .ai-more[hidden],.ai-details[hidden]{display:none;}
+  .ai-more::after{content:"▾";font-size:11px;}
+  .ai-more[aria-expanded="true"]::after{content:"▴";}
+  .ai-details{margin-top:8px;font-size:13px;line-height:1.6;white-space:pre-wrap;color:var(--text);padding:10px 14px;border:1px dashed var(--border-soft);border-radius:8px;}
   .ai-result-error{font-size:13px;color:var(--red);background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:10px 12px;}
 
   /* ---------- мобильная адаптация ---------- */
@@ -750,7 +757,7 @@
       verdictScoreSub:"Оценка {score} по шкале от −100 до +100 · за рост {up}, за снижение {down}, нейтрально {flat}", scaleBear:"медвежий", scaleBull:"бычий", intervalW:"1н",
       methodWeight:"вес ×{w}",
       verdictDisclaimer:"Сайт показывает риск и контекст, а не направление: проверка на истории (год, 6 монет) не нашла у технических сигналов преимущества над подбрасыванием монетки. Не финансовый совет — решение и риск всегда твои.",
-      aiCheckBtn:"ИИ: объясни картину и свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…",
+      aiCheckBtn:"ИИ: объясни картину и свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…", aiMoreBtn:"Подробная причина", aiLessBtn:"Скрыть подробности",
       aiCheckBtnRisk:"ИИ-анализ риска этой сделки", aiCheckBtnChecklist:"ИИ: что может пойти не так",
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
       aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
@@ -858,7 +865,7 @@
       verdictScoreSub:"Score {score} on a −100 to +100 scale · {up} up, {down} down, {flat} neutral", scaleBear:"bearish", scaleBull:"bullish", intervalW:"1W",
       methodWeight:"weight ×{w}",
       verdictDisclaimer:"The site shows risk and context, not direction: a historical check (1 year, 6 coins) found no edge for technical signals over a coin flip. Not financial advice — the decision and the risk are always yours.",
-      aiCheckBtn:"AI: explain the picture and fresh news", aiCheckBtnLoading:"Asking the AI…",
+      aiCheckBtn:"AI: explain the picture and fresh news", aiCheckBtnLoading:"Asking the AI…", aiMoreBtn:"Detailed reasoning", aiLessBtn:"Hide details",
       aiCheckBtnRisk:"AI risk analysis of this trade", aiCheckBtnChecklist:"AI: what could go wrong",
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
@@ -966,7 +973,7 @@
       verdictScoreSub:"Wert {score} auf einer Skala von −100 bis +100 · {up} aufwärts, {down} abwärts, {flat} neutral", scaleBear:"bärisch", scaleBull:"bullisch", intervalW:"1W",
       methodWeight:"Gewicht ×{w}",
       verdictDisclaimer:"Die Seite zeigt Risiko und Kontext, nicht die Richtung: Ein Test auf historischen Daten (1 Jahr, 6 Coins) fand bei technischen Signalen keinen Vorteil gegenüber einem Münzwurf. Keine Finanzberatung — Entscheidung und Risiko liegen immer bei dir.",
-      aiCheckBtn:"KI: Lage und aktuelle News erklären", aiCheckBtnLoading:"Frage die KI…",
+      aiCheckBtn:"KI: Lage und aktuelle News erklären", aiCheckBtnLoading:"Frage die KI…", aiMoreBtn:"Ausführliche Begründung", aiLessBtn:"Details ausblenden",
       aiCheckBtnRisk:"KI-Risikoanalyse dieses Trades", aiCheckBtnChecklist:"KI: Was schiefgehen kann",
       aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
       aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
@@ -1074,7 +1081,7 @@
       verdictScoreSub:"Оцінка {score} за шкалою від −100 до +100 · за зростання {up}, за зниження {down}, нейтрально {flat}", scaleBear:"ведмежий", scaleBull:"бичачий", intervalW:"1т",
       methodWeight:"вага ×{w}",
       verdictDisclaimer:"Сайт показує ризик і контекст, а не напрям: перевірка на історії (рік, 6 монет) не знайшла в технічних сигналів переваги над підкиданням монетки. Не фінансова порада — рішення і ризик завжди твої.",
-      aiCheckBtn:"ШІ: поясни картину і свіжі новини", aiCheckBtnLoading:"Питаю ШІ…",
+      aiCheckBtn:"ШІ: поясни картину і свіжі новини", aiCheckBtnLoading:"Питаю ШІ…", aiMoreBtn:"Детальна причина", aiLessBtn:"Сховати подробиці",
       aiCheckBtnRisk:"ШІ-аналіз ризику цієї угоди", aiCheckBtnChecklist:"ШІ: що може піти не так",
       aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
       aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
@@ -1182,7 +1189,7 @@
       verdictScoreSub:"ציון {score} בסולם ⁦−100⁩ עד ⁦+100⁩ · {up} לעלייה, {down} לירידה, {flat} ניטרליים", scaleBear:"יורד", scaleBull:"עולה", intervalW:"שבוע",
       methodWeight:"משקל ×{w}",
       verdictDisclaimer:"האתר מציג סיכון והקשר, לא כיוון: בדיקה על נתוני עבר (שנה, 6 מטבעות) לא מצאה לאיתותים טכניים יתרון על פני הטלת מטבע. אין בכך ייעוץ פיננסי — ההחלטה והסיכון תמיד שלך.",
-      aiCheckBtn:"AI: הסבר את התמונה והחדשות", aiCheckBtnLoading:"שואל את ה-AI…",
+      aiCheckBtn:"AI: הסבר את התמונה והחדשות", aiCheckBtnLoading:"שואל את ה-AI…", aiMoreBtn:"הסבר מפורט", aiLessBtn:"הסתר פרטים",
       aiCheckBtnRisk:"ניתוח סיכון AI לעסקה הזו", aiCheckBtnChecklist:"AI: מה יכול להשתבש",
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
@@ -2575,6 +2582,31 @@
       marketSummary: buildMarketSummary()
     });
   }
+  // Кнопка «Подробная причина» + блок подробностей под коротким ответом ИИ (создаются один раз)
+  function aiDetailsEls(textEl){
+    let more = textEl.parentNode.querySelector('.ai-more');
+    let det = textEl.parentNode.querySelector('.ai-details');
+    if(!more){
+      det = document.createElement('div');
+      det.className = 'ai-details'; det.id = textEl.id+'Details'; det.hidden = true;
+      more = document.createElement('button');
+      more.type = 'button'; more.className = 'ai-more'; more.hidden = true;
+      more.setAttribute('aria-controls', det.id);
+      textEl.after(more, det);
+      more.addEventListener('click', ()=>{
+        const open = det.hidden;
+        det.hidden = !open;
+        setAiMore(more, open);
+      });
+      setAiMore(more, false);
+    }
+    return {more, det};
+  }
+  function setAiMore(more, open){
+    more.setAttribute('aria-expanded', String(open));
+    more.dataset.i18n = open ? 'aiLessBtn' : 'aiMoreBtn';
+    more.textContent = t(more.dataset.i18n);
+  }
   function wireAiCheck(focus, btnId, boxId, loadingId, textId, errorId){
     const btn = $(btnId);
     if(!btn) return;
@@ -2584,6 +2616,8 @@
       const textEl = $(textId);
       const errorEl = $(errorId);
       if(btn.disabled) return;
+      const {more, det} = aiDetailsEls(textEl);
+      more.hidden = true; det.hidden = true; det.textContent = ''; setAiMore(more, false);
       resultBox.hidden = false;
       loadingEl.hidden = false;
       textEl.hidden = true;
@@ -2603,6 +2637,7 @@
         const data = await res.json().catch(()=>({}));
         if(!res.ok || !data.text){ const err = new Error((data && data.error) || ('http_'+res.status)); err.status = res.status; throw err; }
         textEl.textContent = data.text;
+        if(data.details){ det.textContent = data.details; more.hidden = false; }
         loadingEl.hidden = true;
         textEl.hidden = false;
       } catch(err){
