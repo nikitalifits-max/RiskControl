@@ -324,7 +324,7 @@ async function main() {
         return route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ text: 'Тестовый ответ ИИ. Не финансовый совет.' }),
+          body: JSON.stringify({ text: 'Тестовый ответ ИИ.', details: 'Тестовые подробности. Не финансовый совет.' }),
         });
       }
       return route.fulfill({
@@ -349,6 +349,14 @@ async function main() {
       await page.waitForSelector(`${text}:not([hidden])`, { timeout: 5000 }).catch(() => {});
       const aiText = await page.$eval(text, (el) => el.textContent).catch(() => '');
       check(`кнопка ИИ "${name}" показывает ответ от функции`, aiText.includes('Тестовый ответ'), `text=${aiText}`);
+      // короткий ответ сразу, подробности — только по кнопке «Подробная причина»
+      const moreSel = `${text} + .ai-more`;
+      const detSel = `${text} ~ .ai-details`;
+      const moreShown = await page.$eval(moreSel, (el) => !el.hidden).catch(() => false);
+      const detHiddenFirst = await page.$eval(detSel, (el) => el.hidden).catch(() => false);
+      if (moreShown) await page.click(moreSel);
+      const detOpened = await page.$eval(detSel, (el) => !el.hidden && el.textContent.includes('Тестовые подробности')).catch(() => false);
+      check(`у "${name}" подробности спрятаны и открываются кнопкой «Подробная причина»`, moreShown && detHiddenFirst && detOpened);
 
       // если функция вернула ошибку (например, ключ ещё не настроен) — показывается понятное сообщение, а не тишина
       await page.click(btn);
