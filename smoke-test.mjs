@@ -105,11 +105,16 @@ async function mockBybitApi(page) {
     if (url.includes('/kline')) {
       const now = Date.now();
       const rows = [];
+      const q = new URL(url).searchParams;
+      const stepMs = { '15': 9e5, '60': 36e5, '240': 144e5, D: 864e5, W: 6048e5 }[q.get('interval')] || 36e5;
+      const n = Math.min(1000, +q.get('limit') || 150);
+      const scale = Math.sqrt(stepMs / 36e5);
       let price = 65000;
-      for (let i = 0; i < 60; i++) {
-        const t = now - i * 60000;
-        const open = price, close = price + (Math.random() - 0.5) * 100;
-        const high = Math.max(open, close) + 20, low = Math.min(open, close) - 20;
+      // список Bybit — новые свечи первыми; шаг времени = интервал свечи
+      for (let i = 0; i < n; i++) {
+        const t = Math.floor(now / stepMs) * stepMs - i * stepMs;
+        const open = price, close = price * (1 + (Math.random() - 0.5) * 0.004 * scale);
+        const high = Math.max(open, close) * (1 + 0.001 * scale), low = Math.min(open, close) * (1 - 0.001 * scale);
         rows.push([String(t), String(open), String(high), String(low), String(close), '10', '650000']);
         price = close;
       }
@@ -260,7 +265,7 @@ async function main() {
   const verdictClass = await page.$eval('#verdictTitle', (el) => el.className);
   check(
     'вердикт посчитан после загрузки рыночных данных',
-    /long|short|none/.test(verdictClass) && verdictTitle.length > 0,
+    /st-(hot|high|quiet|normal)/.test(verdictClass) && verdictTitle.length > 0,
     `class=${verdictClass}, title=${verdictTitle}`
   );
   // модель рынка: 10–11 факторов с состоянием, оценка по шкале и полоса оценки
@@ -272,10 +277,12 @@ async function main() {
   );
   const oiFactor = await page.$eval('#verdictFactors [data-factor="oi"] .factor-val', (el) => el.textContent.trim()).catch(() => '');
   check('open interest и лонг/шорт загружаются (фактор OI посчитан)', oiFactor.length > 0 && !/нет данных/.test(oiFactor), `oi=${oiFactor}`);
+  const ranges = await page.$$eval('#rH4, #rD1, #rD7', (els) => els.map((e) => e.textContent.trim()));
+  check('показан обычный ход цены за 4 ч / 24 ч / 7 дней', ranges.length === 3 && ranges.every((r) => /^±[\d.,]+%$/.test(r)), `ranges=${ranges.join(' | ')}`);
   const verdictSub = await page.$eval('#verdictSub', (el) => el.textContent.trim());
-  check('под вердиктом показана оценка от −100 до +100', /[-+]?\d+/.test(verdictSub) && /100/.test(verdictSub) && !/NaN|undefined/.test(verdictSub), `sub=${verdictSub}`);
+  check('вместо «бычий/медвежий» — состояние рынка без прогноза направления', !/бычий|медвежий/i.test(verdictTitle + verdictSub) && !/NaN|undefined/.test(verdictSub), `sub=${verdictSub}`);
   const methodItems = await page.$$eval('#methodList li', (els) => els.length);
-  check('методология перечисляет все 11 факторов с весами', methodItems === 11, `items=${methodItems}`);
+  check('методология описывает, что считается и как проверено (6 пунктов)', methodItems === 6, `items=${methodItems}`);
   const verdictTf = await page.$eval('#verdictTfValue', (el) => el.textContent.trim());
   check('вердикт показывает используемый таймфрейм', verdictTf.length > 0 && verdictTf !== '—', `tf=${verdictTf}`);
 
@@ -350,7 +357,7 @@ async function main() {
       check(`при ошибке ИИ-функции "${name}" показывается понятное сообщение вместо тишины`, errorVisible);
     }
     const tradeSummary = (aiPayloads.trade && aiPayloads.trade.marketSummary) || '';
-    check('ИИ получает полную сводку рынка (все факторы с цифрами и уровни)', /Оценка алгоритма/.test(tradeSummary) && /Open Interest/.test(tradeSummary) && tradeSummary.length < 3000, `len=${tradeSummary.length}`);
+    check('ИИ получает сводку рынка (размах движения, риски, факторы, уровни)', /Обычный ход цены/.test(tradeSummary) && /Open Interest/.test(tradeSummary) && !/Оценка алгоритма/.test(tradeSummary) && tradeSummary.length < 3000, `len=${tradeSummary.length}`);
   } else {
     console.log('  \x1b[33m…\x1b[0m проверки кнопок "Проверить с ИИ" пропущены (нужен настоящий адрес сайта, не файл)');
   }
