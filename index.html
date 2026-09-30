@@ -243,6 +243,20 @@
   .score-scale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
   @media(prefers-reduced-motion:reduce){.score-fill{transition:none;}}
   #methodList li{margin-bottom:4px;}
+  .range-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;}
+  .range-tile{border:1px solid var(--border-soft);border-radius:8px;background:var(--panel2);padding:10px 12px;min-width:0;}
+  .range-k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600;}
+  .range-v{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:20px;font-weight:700;margin-top:4px;color:var(--text);direction:ltr;unicode-bidi:isolate;}
+  .range-p{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);margin-top:2px;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere;}
+  html[dir="rtl"] .range-v,html[dir="rtl"] .range-p{text-align:right;}
+  @media(max-width:420px){.range-grid{gap:6px;}.range-tile{padding:8px;}.range-v{font-size:16px;}}
+  .range-caption{font-size:12px;color:var(--muted);margin:8px 0 0;line-height:1.5;}
+  .range-note{font-size:12px;color:var(--text);margin:4px 0 0;line-height:1.5;}
+  .risk-warnings{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+  .risk-warnings .banner{margin:0;}
+  .risk-none{font-size:12.5px;color:var(--muted);}
+  .noise-box{margin-top:10px;padding-top:6px;border-top:1px dashed var(--border-soft);}
+  .noise-k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin:4px 0 2px;}
   #methodList .mw{color:var(--muted);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap;}
   .glossary-item{padding:9px 0;border-bottom:1px solid var(--border-soft);}
   .glossary-item:last-child{border-bottom:none;}
@@ -288,6 +302,17 @@
   .verdict-title.long{color:var(--green);}
   .verdict-title.short{color:var(--red);}
   .verdict-title.none{color:var(--muted);}
+  .verdict-title.st-hot{color:var(--red);}
+  .verdict-title.st-high{color:var(--warn);}
+  .verdict-card.state-hot{box-shadow:var(--shadow),0 0 0 1px var(--red-border) inset;}
+  .verdict-card.state-hot::before,.verdict-card.state-hot::after{border-color:var(--red);}
+  .verdict-card.state-hot .verdict-icon{background:var(--red-bg);border-color:var(--red-border);}
+  .verdict-card.state-hot .verdict-icon .dot{background:var(--red);box-shadow:0 0 14px 1px var(--red);animation:pulse-dot 1.8s ease-in-out infinite;}
+  .verdict-card.state-high{box-shadow:var(--shadow),0 0 0 1px var(--warn-border) inset;}
+  .verdict-card.state-high::before,.verdict-card.state-high::after{border-color:var(--warn);}
+  .verdict-card.state-high .verdict-icon{background:var(--warn-bg);border-color:var(--warn-border);}
+  .verdict-card.state-high .verdict-icon .dot{background:var(--warn);}
+  .verdict-card.state-normal .verdict-icon .dot,.verdict-card.state-quiet .verdict-icon .dot{background:var(--accent);}
   .verdict-sub{color:var(--muted);font-size:12.5px;margin-top:2px;}
   .verdict-tf{margin-top:14px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .verdict-tf b{color:var(--text);font-family:var(--font-mono);}
@@ -500,6 +525,12 @@
           <div class="out-row"><span class="k" data-i18n="outMarginK">Требуемая маржа</span><span class="v" id="oMargin">—</span></div>
           <div class="out-row"><span class="k" data-i18n="outLiqK">Оценка ликвидации (изолир. маржа)*</span><span class="v" id="oLiq">—</span></div>
           <div class="out-row"><span class="k" data-i18n="outTPK">Тейк-профит</span><span class="v" id="oTP">—</span></div>
+          <div class="noise-box" id="noiseBox" hidden>
+            <div class="noise-k" data-i18n="noiseH">Шум рынка — по истории этой монеты</div>
+            <div class="out-row"><span class="k" data-i18n="noiseMoveK">Обычный ход (80%): 4 ч / 24 ч</span><span class="v" id="oMove">—</span></div>
+            <div class="out-row"><span class="k" data-i18n="noiseStopK">Шанс задеть стоп: 4 ч / 24 ч</span><span class="v" id="oStopHit">—</span></div>
+            <div class="out-row"><span class="k" data-i18n="noiseLiqK">Шанс дойти до ликвидации за 24 ч</span><span class="v" id="oLiqHit">—</span></div>
+          </div>
           <div id="banner"></div>
         </div>
         <p class="small" data-i18n="calcSmall">*Приближённая оценка (округлённая maintenance margin rate ~0.4%, без учёта funding/комиссий) — перед реальным входом сверяй точную цену ликвидации на своей бирже.</p>
@@ -527,7 +558,7 @@
 
   <div id="pageMarket" hidden>
   <div class="card verdict-card" id="verdictCard">
-    <h2><span data-i18n="checklistH2">Технический разбор рынка</span> <span class="tag" data-i18n="checklistTag">не сигнал к сделке</span></h2>
+    <h2><span data-i18n="checklistH2">Состояние рынка</span> <span class="tag" data-i18n="checklistTag">риск и контекст, не прогноз</span></h2>
     <div class="verdict-main">
       <div class="verdict-icon" id="verdictIcon"><span class="dot"></span></div>
       <div>
@@ -535,10 +566,15 @@
         <div class="verdict-sub" id="verdictSub" data-i18n="verdictWaitingSub">Жди первую загрузку рыночных данных</div>
       </div>
     </div>
-    <div class="score-bar" dir="ltr" aria-hidden="true">
-      <div class="score-track"><span class="score-tick" style="left:27.5%"></span><span class="score-tick" style="left:42.5%"></span><span class="score-tick" style="left:57.5%"></span><span class="score-tick" style="left:72.5%"></span><span class="score-mid"></span><span class="score-fill" id="scoreFill"></span></div>
-      <div class="score-scale"><span data-i18n="scaleBear">медвежий</span><span>0</span><span data-i18n="scaleBull">бычий</span></div>
+    <div class="range-grid">
+      <div class="range-tile"><div class="range-k" data-i18n="rangeH4">Ход за 4 часа</div><div class="range-v" id="rH4">—</div><div class="range-p" id="rH4p">—</div></div>
+      <div class="range-tile"><div class="range-k" data-i18n="rangeD1">Ход за 24 часа</div><div class="range-v" id="rD1">—</div><div class="range-p" id="rD1p">—</div></div>
+      <div class="range-tile"><div class="range-k" data-i18n="rangeD7">Ход за 7 дней</div><div class="range-v" id="rD7">—</div><div class="range-p" id="rD7p">—</div></div>
     </div>
+    <p class="range-caption" data-i18n="rangeCaption">В 80% случаев по истории этой монеты цена за такое время не уходила дальше этого диапазона — в любую сторону.</p>
+    <p class="range-note" id="rangeNote"></p>
+    <div class="verdict-factors-label" data-i18n="warnH">Риски сейчас</div>
+    <div class="risk-warnings" id="riskWarnings"></div>
     <div class="verdict-tf">
       <span data-i18n="verdictTfPrefix">Учитывается таймфрейм:</span> <b id="verdictTfValue">—</b>
       <button type="button" id="verdictChangeBtn" class="link-btn" data-i18n="verdictChangeBtn">Изменить</button>
@@ -668,7 +704,7 @@
       mPriceK:"Последняя цена", mChangeK:"Изменение 24ч", mTrendK:"Тренд (EMA20 vs EMA50)",
       trendUp:"Восходящий", trendDown:"Нисходящий", trendFlat:"Смешанный/боковик",
       marketSmall:"Fibonacci и pivot уровни считаются автоматически по последним свечам выбранного таймфрейма (по последнему выраженному свингу high/low).",
-      checklistH2:"Технический разбор рынка", checklistTag:"не сигнал к сделке",
+      checklistH2:"Состояние рынка", checklistTag:"риск и контекст, не прогноз",
       itemTrendLabel:"Тренд (EMA20/EMA50)", itemTrendHint:"Цена относительно EMA20 и EMA50 на выбранном таймфрейме",
       itemFundingLabel:"Funding rate", itemFundingHint:"Экстремальная ставка финансирования — сигнал перекоса толпы",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Перекупленность выше 70, перепроданность ниже 30",
@@ -683,7 +719,18 @@
       verdictLongTitle:"Технический фон: скорее бычий", verdictShortTitle:"Технический фон: скорее медвежий", verdictNoneTitle:"Технический фон: нейтральный",
       verdictLongSub:"Большинство факторов указывают на рост", verdictShortSub:"Большинство факторов указывают на снижение", verdictNoneSub:"Факторы противоречат друг другу — явной картины нет",
       verdictTfPrefix:"Учитывается таймфрейм:", verdictChangeBtn:"Изменить",
-      verdictFactorsLabel:"Из чего сложилось:",
+      verdictFactorsLabel:"Технические факторы — описание, не сигнал:",
+      stateHot:"Рынок перегрет — осторожно с плечом", stateHigh:"Высокая волатильность", stateQuiet:"Тихий рынок",
+      stateNormal:"Обычный рынок", stateSub:"Обычный ход за 24 ч: {pct}. Направление сайт не прогнозирует.", stateSubNoVol:"Недостаточно истории свечей, чтобы оценить размах движения.",
+      rangeH4:"Ход за 4 часа", rangeD1:"Ход за 24 часа", rangeD7:"Ход за 7 дней",
+      rangeCaption:"В 80% случаев по истории этой монеты цена за такое время не уходила дальше этого диапазона — в любую сторону.", covNote:"Самопроверка по {coin}: за последние {n} дней цена за сутки осталась в прогнозном диапазоне в {rate}% дней (цель — 80%). Прошлые прогнозы пересчитаны только по данным, известным на тот день.", covNoteShort:"Мало истории для самопроверки ({n} дн.) — диапазон ориентировочный.",
+      warnH:"Риски сейчас", warnFunding:"Funding {f} — {side} переплачивают в разы больше нормы (~0,01%). Толпа перекошена: возможны резкие выносы в обе стороны.", warnOi:"Открытый интерес вырос на {pct}% за сутки — в рынок быстро набирается плечо, растёт риск каскада ликвидаций.",
+      warnCrowd:"{pct}% аккаунтов Bybit в лонге — сильный перекос толпы.", warnHighVol:"Волатильность в {x} раза выше обычной для этой монеты — снизь плечо и размер позиции.", warnQuiet:"Волатильность в {x} раза ниже обычной — необычно тихо.",
+      warnNone:"Признаков перегрева нет: funding, открытый интерес и позиции толпы в норме.", sideLongs:"лонги", sideShorts:"шорты",
+      noiseH:"Шум рынка — по истории этой монеты", noiseMoveK:"Обычный ход (80%): 4 ч / 24 ч", noiseStopK:"Шанс задеть стоп: 4 ч / 24 ч",
+      noiseLiqK:"Шанс дойти до ликвидации за 24 ч", bannerStopNoise:"Стоп стоит внутри обычного шума: по истории цена задевает такую дистанцию за 4 часа примерно в {p}% случаев (обычный ход за 4 ч — {move}). Подумай о более широком стопе и меньшем объёме.", bannerLiqNoise:"Ликвидация близко: по истории цена доходит до такой дистанции за сутки примерно в {p}% случаев. Снизь плечо.",
+      methodItemVol:"Размах движения — модель HAR по дневным свечам этой монеты (волатильность Garman–Klass: дневная, недельная и месячная составляющие). Диапазон «80%» подобран по её собственной истории.", methodItemCheck:"Самопроверка — каждый прошлый прогноз пересчитывается только по данным, известным в тот день, и сайт показывает, как часто цена реально осталась в диапазоне за последние 180 дней.", methodItemTouch:"Шанс задеть стоп — доля прошлых 4-часовых и суточных отрезков, в которых цена отходила на такую же дистанцию (с поправкой на текущую волатильность), в любую сторону.",
+      methodItemWarn:"Перегрев — funding от 0,05% за период, рост открытого интереса от 8% за сутки, 80% и больше или 30% и меньше аккаунтов в лонге, волатильность в 1,5+ раза выше обычной. Это описание риска, а не сигнал на вход.", methodItemFactors:"Технические факторы (тренд, MACD, RSI, объём, уровни и др.) показаны как описание рынка и не складываются в совет «лонг» или «шорт».", methodItemValidated:"Проверено на 20 монетах Bybit за последний год, на данных, которых модель не видела: цена осталась в суточном диапазоне в 79–86% дней (в среднем 83% при цели 80%); модель точнее простой 30-дневной волатильности на 18 из 20 монет; шанс задеть стоп за 4 ч отличался от реального в среднем на 1,5 процентного пункта. Фильтр тренда на дневках тоже проверяли: после комиссий и funding он не дал устойчивого плюса, поэтому на сайте его нет.",
       fTrendLabel:"Тренд ({tf})", fTrendHint:"Цена относительно EMA20 и EMA50", fHtfLabel:"Старший ТФ ({htf})", fHtfHint:"Тот же тренд на таймфрейме выше — фильтр от шума",
       fMacdLabel:"MACD (12/26/9)", fMacdHint:"Направление и ускорение импульса", fMacdDetail:"гистограмма {h}", fRsiLabel:"RSI (14)",
       fRsiHint:"Ниже 30 — перепродан, выше 70 — перекуплен, 55–70 и 30–45 — импульс", fVolLabel:"Объём", fVolHint:"Последние 3 свечи против среднего за 20", fVolDetail:"×{x} к среднему",
@@ -702,22 +749,22 @@
       stPatternBear:"▼ медвежий сигнал", stNoPattern:"• сигнала нет", verdictStrongLongTitle:"Технический фон: сильный бычий", verdictStrongShortTitle:"Технический фон: сильный медвежий",
       verdictScoreSub:"Оценка {score} по шкале от −100 до +100 · за рост {up}, за снижение {down}, нейтрально {flat}", scaleBear:"медвежий", scaleBull:"бычий", intervalW:"1н",
       methodWeight:"вес ×{w}",
-      verdictDisclaimer:"Автоматическая сводка по 11 факторам: тренд, старший таймфрейм, MACD, RSI, объём, open interest, funding, соотношение лонгов и шортов, уровни, паттерн свечей и фон BTC. Это не сигнал к сделке и не гарантия результата; решение и риск — всегда твои.",
-      aiCheckBtn:"Проверить с ИИ — данные + свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…",
-      aiCheckBtnRisk:"ИИ-анализ риска этой сделки", aiCheckBtnChecklist:"ИИ: аргументы за и против",
+      verdictDisclaimer:"Сайт показывает риск и контекст, а не направление: проверка на истории (год, 6 монет) не нашла у технических сигналов преимущества над подбрасыванием монетки. Не финансовый совет — решение и риск всегда твои.",
+      aiCheckBtn:"ИИ: объясни картину и свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…",
+      aiCheckBtnRisk:"ИИ-анализ риска этой сделки", aiCheckBtnChecklist:"ИИ: что может пойти не так",
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
       aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
       aiCheckHintRisk:"Кнопка станет активной, когда заполнены риск, вход, стоп и плечо и в расчёте нет ошибок.",
       refBannerText:"Нет аккаунта на Bybit? Зарегистрируйся по моей ссылке — так ты поддержишь развитие RiskControl.", refBannerCta:"Перейти →",
-      methodH2:"Как формируется вердикт", methodTag:"методология",
-      methodIntro:"Вердикт складывается из 11 факторов (у самого BTC — из 10). Каждый даёт от −1 до +1, умножается на свой вес, и всё сводится к одной оценке от −100 до +100:",
+      methodH2:"Как считается состояние рынка", methodTag:"методология",
+      methodIntro:"Сайт не угадывает, куда пойдёт цена: проверка за год (6 монет, 1ч и 4ч, ~66 000 оценок) показала 44–51% угаданных направлений — уровень монетки. Поэтому здесь считается то, что поддаётся проверке:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
       methodItem2:"Funding rate — экстремальная ставка в одну сторону (от ±0.1% за период) трактуется как перекос толпы (контрариан)",
       methodItem3:"RSI(14) — перекупленность выше 70 или перепроданность ниже 30",
       methodItem4:"Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления",
       methodItem5:"Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов",
-      methodThreshold:"От +45 — сильный бычий фон, от +15 — скорее бычий, от −15 до +15 — нейтральный (явного перевеса нет), от −15 и ниже — скорее медвежий, от −45 — сильный медвежий. Если какие-то данные с Bybit не загрузились, фактор пропускается, а оценка считается по остальным.",
-      methodSmall:"Все данные — публичные данные Bybit по выбранной монете и таймфрейму, пересчитываются при каждом обновлении. Важно: это не финансовая рекомендация и не сигнал к входу. Модель не проверялась на исторических данных, а технические факторы сами по себе не гарантируют преимущества над рынком. Используй оценку как сводку контекста вместе со своим анализом — решение и риск всегда твои.",
+      methodThreshold:"Если какие-то данные с Bybit не загрузились, блок остаётся пустым — сайт не заполняет его догадками.",
+      methodSmall:"Не финансовая рекомендация. Диапазон — вероятностная оценка: примерно в 1 случае из 5 цена уходит дальше, иногда намного. Решение и риск всегда твои.",
       aboutH2:"О проекте", aboutTag:"независимый инструмент",
       aboutText:"RiskControl — независимый бесплатный проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без регистрации и без сбора личных данных. Баннер Bybit вверху — реферальная ссылка: если зарегистрируешься по ней, автор может получить вознаграждение от биржи; на расчёты это никак не влияет. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.",
       glossaryH2:"Глоссарий терминов", glossaryTag:"если что-то непонятно",
@@ -765,7 +812,7 @@
       mPriceK:"Last price", mChangeK:"24h change", mTrendK:"Trend (EMA20 vs EMA50)",
       trendUp:"Uptrend", trendDown:"Downtrend", trendFlat:"Mixed/sideways",
       marketSmall:"Fibonacci and pivot levels are calculated automatically from the latest candles of the selected timeframe (from the last clear high/low swing).",
-      checklistH2:"Market technical read", checklistTag:"not a trade signal",
+      checklistH2:"Market conditions", checklistTag:"risk and context, not a forecast",
       itemTrendLabel:"Trend (EMA20/EMA50)", itemTrendHint:"Price relative to EMA20 and EMA50 on the selected timeframe",
       itemFundingLabel:"Funding rate", itemFundingHint:"An extreme funding rate is a sign of crowd skew",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Overbought above 70, oversold below 30",
@@ -780,7 +827,18 @@
       verdictLongTitle:"Technical backdrop: leaning bullish", verdictShortTitle:"Technical backdrop: leaning bearish", verdictNoneTitle:"Technical backdrop: neutral",
       verdictLongSub:"Most factors point up", verdictShortSub:"Most factors point down", verdictNoneSub:"Factors contradict each other — no clear picture",
       verdictTfPrefix:"Timeframe used:", verdictChangeBtn:"Change",
-      verdictFactorsLabel:"What it's made of:",
+      verdictFactorsLabel:"Technical factors — a description, not a signal:",
+      stateHot:"Overheated market — careful with leverage", stateHigh:"High volatility", stateQuiet:"Quiet market",
+      stateNormal:"Normal market", stateSub:"Typical 24h move: {pct}. The site does not forecast direction.", stateSubNoVol:"Not enough candle history to estimate the size of moves.",
+      rangeH4:"4-hour move", rangeD1:"24-hour move", rangeD7:"7-day move",
+      rangeCaption:"In 80% of cases in this coin's history, price did not move beyond this range over that time — in either direction.", covNote:"Self-check for {coin}: over the last {n} days the daily move stayed inside the forecast range on {rate}% of days (target 80%). Past forecasts were recomputed using only data known on that day.", covNoteShort:"Not enough history for a self-check ({n} days) — the range is approximate.",
+      warnH:"Risks right now", warnFunding:"Funding {f} — {side} are paying many times the norm (~0.01%). The crowd is one-sided: sharp wicks in either direction are possible.", warnOi:"Open interest rose {pct}% in 24h — leverage is piling in fast, raising the risk of a liquidation cascade.",
+      warnCrowd:"{pct}% of Bybit accounts are long — the crowd is heavily one-sided.", warnHighVol:"Volatility is {x}× this coin's normal — cut leverage and position size.", warnQuiet:"Volatility is {x}× below normal — unusually quiet.",
+      warnNone:"No signs of overheating: funding, open interest and crowd positioning look normal.", sideLongs:"longs", sideShorts:"shorts",
+      noiseH:"Market noise — from this coin's history", noiseMoveK:"Typical move (80%): 4h / 24h", noiseStopK:"Chance to hit the stop: 4h / 24h",
+      noiseLiqK:"Chance to reach liquidation in 24h", bannerStopNoise:"Your stop sits inside normal noise: historically price covers this distance within 4 hours in about {p}% of cases (typical 4h move {move}). Consider a wider stop with a smaller size.", bannerLiqNoise:"Liquidation is close: historically price reaches this distance within a day in about {p}% of cases. Lower the leverage.",
+      methodItemVol:"Size of moves — a HAR model on this coin's daily candles (Garman–Klass volatility: daily, weekly and monthly components). The 80% range is fitted to the coin's own history.", methodItemCheck:"Self-check — every past forecast is recomputed using only data known on that day, and the site shows how often price actually stayed in range over the last 180 days.", methodItemTouch:"Chance to hit the stop — the share of past 4-hour and 1-day windows in which price moved the same distance (scaled to current volatility), in either direction.",
+      methodItemWarn:"Overheating — funding of 0.05%+ per period, open interest up 8%+ in 24h, 80% or more (or 30% or less) of accounts long, volatility 1.5×+ above normal. This describes risk; it is not an entry signal.", methodItemFactors:"Technical factors (trend, MACD, RSI, volume, levels, etc.) are shown as a description of the market and do not add up to a long or short call.", methodItemValidated:"Tested on 20 Bybit coins over the last year, on data the model had not seen: price stayed inside the 24h range on 79–86% of days (83% on average vs an 80% target); the model beat simple 30-day volatility on 18 of 20 coins; the 4h stop-hit chance differed from reality by 1.5 percentage points on average. A daily trend filter was tested too: after fees and funding it showed no consistent profit, so it is not on the site.",
       fTrendLabel:"Trend ({tf})", fTrendHint:"Price vs EMA20 and EMA50", fHtfLabel:"Higher TF ({htf})", fHtfHint:"Same trend one timeframe up — filters out noise",
       fMacdLabel:"MACD (12/26/9)", fMacdHint:"Direction and acceleration of momentum", fMacdDetail:"histogram {h}", fRsiLabel:"RSI (14)",
       fRsiHint:"Below 30 oversold, above 70 overbought, 55–70 and 30–45 — momentum", fVolLabel:"Volume", fVolHint:"Last 3 candles vs the 20-candle average", fVolDetail:"×{x} vs average",
@@ -799,22 +857,22 @@
       stPatternBear:"▼ bearish signal", stNoPattern:"• no signal", verdictStrongLongTitle:"Technical backdrop: strongly bullish", verdictStrongShortTitle:"Technical backdrop: strongly bearish",
       verdictScoreSub:"Score {score} on a −100 to +100 scale · {up} up, {down} down, {flat} neutral", scaleBear:"bearish", scaleBull:"bullish", intervalW:"1W",
       methodWeight:"weight ×{w}",
-      verdictDisclaimer:"Automatic summary of 11 factors: trend, higher timeframe, MACD, RSI, volume, open interest, funding, long/short ratio, levels, candle pattern and the BTC backdrop. Not a trade signal and no guarantee of results; the decision and the risk are always yours.",
-      aiCheckBtn:"Check with AI — data + fresh news", aiCheckBtnLoading:"Asking the AI…",
-      aiCheckBtnRisk:"AI risk analysis of this trade", aiCheckBtnChecklist:"AI: arguments for and against",
+      verdictDisclaimer:"The site shows risk and context, not direction: a historical check (1 year, 6 coins) found no edge for technical signals over a coin flip. Not financial advice — the decision and the risk are always yours.",
+      aiCheckBtn:"AI: explain the picture and fresh news", aiCheckBtnLoading:"Asking the AI…",
+      aiCheckBtnRisk:"AI risk analysis of this trade", aiCheckBtnChecklist:"AI: what could go wrong",
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
       aiCheckHintRisk:"The button unlocks once risk, entry, stop and leverage are filled in and the calculation shows no errors.",
       refBannerText:"No Bybit account yet? Sign up through my link — it helps support RiskControl.", refBannerCta:"Go →",
-      methodH2:"How this is built", methodTag:"methodology",
-      methodIntro:"The verdict combines 11 factors (10 for BTC itself). Each gives −1 to +1, is multiplied by its weight, and everything is condensed into one score from −100 to +100:",
+      methodH2:"How market conditions are calculated", methodTag:"methodology",
+      methodIntro:"The site does not guess where price will go: a 1-year check (6 coins, 1h and 4h, ~66,000 readings) showed 44–51% of directions right — coin-flip level. So it calculates what can actually be verified:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
       methodItem2:"Funding rate — an extreme rate in one direction (±0.1% per period or more) is read as crowd skew (contrarian)",
       methodItem3:"RSI(14) — overbought above 70 or oversold below 30",
       methodItem4:"Fibonacci/pivot — price near a support or resistance level",
       methodItem5:"Pattern/structure — range breakout, engulfing, pin bar, or the direction of the high/low structure",
-      methodThreshold:"+45 and above — strongly bullish, +15 and above — leaning bullish, −15 to +15 — neutral (no clear edge), −15 and below — leaning bearish, −45 and below — strongly bearish. If some Bybit data fails to load, that factor is skipped and the score uses the rest.",
-      methodSmall:"All inputs are public Bybit data for the selected coin and timeframe, recalculated on every refresh. Important: this is not financial advice or an entry signal. The model has not been backtested, and technical factors alone don't guarantee an edge over the market. Use the score as a summary of context alongside your own analysis — the decision and the risk are always yours.",
+      methodThreshold:"If some Bybit data fails to load, that block stays empty — the site never fills it with guesses.",
+      methodSmall:"Not financial advice. The range is a probability estimate: in roughly 1 case out of 5 price goes further, sometimes much further. The decision and the risk are always yours.",
       aboutH2:"About this tool", aboutTag:"independent project",
       aboutText:"RiskControl is an independent, free project with no affiliation to any exchange, including Bybit, whose public data it uses for its calculations. The site's job is a single screen for sizing risk and position before a trade, with no sign-up and no personal data collected. The Bybit banner at the top is a referral link: if you sign up through it, the author may receive a reward from the exchange; this has no effect on the calculations. It's an evolving side project — as with any tool, double-check the key numbers yourself before a real trade.",
       glossaryH2:"Glossary", glossaryTag:"if something's unclear",
@@ -862,7 +920,7 @@
       mPriceK:"Letzter Preis", mChangeK:"24-Std.-Änderung", mTrendK:"Trend (EMA20 vs. EMA50)",
       trendUp:"Aufwärtstrend", trendDown:"Abwärtstrend", trendFlat:"Gemischt/Seitwärts",
       marketSmall:"Fibonacci- und Pivot-Levels werden automatisch aus den letzten Kerzen des gewählten Zeitrahmens berechnet (aus dem letzten klaren High/Low-Swing).",
-      checklistH2:"Technische Markteinschätzung", checklistTag:"kein Handelssignal",
+      checklistH2:"Marktlage", checklistTag:"Risiko und Kontext, keine Prognose",
       itemTrendLabel:"Trend (EMA20/EMA50)", itemTrendHint:"Preis relativ zu EMA20 und EMA50 im gewählten Zeitrahmen",
       itemFundingLabel:"Funding Rate", itemFundingHint:"Ein extremes Funding ist ein Zeichen für eine Marktschieflage",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Überkauft über 70, überverkauft unter 30",
@@ -877,7 +935,18 @@
       verdictLongTitle:"Technisches Bild: eher bullisch", verdictShortTitle:"Technisches Bild: eher bärisch", verdictNoneTitle:"Technisches Bild: neutral",
       verdictLongSub:"Die meisten Faktoren deuten nach oben", verdictShortSub:"Die meisten Faktoren deuten nach unten", verdictNoneSub:"Die Faktoren widersprechen sich — kein klares Bild",
       verdictTfPrefix:"Verwendeter Zeitrahmen:", verdictChangeBtn:"Ändern",
-      verdictFactorsLabel:"Woraus es sich zusammensetzt:",
+      verdictFactorsLabel:"Technische Faktoren — eine Beschreibung, kein Signal:",
+      stateHot:"Markt überhitzt — Vorsicht mit dem Hebel", stateHigh:"Hohe Volatilität", stateQuiet:"Ruhiger Markt",
+      stateNormal:"Normaler Markt", stateSub:"Typische Bewegung in 24 h: {pct}. Eine Richtung prognostiziert die Seite nicht.", stateSubNoVol:"Zu wenig Kerzenhistorie, um die Größe der Bewegungen zu schätzen.",
+      rangeH4:"Bewegung in 4 Std.", rangeD1:"Bewegung in 24 Std.", rangeD7:"Bewegung in 7 Tagen",
+      rangeCaption:"In 80% der Fälle in der Historie dieses Coins blieb der Preis in dieser Zeit innerhalb dieser Spanne — in beide Richtungen.", covNote:"Selbsttest für {coin}: In den letzten {n} Tagen blieb die Tagesbewegung an {rate}% der Tage in der prognostizierten Spanne (Ziel 80%). Frühere Prognosen wurden nur mit damals bekannten Daten neu berechnet.", covNoteShort:"Zu wenig Historie für einen Selbsttest ({n} Tage) — die Spanne ist ein Richtwert.",
+      warnH:"Risiken jetzt", warnFunding:"Funding {f} — {side} zahlen ein Vielfaches des Normalwerts (~0,01%). Die Masse ist einseitig: heftige Ausschläge in beide Richtungen sind möglich.", warnOi:"Das Open Interest ist in 24 Std. um {pct}% gestiegen — es kommt schnell Hebel in den Markt, das Risiko einer Liquidationskaskade steigt.",
+      warnCrowd:"{pct}% der Bybit-Konten sind long — die Masse ist stark einseitig.", warnHighVol:"Die Volatilität ist {x}-mal höher als üblich für diesen Coin — Hebel und Positionsgröße senken.", warnQuiet:"Die Volatilität ist {x}-mal niedriger als üblich — ungewöhnlich ruhig.",
+      warnNone:"Keine Anzeichen von Überhitzung: Funding, Open Interest und Positionierung der Masse sind normal.", sideLongs:"Longs", sideShorts:"Shorts",
+      noiseH:"Marktrauschen — aus der Historie dieses Coins", noiseMoveK:"Typische Bewegung (80%): 4 Std. / 24 Std.", noiseStopK:"Chance, den Stop zu treffen: 4 Std. / 24 Std.",
+      noiseLiqK:"Chance, die Liquidation in 24 Std. zu erreichen", bannerStopNoise:"Dein Stop liegt im normalen Rauschen: Historisch erreicht der Preis diese Distanz innerhalb von 4 Stunden in etwa {p}% der Fälle (typische 4-Std.-Bewegung {move}). Erwäge einen weiteren Stop mit kleinerer Größe.", bannerLiqNoise:"Die Liquidation ist nah: Historisch erreicht der Preis diese Distanz innerhalb eines Tages in etwa {p}% der Fälle. Senke den Hebel.",
+      methodItemVol:"Größe der Bewegungen — ein HAR-Modell auf den Tageskerzen dieses Coins (Garman-Klass-Volatilität: Tages-, Wochen- und Monatskomponente). Die 80%-Spanne ist an der eigenen Historie des Coins kalibriert.", methodItemCheck:"Selbsttest — jede frühere Prognose wird nur mit Daten neu berechnet, die an jenem Tag bekannt waren, und die Seite zeigt, wie oft der Preis in den letzten 180 Tagen tatsächlich in der Spanne blieb.", methodItemTouch:"Chance, den Stop zu treffen — der Anteil früherer 4-Stunden- und Tagesabschnitte, in denen der Preis die gleiche Distanz zurücklegte (skaliert auf die aktuelle Volatilität), in beide Richtungen.",
+      methodItemWarn:"Überhitzung — Funding ab 0,05% pro Periode, Open Interest +8% in 24 Std., 80% oder mehr bzw. 30% oder weniger Konten long, Volatilität 1,5-mal über normal. Das beschreibt Risiko und ist kein Einstiegssignal.", methodItemFactors:"Technische Faktoren (Trend, MACD, RSI, Volumen, Levels usw.) werden als Beschreibung des Marktes gezeigt und ergeben keine Long- oder Short-Empfehlung.", methodItemValidated:"Getestet an 20 Bybit-Coins über das letzte Jahr, mit Daten, die das Modell nicht kannte: Der Preis blieb an 79–86% der Tage in der 24-Std.-Spanne (im Schnitt 83% bei 80% Ziel); das Modell war bei 18 von 20 Coins genauer als die einfache 30-Tage-Volatilität; die Chance, den Stop in 4 Std. zu treffen, wich im Schnitt um 1,5 Prozentpunkte von der Realität ab. Ein Trendfilter auf Tagesbasis wurde ebenfalls getestet: Nach Gebühren und Funding brachte er keinen stabilen Gewinn, deshalb ist er nicht auf der Seite.",
       fTrendLabel:"Trend ({tf})", fTrendHint:"Preis im Vergleich zu EMA20 und EMA50", fHtfLabel:"Höherer TF ({htf})", fHtfHint:"Derselbe Trend eine Stufe höher — filtert Rauschen",
       fMacdLabel:"MACD (12/26/9)", fMacdHint:"Richtung und Beschleunigung des Momentums", fMacdDetail:"Histogramm {h}", fRsiLabel:"RSI (14)",
       fRsiHint:"Unter 30 überverkauft, über 70 überkauft, 55–70 und 30–45 — Momentum", fVolLabel:"Volumen", fVolHint:"Letzte 3 Kerzen gegenüber dem 20-Kerzen-Schnitt", fVolDetail:"×{x} zum Schnitt",
@@ -896,22 +965,22 @@
       stPatternBear:"▼ bärisches Signal", stNoPattern:"• kein Signal", verdictStrongLongTitle:"Technisches Bild: stark bullisch", verdictStrongShortTitle:"Technisches Bild: stark bärisch",
       verdictScoreSub:"Wert {score} auf einer Skala von −100 bis +100 · {up} aufwärts, {down} abwärts, {flat} neutral", scaleBear:"bärisch", scaleBull:"bullisch", intervalW:"1W",
       methodWeight:"Gewicht ×{w}",
-      verdictDisclaimer:"Automatische Zusammenfassung aus 11 Faktoren: Trend, höherer Zeitrahmen, MACD, RSI, Volumen, Open Interest, Funding, Long/Short-Verhältnis, Levels, Kerzenmuster und BTC-Umfeld. Kein Handelssignal und keine Erfolgsgarantie; Entscheidung und Risiko liegen immer bei dir.",
-      aiCheckBtn:"Mit KI prüfen — Daten + aktuelle Nachrichten", aiCheckBtnLoading:"Frage die KI…",
-      aiCheckBtnRisk:"KI-Risikoanalyse dieses Trades", aiCheckBtnChecklist:"KI: Argumente dafür und dagegen",
+      verdictDisclaimer:"Die Seite zeigt Risiko und Kontext, nicht die Richtung: Ein Test auf historischen Daten (1 Jahr, 6 Coins) fand bei technischen Signalen keinen Vorteil gegenüber einem Münzwurf. Keine Finanzberatung — Entscheidung und Risiko liegen immer bei dir.",
+      aiCheckBtn:"KI: Lage und aktuelle News erklären", aiCheckBtnLoading:"Frage die KI…",
+      aiCheckBtnRisk:"KI-Risikoanalyse dieses Trades", aiCheckBtnChecklist:"KI: Was schiefgehen kann",
       aiCheckLoading:"Lese Nachrichten und analysiere — meist 10-20 Sekunden…",
       aiCheckError:"Keine Antwort von der KI erhalten. Versuch es in einer Minute noch einmal.",
       aiCheckHintRisk:"Der Button wird aktiv, sobald Risiko, Einstieg, Stop und Hebel ausgefüllt sind und die Berechnung keine Fehler zeigt.",
       refBannerText:"Noch kein Bybit-Konto? Registriere dich über meinen Link — damit unterstützt du RiskControl.", refBannerCta:"Los →",
-      methodH2:"Wie das zustande kommt", methodTag:"Methodik",
-      methodIntro:"Das Urteil kombiniert 11 Faktoren (bei BTC selbst 10). Jeder liefert −1 bis +1, wird mit seinem Gewicht multipliziert, und alles wird zu einem Wert von −100 bis +100 zusammengefasst:",
+      methodH2:"Wie die Marktlage berechnet wird", methodTag:"Methodik",
+      methodIntro:"Die Seite rät nicht, wohin der Preis geht: Ein Test über 1 Jahr (6 Coins, 1h und 4h, ~66.000 Auswertungen) traf die Richtung in 44–51% der Fälle — Münzwurf-Niveau. Deshalb wird hier berechnet, was sich überprüfen lässt:",
       methodItem1:"Trend — Preis und EMA20 über EMA50 (bullisch) oder darunter (bärisch)",
       methodItem2:"Funding Rate — eine extreme Rate in eine Richtung (ab ±0,1 % pro Periode) gilt als Marktschieflage (konträr)",
       methodItem3:"RSI(14) — überkauft über 70 oder überverkauft unter 30",
       methodItem4:"Fibonacci/Pivot — Preis nahe einem Unterstützungs- oder Widerstandslevel",
       methodItem5:"Muster/Struktur — Range-Breakout, Engulfing, Pin Bar oder Richtung der Hoch/Tief-Struktur",
-      methodThreshold:"Ab +45 — stark bullisch, ab +15 — eher bullisch, −15 bis +15 — neutral (kein klarer Vorteil), ab −15 abwärts — eher bärisch, ab −45 — stark bärisch. Wenn Bybit-Daten nicht laden, wird der Faktor übersprungen und der Wert aus den übrigen berechnet.",
-      methodSmall:"Alle Daten sind öffentliche Bybit-Daten für die gewählte Münze und den Zeitrahmen und werden bei jeder Aktualisierung neu berechnet. Wichtig: Das ist keine Finanzberatung und kein Einstiegssignal. Das Modell wurde nicht an historischen Daten getestet, und technische Faktoren allein garantieren keinen Vorteil gegenüber dem Markt. Nutze den Wert als Zusammenfassung des Kontexts neben deiner eigenen Analyse — Entscheidung und Risiko liegen immer bei dir.",
+      methodThreshold:"Wenn Bybit-Daten nicht laden, bleibt der Block leer — die Seite füllt ihn nicht mit Vermutungen.",
+      methodSmall:"Keine Finanzberatung. Die Spanne ist eine Wahrscheinlichkeitsschätzung: in etwa 1 von 5 Fällen geht der Preis weiter, manchmal deutlich. Entscheidung und Risiko liegen immer bei dir.",
       aboutH2:"Über dieses Tool", aboutTag:"unabhängiges Projekt",
       aboutText:"RiskControl ist ein unabhängiges, kostenloses Projekt ohne Verbindung zu irgendeiner Börse, einschließlich Bybit, dessen öffentliche Daten für die Berechnungen genutzt werden. Die Seite bietet einen einzigen Bildschirm zur Risiko- und Positionsgrößenberechnung vor einem Trade — ohne Registrierung und ohne Erhebung persönlicher Daten. Das Bybit-Banner oben ist ein Empfehlungslink: Wenn du dich darüber registrierst, kann der Autor eine Prämie von der Börse erhalten; auf die Berechnungen hat das keinen Einfluss. Die Seite wird laufend weiterentwickelt; wie bei jedem Tool solltest du die wichtigsten Zahlen vor einem echten Trade selbst gegenprüfen.",
       glossaryH2:"Glossar", glossaryTag:"falls etwas unklar ist",
@@ -959,7 +1028,7 @@
       mPriceK:"Остання ціна", mChangeK:"Зміна за 24г", mTrendK:"Тренд (EMA20 проти EMA50)",
       trendUp:"Висхідний", trendDown:"Низхідний", trendFlat:"Змішаний/боковик",
       marketSmall:"Рівні Fibonacci та pivot розраховуються автоматично за останніми свічками обраного таймфрейму (за останнім вираженим свінгом high/low).",
-      checklistH2:"Технічний розбір ринку", checklistTag:"не сигнал до угоди",
+      checklistH2:"Стан ринку", checklistTag:"ризик і контекст, не прогноз",
       itemTrendLabel:"Тренд (EMA20/EMA50)", itemTrendHint:"Ціна відносно EMA20 та EMA50 на обраному таймфреймі",
       itemFundingLabel:"Funding rate", itemFundingHint:"Екстремальна ставка фінансування — сигнал перекосу натовпу",
       itemRsiLabel:"RSI (14)", itemRsiHint:"Перекупленість вище 70, перепроданість нижче 30",
@@ -974,7 +1043,18 @@
       verdictLongTitle:"Технічний фон: радше бичачий", verdictShortTitle:"Технічний фон: радше ведмежий", verdictNoneTitle:"Технічний фон: нейтральний",
       verdictLongSub:"Більшість факторів вказують на зростання", verdictShortSub:"Більшість факторів вказують на зниження", verdictNoneSub:"Фактори суперечать один одному — чіткої картини немає",
       verdictTfPrefix:"Враховується таймфрейм:", verdictChangeBtn:"Змінити",
-      verdictFactorsLabel:"З чого це складається:",
+      verdictFactorsLabel:"Технічні фактори — опис, не сигнал:",
+      stateHot:"Ринок перегрітий — обережно з плечем", stateHigh:"Висока волатильність", stateQuiet:"Тихий ринок",
+      stateNormal:"Звичайний ринок", stateSub:"Звичайний хід за 24 год: {pct}. Напрям сайт не прогнозує.", stateSubNoVol:"Замало історії свічок, щоб оцінити розмах руху.",
+      rangeH4:"Хід за 4 години", rangeD1:"Хід за 24 години", rangeD7:"Хід за 7 днів",
+      rangeCaption:"У 80% випадків в історії цієї монети ціна за такий час не виходила за цей діапазон — у будь-який бік.", covNote:"Самоперевірка по {coin}: за останні {n} днів ціна за добу залишилась у прогнозному діапазоні в {rate}% днів (мета — 80%). Минулі прогнози перераховано лише за даними, відомими на той день.", covNoteShort:"Замало історії для самоперевірки ({n} дн.) — діапазон орієнтовний.",
+      warnH:"Ризики зараз", warnFunding:"Funding {f} — {side} переплачують у рази більше за норму (~0,01%). Натовп перекошений: можливі різкі виноси в обидва боки.", warnOi:"Відкритий інтерес зріс на {pct}% за добу — у ринок швидко набирається плече, зростає ризик каскаду ліквідацій.",
+      warnCrowd:"{pct}% акаунтів Bybit у лонгу — сильний перекіс натовпу.", warnHighVol:"Волатильність у {x} раза вища за звичайну для цієї монети — зменш плече і розмір позиції.", warnQuiet:"Волатильність у {x} раза нижча за звичайну — незвично тихо.",
+      warnNone:"Ознак перегріву немає: funding, відкритий інтерес і позиції натовпу в нормі.", sideLongs:"лонги", sideShorts:"шорти",
+      noiseH:"Шум ринку — за історією цієї монети", noiseMoveK:"Звичайний хід (80%): 4 год / 24 год", noiseStopK:"Шанс зачепити стоп: 4 год / 24 год",
+      noiseLiqK:"Шанс дійти до ліквідації за 24 год", bannerStopNoise:"Стоп стоїть усередині звичайного шуму: за історією ціна проходить таку відстань за 4 години приблизно в {p}% випадків (звичайний хід за 4 год — {move}). Подумай про ширший стоп і менший обсяг.", bannerLiqNoise:"Ліквідація близько: за історією ціна доходить до такої відстані за добу приблизно в {p}% випадків. Зменш плече.",
+      methodItemVol:"Розмах руху — модель HAR за денними свічками цієї монети (волатильність Garman–Klass: денна, тижнева і місячна складові). Діапазон «80%» підібрано за її власною історією.", methodItemCheck:"Самоперевірка — кожен минулий прогноз перераховується лише за даними, відомими того дня, і сайт показує, як часто ціна справді залишалась у діапазоні за останні 180 днів.", methodItemTouch:"Шанс зачепити стоп — частка минулих 4-годинних і добових відрізків, у яких ціна відходила на таку саму відстань (з поправкою на поточну волатильність), у будь-який бік.",
+      methodItemWarn:"Перегрів — funding від 0,05% за період, зростання відкритого інтересу від 8% за добу, 80% і більше або 30% і менше акаунтів у лонгу, волатильність у 1,5+ раза вища за звичайну. Це опис ризику, а не сигнал на вхід.", methodItemFactors:"Технічні фактори (тренд, MACD, RSI, обсяг, рівні тощо) показано як опис ринку, і вони не складаються в пораду «лонг» чи «шорт».", methodItemValidated:"Перевірено на 20 монетах Bybit за останній рік, на даних, яких модель не бачила: ціна залишилась у добовому діапазоні в 79–86% днів (у середньому 83% при меті 80%); модель точніша за просту 30-денну волатильність на 18 з 20 монет; шанс зачепити стоп за 4 год відрізнявся від реального в середньому на 1,5 процентного пункту. Фільтр тренду на денних свічках теж перевіряли: після комісій і funding він не дав стабільного плюсу, тому на сайті його немає.",
       fTrendLabel:"Тренд ({tf})", fTrendHint:"Ціна відносно EMA20 та EMA50", fHtfLabel:"Старший ТФ ({htf})", fHtfHint:"Той самий тренд на таймфреймі вище — фільтр від шуму",
       fMacdLabel:"MACD (12/26/9)", fMacdHint:"Напрям і прискорення імпульсу", fMacdDetail:"гістограма {h}", fRsiLabel:"RSI (14)",
       fRsiHint:"Нижче 30 — перепроданий, вище 70 — перекуплений, 55–70 і 30–45 — імпульс", fVolLabel:"Обсяг", fVolHint:"Останні 3 свічки проти середнього за 20", fVolDetail:"×{x} до середнього",
@@ -993,22 +1073,22 @@
       stPatternBear:"▼ ведмежий сигнал", stNoPattern:"• сигналу немає", verdictStrongLongTitle:"Технічний фон: сильний бичачий", verdictStrongShortTitle:"Технічний фон: сильний ведмежий",
       verdictScoreSub:"Оцінка {score} за шкалою від −100 до +100 · за зростання {up}, за зниження {down}, нейтрально {flat}", scaleBear:"ведмежий", scaleBull:"бичачий", intervalW:"1т",
       methodWeight:"вага ×{w}",
-      verdictDisclaimer:"Автоматичне зведення за 11 факторами: тренд, старший таймфрейм, MACD, RSI, обсяг, open interest, funding, співвідношення лонгів і шортів, рівні, патерн свічок і фон BTC. Це не сигнал до угоди і не гарантія результату; рішення і ризик — завжди твої.",
-      aiCheckBtn:"Перевірити з ШІ — дані + свіжі новини", aiCheckBtnLoading:"Питаю ШІ…",
-      aiCheckBtnRisk:"ШІ-аналіз ризику цієї угоди", aiCheckBtnChecklist:"ШІ: аргументи за і проти",
+      verdictDisclaimer:"Сайт показує ризик і контекст, а не напрям: перевірка на історії (рік, 6 монет) не знайшла в технічних сигналів переваги над підкиданням монетки. Не фінансова порада — рішення і ризик завжди твої.",
+      aiCheckBtn:"ШІ: поясни картину і свіжі новини", aiCheckBtnLoading:"Питаю ШІ…",
+      aiCheckBtnRisk:"ШІ-аналіз ризику цієї угоди", aiCheckBtnChecklist:"ШІ: що може піти не так",
       aiCheckLoading:"Читаю новини та аналізую — зазвичай 10-20 секунд…",
       aiCheckError:"Не вдалося отримати відповідь від ШІ. Спробуй ще раз за хвилину.",
       aiCheckHintRisk:"Кнопка стане активною, коли заповнено ризик, вхід, стоп і плече та в розрахунку немає помилок.",
       refBannerText:"Ще немає акаунта на Bybit? Зареєструйся за моїм посиланням — так ти підтримаєш розвиток RiskControl.", refBannerCta:"Перейти →",
-      methodH2:"Як це влаштовано", methodTag:"методологія",
-      methodIntro:"Вердикт складається з 11 факторів (для самого BTC — з 10). Кожен дає від −1 до +1, множиться на свою вагу, і все зводиться до однієї оцінки від −100 до +100:",
+      methodH2:"Як рахується стан ринку", methodTag:"методологія",
+      methodIntro:"Сайт не вгадує, куди піде ціна: перевірка за рік (6 монет, 1год і 4год, ~66 000 оцінок) показала 44–51% вгаданих напрямків — рівень монетки. Тому тут рахується те, що можна перевірити:",
       methodItem1:"Тренд — ціна і EMA20 вище EMA50 (бичачий) або нижче (ведмежий)",
       methodItem2:"Funding rate — екстремальна ставка в один бік (від ±0.1% за період) трактується як перекіс натовпу (контраріан)",
       methodItem3:"RSI(14) — перекупленість вище 70 або перепроданість нижче 30",
       methodItem4:"Fibonacci/pivot — ціна поруч із рівнем підтримки або опору",
       methodItem5:"Патерн/структура — пробій діапазону, поглинання, пін-бар або напрямок структури максимумів/мінімумів",
-      methodThreshold:"Від +45 — сильний бичачий фон, від +15 — радше бичачий, від −15 до +15 — нейтральний (явної переваги немає), від −15 і нижче — радше ведмежий, від −45 — сильний ведмежий. Якщо якісь дані з Bybit не завантажились, фактор пропускається, а оцінка рахується за рештою.",
-      methodSmall:"Усі дані — публічні дані Bybit для обраної монети й таймфрейму, перераховуються при кожному оновленні. Важливо: це не фінансова порада і не сигнал до входу. Модель не перевірялась на історичних даних, а технічні фактори самі по собі не гарантують переваги над ринком. Використовуй оцінку як зведення контексту поряд зі своїм аналізом — рішення і ризик завжди твої.",
+      methodThreshold:"Якщо якісь дані з Bybit не завантажились, блок лишається порожнім — сайт не заповнює його здогадками.",
+      methodSmall:"Не фінансова порада. Діапазон — імовірнісна оцінка: приблизно в 1 випадку з 5 ціна йде далі, іноді значно. Рішення і ризик завжди твої.",
       aboutH2:"Про проєкт", aboutTag:"незалежний інструмент",
       aboutText:"RiskControl — незалежний безкоштовний проєкт, не пов'язаний з жодною біржею, включно з Bybit, чиї публічні дані він використовує для розрахунків. Завдання сайту — один екран для розрахунку ризику й обсягу позиції перед угодою, без реєстрації та без збору особистих даних. Банер Bybit угорі — реферальне посилання: якщо зареєструєшся за ним, автор може отримати винагороду від біржі; на розрахунки це ніяк не впливає. Сайт поступово допрацьовується; як і з будь-яким інструментом — перед реальною угодою перевіряй ключові цифри самостійно.",
       glossaryH2:"Глосарій термінів", glossaryTag:"якщо щось незрозуміло",
@@ -1056,7 +1136,7 @@
       mPriceK:"מחיר אחרון", mChangeK:"שינוי 24 שעות", mTrendK:"מגמה (EMA20 מול EMA50)",
       trendUp:"מגמה עולה", trendDown:"מגמה יורדת", trendFlat:"מעורב/צדדי",
       marketSmall:"רמות פיבונאצ'י ופיבוט מחושבות אוטומטית לפי הנרות האחרונים של מסגרת הזמן שנבחרה (לפי תנודת ה-high/low הברורה האחרונה).",
-      checklistH2:"ניתוח טכני של השוק", checklistTag:"לא איתות למסחר",
+      checklistH2:"מצב השוק", checklistTag:"סיכון והקשר, לא תחזית",
       itemTrendLabel:"מגמה (EMA20/EMA50)", itemTrendHint:"המחיר ביחס ל-EMA20 ו-EMA50 במסגרת הזמן שנבחרה",
       itemFundingLabel:"Funding rate", itemFundingHint:"פאנדינג קיצוני מסמן הטיה בקרב הקהל",
       itemRsiLabel:"RSI (14)", itemRsiHint:"קניית יתר מעל 70, מכירת יתר מתחת ל-30",
@@ -1071,7 +1151,18 @@
       verdictLongTitle:"רקע טכני: נוטה לעלייה", verdictShortTitle:"רקע טכני: נוטה לירידה", verdictNoneTitle:"רקע טכני: ניטרלי",
       verdictLongSub:"רוב הגורמים מצביעים למעלה", verdictShortSub:"רוב הגורמים מצביעים למטה", verdictNoneSub:"הגורמים סותרים זה את זה — אין תמונה ברורה",
       verdictTfPrefix:"מסגרת הזמן שנלקחת בחשבון:", verdictChangeBtn:"שנה",
-      verdictFactorsLabel:"ממה זה מורכב:",
+      verdictFactorsLabel:"גורמים טכניים — תיאור, לא איתות:",
+      stateHot:"השוק מחומם — זהירות עם המינוף", stateHigh:"תנודתיות גבוהה", stateQuiet:"שוק שקט",
+      stateNormal:"שוק רגיל", stateSub:"תנועה טיפוסית ב-24 שעות: {pct}. האתר לא חוזה כיוון.", stateSubNoVol:"אין מספיק היסטוריית נרות כדי להעריך את גודל התנועה.",
+      rangeH4:"תנועה ב-4 שעות", rangeD1:"תנועה ב-24 שעות", rangeD7:"תנועה ב-7 ימים",
+      rangeCaption:"ב-80% מהמקרים בהיסטוריה של המטבע הזה המחיר לא יצא מהטווח הזה בפרק זמן כזה — לאף כיוון.", covNote:"בדיקה עצמית עבור {coin}: ב-{n} הימים האחרונים התנועה היומית נשארה בטווח החזוי ב-{rate}% מהימים (היעד 80%). תחזיות העבר חושבו מחדש רק לפי נתונים שהיו ידועים באותו יום.", covNoteShort:"אין מספיק היסטוריה לבדיקה עצמית ({n} ימים) — הטווח משוער.",
+      warnH:"סיכונים כרגע", warnFunding:"Funding {f} — ה{side} משלמים פי כמה מהרגיל (~0.01%). הקהל נוטה לצד אחד: ייתכנו תנועות חדות לשני הכיוונים.", warnOi:"ה-Open Interest עלה ב-{pct}% ביממה — מינוף נכנס לשוק מהר, והסיכון לשרשרת חיסולים עולה.",
+      warnCrowd:"{pct}% מחשבונות Bybit בלונג — הקהל נוטה מאוד לצד אחד.", warnHighVol:"התנודתיות גבוהה פי {x} מהרגיל עבור המטבע הזה — הורד מינוף וגודל פוזיציה.", warnQuiet:"התנודתיות נמוכה פי {x} מהרגיל — שקט חריג.",
+      warnNone:"אין סימני התחממות: funding, ה-Open Interest ופוזיציות הקהל תקינים.", sideLongs:"לונגים", sideShorts:"שורטים",
+      noiseH:"רעש השוק — לפי ההיסטוריה של המטבע", noiseMoveK:"תנועה טיפוסית (80%): 4 שע׳ / 24 שע׳", noiseStopK:"סיכוי לגעת בסטופ: 4 שע׳ / 24 שע׳",
+      noiseLiqK:"סיכוי להגיע לחיסול ב-24 שעות", bannerStopNoise:"הסטופ נמצא בתוך הרעש הרגיל: לפי ההיסטוריה המחיר עובר מרחק כזה תוך 4 שעות בערך ב-{p}% מהמקרים (תנועה טיפוסית ב-4 שעות {move}). שקול סטופ רחב יותר עם פוזיציה קטנה יותר.", bannerLiqNoise:"החיסול קרוב: לפי ההיסטוריה המחיר מגיע למרחק כזה תוך יממה בערך ב-{p}% מהמקרים. הורד את המינוף.",
+      methodItemVol:"גודל התנועה — מודל HAR על הנרות היומיים של המטבע (תנודתיות Garman–Klass: רכיב יומי, שבועי וחודשי). טווח ה-80% מכויל לפי ההיסטוריה של המטבע עצמו.", methodItemCheck:"בדיקה עצמית — כל תחזית עבר מחושבת מחדש רק לפי נתונים שהיו ידועים באותו יום, והאתר מראה באיזו תדירות המחיר באמת נשאר בטווח ב-180 הימים האחרונים.", methodItemTouch:"סיכוי לגעת בסטופ — שיעור חלונות העבר של 4 שעות ושל יום שבהם המחיר זז אותו מרחק (מותאם לתנודתיות הנוכחית), לכל כיוון.",
+      methodItemWarn:"התחממות — funding מ-0.05% לתקופה, עלייה של 8%+ ב-Open Interest ביממה, 80% ומעלה או 30% ומטה מהחשבונות בלונג, תנודתיות גבוהה פי 1.5+ מהרגיל. זה תיאור סיכון, לא איתות כניסה.", methodItemFactors:"הגורמים הטכניים (מגמה, MACD, RSI, מחזור, רמות ועוד) מוצגים כתיאור של השוק ואינם מצטרפים להמלצת לונג או שורט.", methodItemValidated:"נבדק על 20 מטבעות ב-Bybit בשנה האחרונה, על נתונים שהמודל לא ראה: המחיר נשאר בטווח היומי ב-79–86% מהימים (בממוצע 83% מול יעד של 80%); המודל היה מדויק יותר מתנודתיות פשוטה של 30 יום ב-18 מתוך 20 מטבעות; הסיכוי לגעת בסטופ ב-4 שעות סטה מהמציאות בממוצע ב-1.5 נקודות אחוז. גם מסנן מגמה יומי נבדק: אחרי עמלות ו-funding הוא לא הראה רווח עקבי, ולכן הוא לא באתר.",
       fTrendLabel:"מגמה ({tf})", fTrendHint:"המחיר ביחס ל-EMA20 ול-EMA50", fHtfLabel:"מסגרת גבוהה ({htf})", fHtfHint:"אותה מגמה במסגרת זמן אחת למעלה — מסנן רעש",
       fMacdLabel:"MACD (12/26/9)", fMacdHint:"כיוון ותאוצה של המומנטום", fMacdDetail:"היסטוגרמה {h}", fRsiLabel:"RSI (14)",
       fRsiHint:"מתחת ל-30 מכירת יתר, מעל 70 קניית יתר, 55–70 ו-30–45 — מומנטום", fVolLabel:"מחזור מסחר", fVolHint:"3 הנרות האחרונים מול הממוצע של 20", fVolDetail:"×{x} מהממוצע",
@@ -1090,22 +1181,22 @@
       stPatternBear:"▼ איתות יורד", stNoPattern:"• אין איתות", verdictStrongLongTitle:"רקע טכני: עולה בחוזקה", verdictStrongShortTitle:"רקע טכני: יורד בחוזקה",
       verdictScoreSub:"ציון {score} בסולם ⁦−100⁩ עד ⁦+100⁩ · {up} לעלייה, {down} לירידה, {flat} ניטרליים", scaleBear:"יורד", scaleBull:"עולה", intervalW:"שבוע",
       methodWeight:"משקל ×{w}",
-      verdictDisclaimer:"סיכום אוטומטי של 11 גורמים: מגמה, מסגרת זמן גבוהה, MACD, RSI, מחזור מסחר, open interest, funding, יחס לונג/שורט, רמות, תבנית נרות ורקע BTC. זה לא איתות למסחר ולא הבטחה לתוצאה; ההחלטה והסיכון תמיד שלך.",
-      aiCheckBtn:"בדוק עם AI — נתונים + חדשות עדכניות", aiCheckBtnLoading:"שואל את ה-AI…",
-      aiCheckBtnRisk:"ניתוח סיכון AI לעסקה הזו", aiCheckBtnChecklist:"AI: טיעונים בעד ונגד",
+      verdictDisclaimer:"האתר מציג סיכון והקשר, לא כיוון: בדיקה על נתוני עבר (שנה, 6 מטבעות) לא מצאה לאיתותים טכניים יתרון על פני הטלת מטבע. אין בכך ייעוץ פיננסי — ההחלטה והסיכון תמיד שלך.",
+      aiCheckBtn:"AI: הסבר את התמונה והחדשות", aiCheckBtnLoading:"שואל את ה-AI…",
+      aiCheckBtnRisk:"ניתוח סיכון AI לעסקה הזו", aiCheckBtnChecklist:"AI: מה יכול להשתבש",
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
       aiCheckHintRisk:"הכפתור יופעל לאחר מילוי סיכון, כניסה, סטופ ומינוף, כשאין שגיאות בחישוב.",
       refBannerText:"אין לך עדיין חשבון ב-Bybit? הירשם דרך הקישור שלי — כך תתמוך ב-RiskControl.", refBannerCta:"מעבר ←",
-      methodH2:"איך זה בנוי", methodTag:"מתודולוגיה",
-      methodIntro:"הוורדיקט משלב 11 גורמים (10 עבור BTC עצמו). כל אחד נותן בין ⁦−1⁩ ל-⁦+1⁩, מוכפל במשקל שלו, והכול מסוכם לציון אחד בין ⁦−100⁩ ל-⁦+100⁩:",
+      methodH2:"איך מחושב מצב השוק", methodTag:"מתודולוגיה",
+      methodIntro:"האתר לא מנחש לאן ילך המחיר: בדיקה על שנה (6 מטבעות, שעה ו-4 שעות, כ-66,000 הערכות) צדקה בכיוון ב-44–51% מהמקרים — רמת הטלת מטבע. לכן מחושב כאן מה שאפשר לבדוק:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
       methodItem2:"Funding rate — שיעור קיצוני בכיוון אחד (±0.1% לתקופה ומעלה) מתפרש כהטיה בקרב הקהל (קונטרארי)",
       methodItem3:"RSI(14) — קניית יתר מעל 70 או מכירת יתר מתחת ל-30",
       methodItem4:"Fibonacci/פיבוט — המחיר קרוב לרמת תמיכה או התנגדות",
       methodItem5:"תבנית/מבנה — פריצת טווח, בליעה, פין-בר, או כיוון מבנה השיאים/השפלים",
-      methodThreshold:"מ-⁦+45⁩ — עולה בחוזקה, מ-⁦+15⁩ — נוטה לעלייה, בין ⁦−15⁩ ל-⁦+15⁩ — ניטרלי (אין יתרון ברור), מ-⁦−15⁩ ומטה — נוטה לירידה, מ-⁦−45⁩ ומטה — יורד בחוזקה. אם חלק מנתוני Bybit לא נטענו, הגורם מדולג והציון מחושב לפי השאר.",
-      methodSmall:"כל הנתונים הם נתונים ציבוריים של Bybit עבור המטבע ומסגרת הזמן שנבחרו, ומחושבים מחדש בכל רענון. חשוב: אין בכך ייעוץ פיננסי ולא איתות כניסה. המודל לא נבדק על נתונים היסטוריים, וגורמים טכניים לבדם אינם מבטיחים יתרון על פני השוק. השתמש בציון כסיכום של ההקשר לצד הניתוח שלך — ההחלטה והסיכון תמיד שלך.",
+      methodThreshold:"אם חלק מנתוני Bybit לא נטענו, הבלוק נשאר ריק — האתר לא ממלא אותו בניחושים.",
+      methodSmall:"אין בכך ייעוץ פיננסי. הטווח הוא הערכה הסתברותית: בערך במקרה אחד מתוך 5 המחיר הולך רחוק יותר, לפעמים הרבה. ההחלטה והסיכון תמיד שלך.",
       aboutH2:"אודות הכלי", aboutTag:"פרויקט עצמאי",
       aboutText:"RiskControl הוא פרויקט עצמאי וחינמי, ללא קשר לאף בורסה, כולל Bybit שאת הנתונים הציבוריים שלה הוא משתמש בהם לחישובים. תפקיד האתר הוא מסך אחד לחישוב סיכון וגודל פוזיציה לפני עסקה, ללא הרשמה וללא איסוף נתונים אישיים. הבאנר של Bybit למעלה הוא קישור הפניה: אם תירשם דרכו, היוצר עשוי לקבל תגמול מהבורסה; זה לא משפיע על החישובים. האתר משתפר בהדרגה; כמו בכל כלי — בדוק בעצמך את המספרים המרכזיים לפני עסקה אמיתית.",
       glossaryH2:"מילון מונחים", glossaryTag:"אם משהו לא ברור",
@@ -1149,7 +1240,9 @@
   let lastTickerPrice = null;
   let lastCandles = null;
   let autoTrend = 0; // -1,0,1 — строгий тренд EMA для строки "Тренд" в рыночных данных
-  let lastModel = null; // результат scoreMarket() для текущей пары и таймфрейма
+  let lastModel = null; // результат scoreMarket() для текущей пары и таймфрейма (технические факторы)
+  let lastVol = null;     // {sym, model, oi24} — модель размаха движения и открытый интерес за сутки
+  let lastRiskCtx = null; // {funding, buyRatio} — для предупреждений о перегреве
   let hasMarketData = false;
   let fetchState = null; // {type:'loading'|'updated'|'stale'|'error', time?:Date}
   let lastGoodFetchTime = null; // время последнего успешного обновления — для отображения "устарело" вместо пустоты при сбое
@@ -1457,7 +1550,7 @@
     const banner = $('banner');
     banner.innerHTML = '';
     const outIds = ['oDist','oSize','oValue','oMargin','oLiq','oTP'];
-    const clearOut = ()=>{ outIds.forEach(id=>$(id).textContent='—'); $('calcOut').classList.remove('has-result'); updateAiRiskGate(); };
+    const clearOut = ()=>{ outIds.forEach(id=>$(id).textContent='—'); $('noiseBox').hidden = true; $('calcOut').classList.remove('has-result'); updateAiRiskGate(); };
     const show = (cls, msgs)=>{ banner.innerHTML = msgs.map(m=>'<div class="banner '+cls+'">'+m+'</div>').join(''); };
 
     if(!(riskAmount>0) || !(entry>0) || !isFinite(stop) || entry===stop){ clearOut(); return; }
@@ -1533,6 +1626,9 @@
       $('oLiq').textContent = '—';
       if(isFinite(leverageIn)) bad.push(t('bannerLevMin')); // введено 0 или отрицательное плечо
     }
+
+    // шум рынка: как часто обычное движение задевает такой стоп / ликвидацию (по истории монеты)
+    renderNoise(entry, stop, liqPrice, soft);
 
     // bad — сделку так открыть нельзя/опасно; warn — биржа не примет; soft — совет (кнопку ИИ не блокирует)
     const html = [];
@@ -1833,32 +1929,299 @@
         + '</div>';
     }).join('');
   }
-  // методология — тот же список факторов с весами, чтобы описание не расходилось с расчётом
+  // ---------- размах движения: прогноз волатильности ----------
+  // Направление цены на 1ч–4ч проверка на истории не угадывает (44–51% — уровень монетки),
+  // а вот размах движения предсказуем: спокойные дни чаще идут за спокойными, бурные — за бурными.
+  // Модель: log-HAR по дневной волатильности Garman–Klass этой монеты (дневная, недельная и
+  // месячная составляющие). Диапазоны и шанс задеть стоп калибруются на собственной истории монеты,
+  // причём каждый прошлый прогноз строится только по данным, известным в тот день (walk-forward).
+  const VOL_EVAL_DAYS = 180;   // последние дни — самопроверка: как часто цена реально осталась в диапазоне
+  const VOL_Q = 0.8;           // диапазон «80%»
+  const volCache = new Map();
+  function gkVar(c){
+    const hl = Math.log(c.high/c.low), co = Math.log(c.close/c.open);
+    const v = 0.5*hl*hl - (2*Math.LN2-1)*co*co;
+    return isFinite(v) && v>1e-10 ? v : 1e-10;
+  }
+  function olsSolve(X, y){
+    const k = X[0].length, A = Array.from({length:k}, ()=>new Array(k+1).fill(0));
+    for(let i=0;i<X.length;i++){
+      const xi = X[i];
+      for(let a=0;a<k;a++){ for(let b=0;b<k;b++) A[a][b] += xi[a]*xi[b]; A[a][k] += xi[a]*y[i]; }
+    }
+    for(let c=0;c<k;c++){
+      let p = c;
+      for(let r=c+1;r<k;r++) if(Math.abs(A[r][c])>Math.abs(A[p][c])) p = r;
+      const tmp = A[c]; A[c] = A[p]; A[p] = tmp;
+      if(Math.abs(A[c][c])<1e-12) return null;
+      for(let r=0;r<k;r++){
+        if(r===c) continue;
+        const f = A[r][c]/A[c][c];
+        for(let j=c;j<=k;j++) A[r][j] -= f*A[c][j];
+      }
+    }
+    return A.map((row,i)=>row[k]/row[i]);
+  }
+  function harFeatures(v, t){
+    let w = 0, m = 0;
+    for(let i=t-4;i<=t;i++) w += v[i];
+    for(let i=t-21;i<=t;i++) m += v[i];
+    return [1, Math.log(v[t]), Math.log(w/5), Math.log(m/22)];
+  }
+  // модель по данным с индексами ≤ lastT (последняя цель — день lastT)
+  function fitHar(v, lastT){
+    const X = [], y = [];
+    for(let t=21;t<lastT;t++){ X.push(harFeatures(v,t)); y.push(Math.log(v[t+1])); }
+    if(X.length<60) return null;
+    const b = olsSolve(X, y);
+    if(!b || !b.every(isFinite)) return null;
+    let s2 = 0;
+    for(let i=0;i<X.length;i++){ let p = 0; for(let j=0;j<4;j++) p += X[i][j]*b[j]; s2 += (y[i]-p)*(y[i]-p); }
+    return {b, s2: s2/Math.max(1, X.length-4)};
+  }
+  // прогноз дневной σ (в долях, лог-доходность) на следующий день после t
+  function harSigma(m, v, t){
+    const x = harFeatures(v,t);
+    let p = 0; for(let j=0;j<4;j++) p += x[j]*m.b[j];
+    return Math.sqrt(Math.exp(p + m.s2/2));
+  }
+  function quantile(arr, q){
+    if(!arr.length) return NaN;
+    const a = arr.slice().sort((x,y)=>x-y), pos = (a.length-1)*q, lo = Math.floor(pos), hi = Math.ceil(pos);
+    return a[lo] + (a[hi]-a[lo])*(pos-lo);
+  }
+  // доля значений ≥ x в отсортированном массиве
+  function survivalSorted(sorted, x){
+    if(!sorted || !sorted.length || !isFinite(x)) return NaN;
+    let lo = 0, hi = sorted.length;
+    while(lo<hi){ const mid = (lo+hi)>>1; if(sorted[mid] < x) lo = mid+1; else hi = mid; }
+    return (sorted.length-lo)/sorted.length;
+  }
+  // daily/h4: только закрытые свечи, от старых к новым
+  function buildVolModel(daily, h4){
+    const n = daily.length;
+    if(n<110) return null;
+    const v = daily.map(gkVar);
+    const sig = new Array(n).fill(NaN);
+    let m = null, lastFit = -1e9;
+    for(let t=81;t<n;t++){
+      if(!m || t-lastFit>=20){ const mm = fitHar(v, t); if(mm) m = mm; lastFit = t; }
+      if(m) sig[t] = harSigma(m, v, t);
+    }
+    const mNow = fitHar(v, n-1);
+    if(!mNow) return null;
+    const sigmaDay = harSigma(mNow, v, n-1);
+    // нормированные (в единицах прогнозной σ) движения — каждое против прогноза, сделанного ДО него
+    const evalFrom = n-1-VOL_EVAL_DAYS;
+    const z1 = [], z7 = [], mae1 = [], z4 = [], mae4 = [];
+    const dayIdx = new Map(daily.map((c,i)=>[Math.floor(c.time/864e5), i]));
+    for(let t=81;t<n-1;t++){
+      const s = sig[t]; if(!(s>0)) continue;
+      const c0 = daily[t].close, d1 = daily[t+1];
+      z1.push({t, z: Math.abs(Math.log(d1.close/c0))/s});
+      mae1.push(Math.max(0, Math.log(c0/d1.low))/s, Math.max(0, Math.log(d1.high/c0))/s);
+      if(t+7<n) z7.push({t, z: Math.abs(Math.log(daily[t+7].close/c0))/(s*Math.sqrt(7))});
+    }
+    (h4||[]).forEach(c=>{
+      const i = dayIdx.get(Math.floor(c.time/864e5));
+      if(i==null || i<1) return;
+      const s = sig[i-1]; if(!(s>0)) return;
+      const s4 = s/Math.sqrt(6);
+      z4.push({t:i-1, z: Math.abs(Math.log(c.close/c.open))/s4});
+      mae4.push(Math.max(0, Math.log(c.open/c.low))/s4, Math.max(0, Math.log(c.high/c.open))/s4);
+    });
+    if(z1.length<60) return null;
+    const vals = a=>a.map(x=>x.z);
+    const k = { h4: quantile(vals(z4), VOL_Q), d1: quantile(vals(z1), VOL_Q), d7: quantile(vals(z7), VOL_Q) };
+    if(!isFinite(k.h4)) k.h4 = k.d1; // нет 4ч данных — берём суточную калибровку
+    // самопроверка: коэффициент считаем только по дням ДО окна проверки, проверяем на последних 180 днях
+    const calib = z1.filter(x=>x.t<evalFrom), check = z1.filter(x=>x.t>=evalFrom);
+    let cov = null;
+    if(calib.length>=120 && check.length>=60){
+      const kc = quantile(vals(calib), VOL_Q);
+      cov = {rate: check.filter(x=>x.z<=kc).length/check.length, n: check.length};
+    }
+    const recent = sig.slice(Math.max(0, n-366)).filter(x=>x>0);
+    const med = quantile(recent, 0.5);
+    return {
+      sigmaDay, k, cov,
+      ratio: med>0 ? sigmaDay/med : NaN,
+      surv: { h4: mae4.sort((a,b)=>a-b), d1: mae1.sort((a,b)=>a-b) },
+      days: n
+    };
+  }
+  // ± движение (в долях) с вероятностью ~80% для горизонта
+  function volMove(vm, h){
+    if(!vm) return NaN;
+    const s = h==='h4' ? vm.sigmaDay/Math.sqrt(6) : h==='d7' ? vm.sigmaDay*Math.sqrt(7) : vm.sigmaDay;
+    return vm.k[h]*s;
+  }
+  // шанс, что цена хотя бы раз отойдёт на distLog (лог-дистанция) от текущей за горизонт — по истории монеты
+  function touchProb(vm, h, distLog){
+    if(!vm || !(distLog>0)) return NaN;
+    const s = h==='h4' ? vm.sigmaDay/Math.sqrt(6) : vm.sigmaDay;
+    return survivalSorted(vm.surv[h], distLog/s);
+  }
+
+  // Дневные и 4-часовые свечи для модели размаха + открытый интерес за сутки для предупреждений.
+  // Кэш 10 минут: дневная модель за это время не меняется. Ошибки не кэшируем.
+  async function fetchVol(symbol){
+    const hit = volCache.get(symbol);
+    if(hit && Date.now()-hit.t < 10*60e3) return hit.v;
+    const safe = p => p.catch(()=>null);
+    const opt = {retries:1, baseDelay:400};
+    const api = 'https://api.bybit.com/v5/market/';
+    const [dj, hj, oj] = await Promise.all([
+      safe(fetchJsonWithRetry(`${api}kline?category=linear&symbol=${symbol}&interval=D&limit=1000`, opt)),
+      safe(fetchJsonWithRetry(`${api}kline?category=linear&symbol=${symbol}&interval=240&limit=1000`, opt)),
+      safe(fetchJsonWithRetry(`${api}open-interest?category=linear&symbol=${symbol}&intervalTime=1h&limit=25`, opt))
+    ]);
+    let model = null;
+    try{
+      if(dj){
+        const d = parseKlines(dj).slice(0,-1);            // последняя дневная свеча ещё формируется
+        const h = hj ? parseKlines(hj).slice(0,-1) : [];
+        model = buildVolModel(d, h);
+      }
+    }catch(e){ console.error(e); }
+    const oiL = oj && oj.result && oj.result.list;          // новые первыми
+    let oi24 = NaN;
+    if(oiL && oiL.length>=25){
+      const now = parseFloat(oiL[0].openInterest), ago = parseFloat(oiL[24].openInterest);
+      if(now>0 && ago>0) oi24 = (now/ago-1)*100;
+    }
+    const v = {sym: symbol, model, oi24};
+    if(dj) volCache.set(symbol, {t: Date.now(), v});
+    if(volCache.size>30) volCache.delete(volCache.keys().next().value);
+    return v;
+  }
+  function curVol(){ return lastVol && lastVol.sym===currentSymbol ? lastVol.model : null; }
+  const fillVars = (s, vars) => Object.keys(vars||{}).reduce((acc,k)=>acc.split('{'+k+'}').join(vars[k]), s);
+  const iso = s => '\u2066'+s+'\u2069';
+  function fmtMove(m){ // лог-движение → «±3.2%»
+    if(!isFinite(m)) return '—';
+    const p = (Math.exp(m)-1)*100;
+    return '±'+fmt(p, p<1 ? 2 : 1)+'%';
+  }
+  function fmtProb(p){
+    if(!isFinite(p)) return '—';
+    if(p<0.01) return '<1%';
+    if(p>0.99) return '>99%';
+    return '≈'+Math.round(p*100)+'%';
+  }
+  // Признаки перегрева — описание риска, не сигнал на вход
+  function marketWarnings(){
+    const w = [];
+    const ctx = lastRiskCtx || {}, vm = curVol();
+    if(isFinite(ctx.funding) && Math.abs(ctx.funding)>=0.05)
+      w.push({key:'warnFunding', hot:true, vars:{f: iso((ctx.funding>0?'+':'')+fmt(ctx.funding,4)+'%'), side: t(ctx.funding>0 ? 'sideLongs' : 'sideShorts')}});
+    if(lastVol && lastVol.sym===currentSymbol && isFinite(lastVol.oi24) && lastVol.oi24>=8)
+      w.push({key:'warnOi', hot:true, vars:{pct: fmt(lastVol.oi24,1)}});
+    if(ctx.buyRatio!=null && (ctx.buyRatio>=0.8 || ctx.buyRatio<=0.3))
+      w.push({key:'warnCrowd', hot:true, vars:{pct: fmt(ctx.buyRatio*100,0)}});
+    if(vm && vm.ratio>=1.5) w.push({key:'warnHighVol', vars:{x: fmt(vm.ratio,1)}});
+    if(vm && vm.ratio>0 && vm.ratio<=0.6) w.push({key:'warnQuiet', vars:{x: fmt(1/vm.ratio,1)}});
+    return w;
+  }
+  function marketStateKey(){
+    const vm = curVol(), warns = marketWarnings();
+    if(warns.some(x=>x.hot)) return 'stateHot';
+    if(vm && vm.ratio>=1.5) return 'stateHigh';
+    if(vm && vm.ratio>0 && vm.ratio<=0.6) return 'stateQuiet';
+    return 'stateNormal';
+  }
+  const STATE_CLS = {stateHot:'hot', stateHigh:'high', stateQuiet:'quiet', stateNormal:'normal'};
+  const STATE_CLASSES = ['state-long','state-short','state-none','state-hot','state-high','state-quiet','state-normal'];
+
+  // ---------- состояние рынка (вместо вердикта «бычий/медвежий») ----------
+  function computeVerdict(){
+    if(!hasMarketData) return;
+    const vm = curVol();
+    const key = marketStateKey(), cls = STATE_CLS[key];
+    const card = $('verdictCard');
+    card.classList.remove(...STATE_CLASSES);
+    card.classList.add('state-'+cls);
+    const titleEl = $('verdictTitle');
+    titleEl.dataset.i18n = key;
+    titleEl.textContent = t(key);
+    titleEl.className = 'verdict-title st-'+cls;
+    const subEl = $('verdictSub');
+    delete subEl.dataset.i18n; // текст с цифрами — applyI18n не должен его перетирать
+    subEl.textContent = vm ? t('stateSub').replace('{pct}', iso(fmtMove(volMove(vm,'d1')))) : t('stateSubNoVol');
+    const p = lastTickerPrice;
+    [['h4','rH4'],['d1','rD1'],['d7','rD7']].forEach(([h,id])=>{
+      const m = volMove(vm, h);
+      $(id).textContent = vm ? fmtMove(m) : '—';
+      $(id+'p').textContent = (vm && p>0 && isFinite(m)) ? fmtPrice(p*Math.exp(-m))+' – '+fmtPrice(p*Math.exp(m)) : '—';
+    });
+    const note = $('rangeNote');
+    if(!vm) note.textContent = '';
+    else if(vm.cov) note.textContent = t('covNote').replace('{coin}', baseOf(currentSymbol)).replace('{n}', vm.cov.n).replace('{rate}', fmt(vm.cov.rate*100,0));
+    else note.textContent = t('covNoteShort').replace('{n}', vm.days);
+    const warns = marketWarnings();
+    $('riskWarnings').innerHTML = warns.length
+      ? warns.map(w=>'<div class="banner '+(w.hot ? 'bad' : 'warn')+'">'+escHtml(fillVars(t(w.key), w.vars))+'</div>').join('')
+      : '<div class="risk-none">'+escHtml(t('warnNone'))+'</div>';
+  }
+  function clearMarketState(){
+    ['rH4','rD1','rD7'].forEach(id=>{ $(id).textContent = '—'; $(id+'p').textContent = '—'; });
+    $('rangeNote').textContent = '';
+    $('riskWarnings').innerHTML = '';
+  }
+
+  // ---------- шум рынка в калькуляторе: заденет ли стоп/ликвидацию обычное движение ----------
+  function renderNoise(entry, stop, liq, soft){
+    const box = $('noiseBox');
+    const vm = curVol();
+    if(!vm || !(entry>0) || !(stop>0)){ box.hidden = true; return; }
+    box.hidden = false;
+    const m4 = volMove(vm,'h4'), m1 = volMove(vm,'d1');
+    $('oMove').textContent = fmtMove(m4)+' / '+fmtMove(m1);
+    const d = Math.abs(Math.log(entry/stop));
+    const p4 = touchProb(vm,'h4',d), p1 = touchProb(vm,'d1',d);
+    $('oStopHit').textContent = fmtProb(p4)+' / '+fmtProb(p1);
+    if(isFinite(liq) && liq>0){
+      const pl = touchProb(vm,'d1',Math.abs(Math.log(entry/liq)));
+      $('oLiqHit').textContent = fmtProb(pl);
+      if(pl>=0.1) soft.push(t('bannerLiqNoise').replace('{p}', Math.min(99, Math.round(pl*100))));
+    } else $('oLiqHit').textContent = '—';
+    if(p4>=0.5) soft.push(t('bannerStopNoise').replace('{p}', Math.min(99, Math.round(p4*100))).replace('{move}', iso(fmtMove(m4))));
+  }
+
+  // методология — описание того, что реально считается
   function renderMethod(){
     const ul = $('methodList');
     if(!ul) return;
-    ul.innerHTML = FACTOR_ORDER.map(id=>'<li><b>'+escHtml(factorLabel(id, t))+'</b> — '+escHtml(t(FACTOR_DEF[id][1]))
-      +' <span class="mw">'+escHtml(t('methodWeight').replace('{w}', String(FACTOR_W[id])))+'</span></li>').join('');
+    ul.innerHTML = ['methodItemVol','methodItemCheck','methodItemValidated','methodItemTouch','methodItemWarn','methodItemFactors']
+      .map(k=>'<li>'+escHtml(t(k))+'</li>').join('');
   }
 
-  // Сводка для ИИ: все факторы с цифрами, оценка и ближайшие уровни — на русском (язык промпта),
-  // ИИ отвечает на языке интерфейса.
+  // Сводка для ИИ (на русском — язык промпта; ИИ отвечает на языке интерфейса).
+  // Без итоговой оценки «бычий/медвежий»: ИИ объясняет картину и риски, а не прогнозирует.
   function buildMarketSummary(){
     const m = lastModel;
     if(!m) return '';
     const ru = k => TR.ru[k] || k;
     const iv = m.interval || $('interval').value;
-    const titleKey = {'2':'verdictStrongLongTitle','1':'verdictLongTitle','0':'verdictNoneTitle','-1':'verdictShortTitle','-2':'verdictStrongShortTitle'}[String(m.level)];
     const pct = (v) => (v>0?'+':'')+fmt(v,2)+'%';
+    const strip = s => String(s).replace(/[\u2066\u2069]/g,'');
+    const vm = curVol();
     const lines = [];
     lines.push('Таймфрейм: '+ru(intervalKey(iv))+', старший таймфрейм: '+ru(intervalKey(HTF_OF[iv]||'D')));
-    lines.push('Цена: '+fmtPrice(m.price)+(isFinite(m.change24h) ? ' · за 24ч: '+pct(m.change24h) : '')+(m.atr ? ' · средний ход свечи (ATR14): '+fmt(m.atr,2)+'%' : ''));
-    lines.push('Оценка алгоритма сайта: '+(m.score>0?'+':'')+m.score+' по шкале от -100 до +100 → «'+ru(titleKey)+'» (факторов за рост: '+m.up+', за снижение: '+m.down+', нейтральных: '+m.flat+')');
-    lines.push('Факторы (вес · состояние · цифры · вклад):');
+    lines.push('Цена: '+fmtPrice(m.price)+(isFinite(m.change24h) ? ' · за 24ч: '+pct(m.change24h) : ''));
+    lines.push('Состояние рынка (по сайту): '+ru(marketStateKey()));
+    if(vm){
+      lines.push('Обычный ход цены (в 80% случаев по истории монеты): 4ч '+fmtMove(volMove(vm,'h4'))+', 24ч '+fmtMove(volMove(vm,'d1'))+', 7д '+fmtMove(volMove(vm,'d7'))
+        +(isFinite(vm.ratio) ? '; волатильность '+fmt(vm.ratio,2)+'× от обычной' : '')
+        +(vm.cov ? '; самопроверка за '+vm.cov.n+' дней: в диапазоне '+fmt(vm.cov.rate*100,0)+'% дней' : ''));
+    }
+    const warns = marketWarnings();
+    lines.push('Предупреждения о риске: '+(warns.length ? warns.map(w=>strip(fillVars(ru(w.key), Object.assign({}, w.vars, w.vars.side ? {side: ru(lastRiskCtx && lastRiskCtx.funding>0 ? 'sideLongs' : 'sideShorts')} : {})))).join(' | ') : 'нет'));
+    lines.push('Технические факторы (описание, не сигнал):');
     m.factors.forEach(x=>{
-      const det = factorDetail(x, ru).replace(/[\u2066\u2069]/g,'');
+      const det = strip(factorDetail(x, ru));
       const st = ru(factorStateKey(x)).replace(/^[▲▼•]\s*/, '');
-      lines.push('- '+factorLabel(x.id, ru, iv)+' [вес '+x.w+']: '+st+(det ? ' ('+det+')' : '')+(x.s===null ? '' : ' → '+(x.s>0?'+':'')+x.s));
+      lines.push('- '+factorLabel(x.id, ru, iv)+': '+st+(det ? ' ('+det+')' : ''));
     });
     const lvF = m.factors.find(x=>x.id==='levels');
     if(lvF && lvF.lv){
@@ -1874,39 +2237,12 @@
     $('verdictTfValue').textContent = t(intervalKey($('interval').value));
   }
 
-  // ---------- вердикт по рынку ----------
-  // Оценка -100..+100 из scoreMarket(): ≥45 сильный бычий, ≥15 скорее бычий, -15..+15 нейтральный,
-  // ≤-15 скорее медвежий, ≤-45 сильный медвежий.
-  const VERDICT_TITLES = {'2':'verdictStrongLongTitle', '1':'verdictLongTitle', '0':'verdictNoneTitle', '-1':'verdictShortTitle', '-2':'verdictStrongShortTitle'};
-  function computeVerdict(){
-    if(!hasMarketData || !lastModel) return;
-    const m = lastModel;
-    const cls = m.level>0 ? 'long' : m.level<0 ? 'short' : 'none';
-    const titleKey = VERDICT_TITLES[String(m.level)];
-    $('verdictCard').classList.remove('state-long','state-short','state-none');
-    $('verdictCard').classList.add('state-'+cls);
-    const titleEl = $('verdictTitle');
-    titleEl.dataset.i18n = titleKey;
-    titleEl.textContent = t(titleKey);
-    titleEl.className = 'verdict-title '+cls;
-    const subEl = $('verdictSub');
-    delete subEl.dataset.i18n; // текст с цифрами — applyI18n не должен его перетирать
-    subEl.textContent = t('verdictScoreSub').replace('{score}', '\u2066'+(m.score>0?'+':'')+m.score+'\u2069')
-      .replace('{up}', m.up).replace('{down}', m.down).replace('{flat}', m.flat);
-    const fill = $('scoreFill');
-    if(fill){
-      const half = Math.min(50, Math.abs(m.score)/2);
-      fill.className = 'score-fill'+(m.score>0 ? ' pos' : m.score<0 ? ' neg' : '');
-      fill.style.left = (m.score<0 ? 50-half : 50)+'%';
-      fill.style.width = half+'%';
-    }
-  }
   // Состояние карточки вердикта, пока настоящего вердикта нет: ждём данные / Bybit
   // недоступен / пара не найдена. Раньше при ошибке там навсегда висело "Собираю данные…".
   function setVerdictPlaceholder(kind){
     const keys = { waiting:['verdictWaitingTitle','verdictWaitingSub'], error:['verdictErrorTitle','verdictErrorSub'], badsymbol:['verdictBadSymbolTitle','verdictBadSymbolSub'] }[kind];
-    $('verdictCard').classList.remove('state-long','state-short','state-none');
-    const fill = $('scoreFill'); if(fill){ fill.className = 'score-fill'; fill.style.left = '50%'; fill.style.width = '0'; }
+    $('verdictCard').classList.remove(...STATE_CLASSES);
+    clearMarketState();
     const titleEl = $('verdictTitle'), subEl = $('verdictSub');
     titleEl.className = 'verdict-title';
     titleEl.dataset.i18n = keys[0];
@@ -1937,10 +2273,11 @@
     const interval = $('interval').value;
     if(!hasMarketData){ fetchState = {type:'loading'}; renderFetchStatus(); }
     try{
-      const [tickerJson, klineJson, extra] = await Promise.all([
+      const [tickerJson, klineJson, extra, vol] = await Promise.all([
         fetchJsonWithRetry(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${symbol}`),
         fetchJsonWithRetry(`https://api.bybit.com/v5/market/kline?category=linear&symbol=${symbol}&interval=${interval}&limit=150`),
-        fetchExtra(symbol, interval) // старший ТФ, open interest, лонги/шорты, BTC — не ломают основное, если не загрузились
+        fetchExtra(symbol, interval), // старший ТФ, open interest, лонги/шорты, BTC — не ломают основное, если не загрузились
+        fetchVol(symbol).catch(()=>null) // дневные/4ч свечи для прогноза размаха движения
       ]);
 
       // пока ждали ответ, пользователь мог переключить пару или таймфрейм — старый ответ выбрасываем
@@ -1994,6 +2331,8 @@
       lastModel = scoreMarket({candles, htf: extra.htf, oi: extra.oi, buyRatio: extra.buyRatio, btc: extra.btc,
         isBtc: symbol==='BTCUSDT', funding, fibs, pivots});
       lastModel.interval = interval; lastModel.change24h = chg; lastModel.swing = sw;
+      lastVol = vol && vol.sym===symbol ? vol : null;
+      lastRiskCtx = {funding, buyRatio: extra.buyRatio};
       renderFactors();
       renderMethod();
       updateVerdictTf();
@@ -2067,7 +2406,7 @@
   // иначе можно посчитать сделку по SOL с ценой входа от BTC.
   function resetMarketView(keepStop){
     hasMarketData = false; lastTickerPrice = null; lastCandles = null; lastGoodFetchTime = null;
-    autoTrend = 0; lastModel = null;
+    autoTrend = 0; lastModel = null; lastVol = null; lastRiskCtx = null;
     ['mPrice','mChange','mFunding','mOI','mTrend'].forEach(id=>{ $(id).textContent = '—'; });
     $('verdictFactors').innerHTML = '';
     $('levelsTable').innerHTML = '';
@@ -2212,9 +2551,9 @@
 
   // ---------- ИИ-анализ (данные + новости через Claude) — отдельная кнопка в каждой карточке ----------
   // focus определяет, что именно уходит в промпт на сервере (см. api/analyze.js):
-  //  'trade'     — карточка вердикта: общий технический расклад + свежие новости
+  //  'trade'     — карточка состояния рынка: объяснение картины + свежие новости (без прогноза направления)
   //  'risk'      — карточка калькулятора: сама сделка (вход/стоп/плечо/ликвидация)
-  //  'checklist' — карточка рынка: аргументы за рост / за снижение по всем факторам
+  //  'checklist' — карточка рынка: что может пойти не так для лонга и для шорта
   function buildAiPayload(focus){
     const base = { focus, symbol: currentSymbol || 'BTCUSDT', lang: lang };
     if(focus==='risk'){
@@ -2225,7 +2564,8 @@
         entryPrice: $('entry').value,
         stopPrice: $('stop').value,
         positionSize: $('oSize').textContent,
-        liqPrice: $('oLiq').textContent
+        liqPrice: $('oLiq').textContent,
+        noise: $('noiseBox').hidden ? '' : ('обычный ход 4ч / 24ч: '+$('oMove').textContent+'; шанс задеть стоп за 4ч / 24ч (по истории монеты): '+$('oStopHit').textContent+'; шанс дойти до ликвидации за 24ч: '+$('oLiqHit').textContent)
       });
     }
     return Object.assign(base, {
