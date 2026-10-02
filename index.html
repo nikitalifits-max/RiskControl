@@ -394,6 +394,12 @@
   .auth-note{margin:0;font-size:12px;color:var(--muted);line-height:1.45;}
   .auth-note[hidden],.auth-why[hidden],.field-hint[hidden]{display:none;}
   .auth-submit{width:100%;}
+  .auth-google{display:flex;flex-direction:column;gap:8px;}
+  .auth-google[hidden]{display:none;}
+  .auth-google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;min-height:42px;}
+  .auth-g{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--panel2);border:1px solid var(--border);font:800 13px var(--font-ui);}
+  .auth-or{display:flex;align-items:center;gap:10px;color:var(--muted);font:600 12px var(--font-ui);}
+  .auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--border);}
   .auth-forgot{align-self:flex-start;font-size:12.5px;}
   .auth-forgot[hidden]{display:none;}
   .auth-msg{font-size:13px;line-height:1.45;border-radius:var(--radius-xs);padding:8px 10px;border:1px solid var(--border-soft);background:var(--panel2);}
@@ -859,6 +865,11 @@
       <button type="button" id="authTabSignup" role="tab" aria-selected="false" data-i18n="authTabSignup">Регистрация</button>
     </div>
     <div class="auth-msg" id="authMsg" role="alert" hidden></div>
+    <div class="auth-google" id="authGoogleRow" hidden>
+      <button type="button" class="btn btn-ghost auth-google-btn" id="authGoogle"><span class="auth-g" aria-hidden="true">G</span><span data-i18n="authGoogle">Войти через Google</span></button>
+      <p class="auth-note"><span data-i18n="authGoogleNote">Входя через Google, ты соглашаешься с</span> <a href="/privacy.html" target="_blank" rel="noopener" data-i18n="authPrivacyLink">политикой конфиденциальности</a>.</p>
+      <div class="auth-or"><span data-i18n="authOr">или</span></div>
+    </div>
     <div class="auth-fields" id="authFields">
       <div class="auth-row" id="authEmailRow">
         <label for="authEmail" data-i18n="authEmail">Email</label>
@@ -937,7 +948,7 @@
       verdictFactorsLabel:"Технические факторы — описание, не сигнал:",
       navJournal:"Журнал", toastJournal:"Открыт журнал сделок", accountLogin:"Войти",
       accountBtnIn:"Аккаунт", authTitleLogin:"Вход", authTitleSignup:"Регистрация",
-      authTitleAccount:"Аккаунт", authTitleRecover:"Новый пароль", authTabLogin:"Вход",
+      authTitleAccount:"Аккаунт", authTitleRecover:"Новый пароль", authTabLogin:"Вход", authGoogle:"Войти через Google", authGoogleNote:"Входя через Google, ты соглашаешься с", authOr:"или", authErrGoogle:"Не получилось войти через Google. Попробуй ещё раз или войди по email.",
       authTabSignup:"Регистрация", authEmail:"Email", authPass:"Пароль",
       authPassNew:"Новый пароль", authPassHint:"Минимум 8 символов.", authConsent:"Я согласен с",
       authPrivacyLink:"политикой конфиденциальности", authPrivacyNote:"Храним только email и твои сделки. Пароль хранится в зашифрованном виде, мы его не видим.", authSubmitLogin:"Войти",
@@ -1076,7 +1087,7 @@
       verdictFactorsLabel:"Technical factors — a description, not a signal:",
       navJournal:"Journal", toastJournal:"Trade journal opened", accountLogin:"Log in",
       accountBtnIn:"Account", authTitleLogin:"Log in", authTitleSignup:"Create account",
-      authTitleAccount:"Account", authTitleRecover:"New password", authTabLogin:"Log in",
+      authTitleAccount:"Account", authTitleRecover:"New password", authTabLogin:"Log in", authGoogle:"Continue with Google", authGoogleNote:"By continuing with Google you agree to the", authOr:"or", authErrGoogle:"Google sign-in didn't work. Try again or use your email.",
       authTabSignup:"Sign up", authEmail:"Email", authPass:"Password",
       authPassNew:"New password", authPassHint:"At least 8 characters.", authConsent:"I agree to the",
       authPrivacyLink:"privacy policy", authPrivacyNote:"We only store your email and your trades. Your password is stored encrypted — we can't see it.", authSubmitLogin:"Log in",
@@ -1215,7 +1226,7 @@
       verdictFactorsLabel:"Technische Faktoren — eine Beschreibung, kein Signal:",
       navJournal:"Journal", toastJournal:"Trading-Journal geöffnet", accountLogin:"Anmelden",
       accountBtnIn:"Konto", authTitleLogin:"Anmelden", authTitleSignup:"Konto erstellen",
-      authTitleAccount:"Konto", authTitleRecover:"Neues Passwort", authTabLogin:"Anmelden",
+      authTitleAccount:"Konto", authTitleRecover:"Neues Passwort", authTabLogin:"Anmelden", authGoogle:"Mit Google anmelden", authGoogleNote:"Mit der Google-Anmeldung stimmst du der", authOr:"oder", authErrGoogle:"Die Google-Anmeldung hat nicht geklappt. Versuch es erneut oder nutze deine E-Mail.",
       authTabSignup:"Registrieren", authEmail:"E-Mail", authPass:"Passwort",
       authPassNew:"Neues Passwort", authPassHint:"Mindestens 8 Zeichen.", authConsent:"Ich stimme der",
       authPrivacyLink:"Datenschutzerklärung zu", authPrivacyNote:"Wir speichern nur deine E-Mail und deine Trades. Dein Passwort wird verschlüsselt gespeichert — wir können es nicht sehen.", authSubmitLogin:"Anmelden",
@@ -1354,7 +1365,7 @@
       verdictFactorsLabel:"Технічні фактори — опис, не сигнал:",
       navJournal:"Журнал", toastJournal:"Відкрито журнал угод", accountLogin:"Увійти",
       accountBtnIn:"Акаунт", authTitleLogin:"Вхід", authTitleSignup:"Реєстрація",
-      authTitleAccount:"Акаунт", authTitleRecover:"Новий пароль", authTabLogin:"Вхід",
+      authTitleAccount:"Акаунт", authTitleRecover:"Новий пароль", authTabLogin:"Вхід", authGoogle:"Увійти через Google", authGoogleNote:"Входячи через Google, ти погоджуєшся з", authOr:"або", authErrGoogle:"Не вийшло увійти через Google. Спробуй ще раз або увійди через email.",
       authTabSignup:"Реєстрація", authEmail:"Email", authPass:"Пароль",
       authPassNew:"Новий пароль", authPassHint:"Мінімум 8 символів.", authConsent:"Я погоджуюсь з",
       authPrivacyLink:"політикою конфіденційності", authPrivacyNote:"Зберігаємо лише email і твої угоди. Пароль зберігається в зашифрованому вигляді, ми його не бачимо.", authSubmitLogin:"Увійти",
@@ -1493,7 +1504,7 @@
       verdictFactorsLabel:"גורמים טכניים — תיאור, לא איתות:",
       navJournal:"יומן", toastJournal:"יומן העסקאות נפתח", accountLogin:"התחברות",
       accountBtnIn:"חשבון", authTitleLogin:"התחברות", authTitleSignup:"הרשמה",
-      authTitleAccount:"חשבון", authTitleRecover:"סיסמה חדשה", authTabLogin:"התחברות",
+      authTitleAccount:"חשבון", authTitleRecover:"סיסמה חדשה", authTabLogin:"התחברות", authGoogle:"התחברות עם Google", authGoogleNote:"בהתחברות עם Google את/ה מסכימ/ה עם", authOr:"או", authErrGoogle:"ההתחברות עם Google נכשלה. נסה/י שוב או התחבר/י עם אימייל.",
       authTabSignup:"הרשמה", authEmail:"אימייל", authPass:"סיסמה",
       authPassNew:"סיסמה חדשה", authPassHint:"לפחות 8 תווים.", authConsent:"אני מסכים/ה עם",
       authPrivacyLink:"מדיניות הפרטיות", authPrivacyNote:"אנחנו שומרים רק את האימייל והעסקאות שלך. הסיסמה נשמרת מוצפנת — אנחנו לא רואים אותה.", authSubmitLogin:"התחברות",
@@ -3145,6 +3156,15 @@
         if(changed && sbUser) setTimeout(loadTrades, 0);
       });
       updateAccountUi();
+      // кнопка Google появляется сама, когда вход через Google включён в Supabase
+      fetch(cfg.url + '/auth/v1/settings', {headers:{apikey:cfg.key}})
+        .then(r=>r.ok ? r.json() : null)
+        .then(st=>{ authCfg.google = !!(st && st.external && st.external.google); if($('authDialog').open) setAuthMode(authMode); })
+        .catch(()=>{});
+      if(/[#&?]error(_description)?=/.test(location.hash + location.search)){
+        try{ history.replaceState(null, '', location.pathname); }catch(e){}
+        openAuth('login'); authMsg(t('authErrGoogle'), 'bad');
+      }
     }catch(e){
       console.error('auth init failed', e);
     }
@@ -3180,6 +3200,7 @@
     $('authPrivacyNote').hidden = mode!=='signup';
     $('authPassHint').hidden = mode==='login';
     $('authForgot').hidden = !(mode==='login' && authCfg && authCfg.reset);
+    $('authGoogleRow').hidden = !((mode==='login' || mode==='signup') && authCfg && authCfg.google);
     $('authPass').setAttribute('autocomplete', mode==='login' ? 'current-password' : 'new-password');
     setI18n($('authTitle'), {login:'authTitleLogin', signup:'authTitleSignup', account:'authTitleAccount', recover:'authTitleRecover'}[mode]);
     setI18n($('authPassLabel'), mode==='recover' ? 'authPassNew' : 'authPass');
@@ -3210,7 +3231,7 @@
     m.hidden = !text;
   }
   function setAuthBusy(busy){
-    ['authSubmit','authForgot','authLogout','authDelete','authTabLogin','authTabSignup'].forEach(id=>{ const b = $(id); if(b) b.disabled = busy; });
+    ['authSubmit','authForgot','authLogout','authDelete','authTabLogin','authTabSignup','authGoogle'].forEach(id=>{ const b = $(id); if(b) b.disabled = busy; });
     $('authDialog').classList.toggle('busy', busy);
   }
   function authErrText(err){
@@ -3248,6 +3269,17 @@
   $('authClose').addEventListener('click', closeAuth);
   $('authDialog').addEventListener('click', (e)=>{ if(e.target===$('authDialog')) closeAuth(); });
   $('authDialog').addEventListener('close', ()=>{ pendingSave = false; $('authPass').value = ''; });
+  $('authGoogle').addEventListener('click', async ()=>{
+    if(!sb || $('authDialog').classList.contains('busy')) return;
+    setAuthBusy(true); authMsg('');
+    try{
+      const { error } = await sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin + '/'}});
+      if(error) throw error;   // при успехе браузер уходит на страницу Google
+    }catch(err){
+      console.error('google sign-in failed', err);
+      authMsg(t('authErrGoogle'), 'bad'); setAuthBusy(false);
+    }
+  });
   $('authTabLogin').addEventListener('click', ()=>setAuthMode('login'));
   $('authTabSignup').addEventListener('click', ()=>setAuthMode('signup'));
   $('authForm').addEventListener('submit', async (e)=>{
