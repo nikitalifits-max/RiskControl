@@ -1,0 +1,69 @@
+{
+  "symbol": "BTCUSDT",
+  "interval": "1d",
+  "updated": "2026-10-03 08:00 UTC",
+  "after_candle": "2026-10-03 00:00",
+  "expected_range_pct": 2.17,
+  "low_pct": 0.88,
+  "high_pct": 3.73,
+  "candles_learned": 1000,
+  "neurons": 9994,
+  "track_record": {
+    "forecasts": 100,
+    "fly_error_pct": 1.25,
+    "naive_error_pct": 1.62,
+    "inside_80_band_pct": 71,
+    "last_10": [
+      {
+        "for": "2026-09-24 00:00",
+        "pred": 3.314,
+        "actual": 2.402
+      },
+      {
+        "for": "2026-09-25 00:00",
+        "pred": 2.788,
+        "actual": 2.462
+      },
+      {
+        "for": "2026-09-26 00:00",
+        "pred": 2.492,
+        "actual": 0.788
+      },
+      {
+        "for": "2026-09-27 00:00",
+        "pred": 2.534,
+        "actual": 1.197
+      },
+      {
+        "for": "2026-09-28 00:00",
+        "pred": 2.246,
+        "actual": 2.863
+      },
+      {
+        "for": "2026-09-29 00:00",
+        "pred": 2.316,
+        "actual": 2.152
+      },
+      {
+        "for": "2026-09-30 00:00",
+        "pred": 2.386,
+        "actual": 3.201
+      },
+      {
+        "for": "2026-10-01 00:00",
+        "pred": 2.5,
+        "actual": 2.517
+      },
+      {
+        "for": "2026-10-02 00:00",
+        "pred": 2.348,
+        "actual": 3.981
+      },
+      {
+        "for": "2026-10-03 00:00",
+        "pred": 2.862,
+        "actual": 0.681
+      }
+    ]
+  }
+}
