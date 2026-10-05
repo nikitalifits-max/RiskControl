@@ -174,25 +174,6 @@
      на действительно узких (телефонных) экранах. */
   @media(max-width:680px){.grid{grid-template-columns:1fr;}.grid-asym{grid-template-columns:1fr;}}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow);transition:background .2s,border-color .2s;}
-  .fly-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-  .fly-num{font:700 38px/1 var(--font-mono);letter-spacing:-.02em;}
-  .fly-title{font-weight:700;font-size:15px;}
-  .fly-sub{font-size:13px;color:var(--muted);margin-top:2px;}
-  .fly-stale{margin-top:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);color:var(--warn);font-size:12.5px;}
-  .fly-chart{margin-top:14px;}
-  .fly-chart-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);}
-  .fly-legend{display:flex;gap:12px;}
-  .fly-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-inline-end:5px;}
-  .fly-bars{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:84px;margin-top:8px;border-bottom:1px solid var(--border);direction:ltr;}
-  .fly-day{display:flex;gap:2px;align-items:flex-end;height:100%;justify-content:center;}
-  .fly-day span{flex:1;max-width:11px;border-radius:3px 3px 0 0;min-height:2px;}
-  .fly-p,.fly-legend .fly-p{background:var(--accent-light);}
-  .fly-a,.fly-legend .fly-a{background:var(--muted);}
-  .fly-dates{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;margin-top:4px;font:500 9.5px var(--font-mono);color:var(--muted);text-align:center;direction:ltr;}
-  .fly-stats{font-size:13px;line-height:1.55;margin:12px 0 0;}
-  .fly-about{margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.55;}
-  .fly-about summary{cursor:pointer;color:var(--accent-text);font-weight:600;}
-  .fly-about p{margin:8px 0 0;}
   .card-quiet{background:transparent;border:none;border-top:1px solid var(--border-soft);border-radius:0;box-shadow:none;padding:18px 4px;}
   .card h2{font-size:14px;margin:0 0 16px;display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.01em;}
   .card h2 .tag{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--border);padding:3px 8px;border-radius:4px;}
@@ -758,31 +739,6 @@
     </div>
   </div>
 
-  <div class="card fly-card" id="flyCard" hidden>
-    <h2><span data-i18n="flyH2">Мозг мухи</span> <span class="tag" data-i18n="flyTag">эксперимент · BTC, дневная свеча</span></h2>
-    <div class="fly-main">
-      <div class="fly-num" id="flyNum">—</div>
-      <div>
-        <div class="fly-title" id="flyTitle"></div>
-        <div class="fly-sub" id="flySub"></div>
-      </div>
-    </div>
-    <div class="fly-stale" id="flyStale" hidden></div>
-    <div class="fly-chart">
-      <div class="fly-chart-h"><span data-i18n="flyChartH">Последние 10 дней: размах свечи, %</span>
-        <span class="fly-legend"><span><i class="fly-p"></i><span data-i18n="flyLegP">прогноз мухи</span></span><span><i class="fly-a"></i><span data-i18n="flyLegA">было на деле</span></span></span></div>
-      <div class="fly-bars" id="flyBars"></div>
-      <div class="fly-dates" id="flyDates"></div>
-    </div>
-    <p class="fly-stats" id="flyStats"></p>
-    <details class="fly-about">
-      <summary data-i18n="flyWhat">Что это и можно ли этому верить</summary>
-      <p data-i18n="flyAbout1">Это симуляция мозга плодовой мушки: открытая карта FlyWire, около 127 000 нейронов. Раз в день муха «пробует» рынок BTC, а простая модель по ответу её нейронов оценивает, насколько широкой будет следующая дневная свеча.</p>
-      <p data-i18n="flyAbout2">Муха не предсказывает направление цены — только размах. Обычная формула на тех же данных на проверке оказалась чуть точнее мухи. Это эксперимент, не сигнал и не финансовый совет.</p>
-    </details>
-    <p class="small" id="flyUpd"></p>
-  </div>
-
     <div class="grid grid-asym">
       <div>
         <div class="card">
@@ -990,7 +946,6 @@
       verdictFactorsLabel:"Технические факторы — описание, не сигнал:",
       navJournal:"Журнал", toastJournal:"Открыт журнал сделок", accountLogin:"Войти",
       accountBtnIn:"Аккаунт", authTitleLogin:"Вход", authTitleSignup:"Регистрация",
-      flyH2:"Мозг мухи", flyTag:"эксперимент · BTC, дневная свеча", flyTitle:"Муха ждёт размах дня около {x}%", flySub:"обычно выходит от {lo}% до {hi}%", flyStale:"Нового прогноза ещё нет: последний был на {d}. Муха обновляется раз в день.", flyChartH:"Последние 10 дней: размах свечи, %", flyLegP:"прогноз мухи", flyLegA:"было на деле", flyStats:"Проверено прогнозов: {n}. Средняя ошибка мухи {fe}%, прогноза «как вчера» — {ne}%. В свой коридор муха попала в {in}% случаев.", flyWhat:"Что это и можно ли этому верить", flyAbout1:"Это симуляция мозга плодовой мушки: открытая карта FlyWire, около 127 000 нейронов. Раз в день муха «пробует» рынок BTC, а простая модель по ответу её нейронов оценивает, насколько широкой будет следующая дневная свеча.", flyAbout2:"Муха не предсказывает направление цены — только размах. Обычная формула на тех же данных на проверке оказалась чуть точнее мухи. Это эксперимент, не сигнал и не финансовый совет.", flyUpd:"Прогноз на свечу {d} (UTC). Обновлено {u}.", flyBar:"{d}: прогноз {p}%, было {a}%",
       authTitleAccount:"Аккаунт", authTitleRecover:"Новый пароль", authTabLogin:"Вход", authGoogle:"Войти через Google", authGoogleNote:"Входя через Google, ты соглашаешься с", authOr:"или", authErrGoogle:"Не получилось войти через Google. Попробуй ещё раз или войди по email.",
       authTabSignup:"Регистрация", authEmail:"Email", authPass:"Пароль",
       authPassNew:"Новый пароль", authPassHint:"Минимум 8 символов.", authConsent:"Я согласен с",
@@ -1130,7 +1085,6 @@
       verdictFactorsLabel:"Technical factors — a description, not a signal:",
       navJournal:"Journal", toastJournal:"Trade journal opened", accountLogin:"Log in",
       accountBtnIn:"Account", authTitleLogin:"Log in", authTitleSignup:"Create account",
-      flyH2:"Fly brain", flyTag:"experiment · BTC, daily candle", flyTitle:"The fly expects a daily range of about {x}%", flySub:"it usually lands between {lo}% and {hi}%", flyStale:"No new forecast yet: the last one was for {d}. The fly updates once a day.", flyChartH:"Last 10 days: candle range, %", flyLegP:"fly forecast", flyLegA:"what happened", flyStats:"Forecasts checked: {n}. Average error: fly {fe}%, “same as yesterday” {ne}%. The range landed inside the fly's band {in}% of the time.", flyWhat:"What this is and whether to trust it", flyAbout1:"This is a simulated fruit-fly brain: the open FlyWire map, about 127,000 neurons. Once a day the fly “tastes” the BTC market, and a simple model reads its neurons to estimate how wide the next daily candle will be.", flyAbout2:"The fly does not predict price direction — only the range. A plain formula on the same data was slightly more accurate in testing. This is an experiment, not a signal and not financial advice.", flyUpd:"Forecast for the {d} candle (UTC). Updated {u}.", flyBar:"{d}: forecast {p}%, actual {a}%",
       authTitleAccount:"Account", authTitleRecover:"New password", authTabLogin:"Log in", authGoogle:"Continue with Google", authGoogleNote:"By continuing with Google you agree to the", authOr:"or", authErrGoogle:"Google sign-in didn't work. Try again or use your email.",
       authTabSignup:"Sign up", authEmail:"Email", authPass:"Password",
       authPassNew:"New password", authPassHint:"At least 8 characters.", authConsent:"I agree to the",
@@ -1270,7 +1224,6 @@
       verdictFactorsLabel:"גורמים טכניים — תיאור, לא איתות:",
       navJournal:"יומן", toastJournal:"יומן העסקאות נפתח", accountLogin:"התחברות",
       accountBtnIn:"חשבון", authTitleLogin:"התחברות", authTitleSignup:"הרשמה",
-      flyH2:"מוח הזבוב", flyTag:"ניסוי · BTC, נר יומי", flyTitle:"הזבוב מצפה לטווח יומי של כ-{x}%", flySub:"בדרך כלל יוצא בין {lo}% ל-{hi}%", flyStale:"עדיין אין תחזית חדשה: האחרונה הייתה ל-{d}. הזבוב מתעדכן פעם ביום.", flyChartH:"10 הימים האחרונים: טווח הנר, %", flyLegP:"תחזית הזבוב", flyLegA:"מה קרה בפועל", flyStats:"תחזיות שנבדקו: {n}. שגיאה ממוצעת: הזבוב {fe}%, תחזית ״כמו אתמול״ {ne}%. הטווח נפל בתוך המסדרון של הזבוב ב-{in}% מהמקרים.", flyWhat:"מה זה והאם אפשר לסמוך על זה", flyAbout1:"זו סימולציה של מוח זבוב פירות: המפה הפתוחה FlyWire, כ-127,000 נוירונים. פעם ביום הזבוב ״טועם״ את שוק ה-BTC, ומודל פשוט מעריך לפי תגובת הנוירונים כמה רחב יהיה הנר היומי הבא.", flyAbout2:"הזבוב לא חוזה את כיוון המחיר — רק את הטווח. נוסחה רגילה על אותם נתונים הייתה מעט מדויקת יותר בבדיקה. זה ניסוי, לא איתות ולא ייעוץ פיננסי.", flyUpd:"תחזית לנר של {d} ‏(UTC). עודכן {u}.", flyBar:"{d}: תחזית {p}%, בפועל {a}%",
       authTitleAccount:"חשבון", authTitleRecover:"סיסמה חדשה", authTabLogin:"התחברות", authGoogle:"התחברות עם Google", authGoogleNote:"בהתחברות עם Google את/ה מסכימ/ה עם", authOr:"או", authErrGoogle:"ההתחברות עם Google נכשלה. נסה/י שוב או התחבר/י עם אימייל.",
       authTabSignup:"הרשמה", authEmail:"אימייל", authPass:"סיסמה",
       authPassNew:"סיסמה חדשה", authPassHint:"לפחות 8 תווים.", authConsent:"אני מסכים/ה עם",
@@ -2873,7 +2826,6 @@
     calc();
     initChart();
     jOnLang();
-    renderFly();
   }
   $('langSelect').addEventListener('change', (e)=> setLang(e.target.value));
 
@@ -3376,55 +3328,6 @@
   $('jFilter').addEventListener('change', (e)=>{ jFilter = e.target.value; renderJournal(); });
   $('jGuestSignup').addEventListener('click', ()=>openAuth('signup'));
   $('jGuestLogin').addEventListener('click', ()=>openAuth('login'));
-  // ---------- мозг мухи: дневной прогноз размаха BTC из fly_verdict.json ----------
-  var flyData = null;
-  function flyOk(d){
-    const n = v => typeof v==='number' && isFinite(v) && v>=0 && v<100;
-    const tr = d && d.track_record;
-    return !!(d && n(d.expected_range_pct) && n(d.low_pct) && n(d.high_pct) && typeof d.after_candle==='string'
-      && /^\d{4}-\d{2}-\d{2}/.test(d.after_candle) && tr && Array.isArray(tr.last_10) && n(tr.fly_error_pct) && n(tr.naive_error_pct));
-  }
-  function flyDate(ms){ return new Date(ms).toLocaleDateString(({ru:'ru-RU', en:'en-GB', he:'he-IL'})[lang] || 'ru-RU', {day:'numeric', month:'long', timeZone:'UTC'}); }
-  function flyFill(key, map){ let s = t(key); for(const k in map) s = s.replace('{'+k+'}', map[k]); return s; }
-  function renderFly(){
-    const card = $('flyCard');
-    if(!flyData){ card.hidden = true; return; }
-    const d = flyData, tr = d.track_record, DAY = 86400000;
-    const last = Date.parse(d.after_candle.slice(0,10) + 'T00:00:00Z');      // открытие последней закрытой свечи
-    const target = last + DAY;                                                // свеча, на которую дан прогноз
-    const stale = Date.now() >= target + DAY;                                 // эта свеча уже закрылась
-    $('flyNum').textContent = fmt(d.expected_range_pct, 1) + '%';
-    $('flyTitle').textContent = flyFill('flyTitle', {x: fmt(d.expected_range_pct, 1)});
-    $('flySub').textContent = flyFill('flySub', {lo: fmt(d.low_pct, 1), hi: fmt(d.high_pct, 1)});
-    $('flyStale').hidden = !stale;
-    $('flyStale').textContent = stale ? flyFill('flyStale', {d: flyDate(target)}) : '';
-    card.classList.toggle('is-stale', stale);
-    const rows = tr.last_10.filter(e => e && isFinite(e.pred) && isFinite(e.actual) && typeof e.for==='string').slice(-10);
-    const max = Math.max(0.5, ...rows.map(e => Math.max(e.pred, e.actual)));
-    const bars = $('flyBars'), dates = $('flyDates'); bars.textContent = ''; dates.textContent = '';
-    rows.forEach(e => {
-      const day = document.createElement('div'); day.className = 'fly-day';
-      const ms = Date.parse(e.for.slice(0,10) + 'T00:00:00Z');
-      day.title = flyFill('flyBar', {d: flyDate(ms), p: fmt(e.pred, 2), a: fmt(e.actual, 2)});
-      day.setAttribute('role', 'img'); day.setAttribute('aria-label', day.title);
-      [['fly-p', e.pred], ['fly-a', e.actual]].forEach(([c, v]) => { const b = document.createElement('span'); b.className = c; b.style.height = (v / max * 100).toFixed(1) + '%'; day.appendChild(b); });
-      bars.appendChild(day);
-      const lab = document.createElement('span'); lab.textContent = e.for.slice(8,10) + '.' + e.for.slice(5,7); dates.appendChild(lab);
-    });
-    $('flyStats').textContent = flyFill('flyStats', {n: tr.forecasts, fe: fmt(tr.fly_error_pct, 2), ne: fmt(tr.naive_error_pct, 2), in: tr.inside_80_band_pct});
-    $('flyUpd').textContent = flyFill('flyUpd', {d: flyDate(target), u: String(d.updated || '').slice(0, 16) + ' UTC'});
-    card.hidden = false;
-  }
-  async function initFly(){
-    if(!/^https?:$/.test(location.protocol)) return;
-    try{
-      const r = await fetch('/fly_verdict.json', {cache:'no-store'});
-      if(!r.ok) return;
-      const d = await r.json();
-      if(flyOk(d)){ flyData = d; renderFly(); }
-    }catch(e){ /* блок просто не показываем */ }
-  }
-
   function jOnLang(){
     if(!sb) return;
     renderJournal();
@@ -3784,7 +3687,6 @@
     });
     if(!document.hidden) startPolling();
     initAuth();
-    initFly();
   })();
 })();
 </script>
