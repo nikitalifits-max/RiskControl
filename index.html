@@ -365,6 +365,28 @@
   .account-btn[hidden],.save-row[hidden],.save-msg[hidden],.auth-msg[hidden]{display:none;}
   .nav button[hidden]{display:none;}
   .save-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px;}
+  .save-card{flex-direction:column;align-items:stretch;gap:10px;margin-top:14px;padding:14px;border:1px solid var(--accent);border-radius:var(--radius-sm);background:linear-gradient(180deg,rgba(109,94,245,.12),rgba(109,94,245,.03));}
+  .save-pitch{font-size:14px;line-height:1.45;color:var(--muted);}
+  .save-pitch b{display:block;color:var(--text);font-weight:700;}
+  .save-card .save-big{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;font-size:15px;line-height:1.2;text-align:start;}
+  .save-card,.save-card .save-big,.save-big-t{min-width:0;white-space:normal;}
+  .save-big-t small{display:block;font-size:11.5px;font-weight:500;opacity:.85;margin-top:2px;}
+  .save-nudge{font-size:13px;line-height:1.45;padding:10px 12px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--text);}
+  .save-nudge[hidden],.copy-hint[hidden]{display:none;}
+  .why-j{font-size:13px;line-height:1.5;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;}
+  .why-j b{display:block;color:var(--text);margin-bottom:4px;}
+  .why-j ul{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:3px;}
+  .out.has-result .out-hero{cursor:pointer;}
+  .copy-hint{font-size:10.5px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted);margin-inline-start:6px;opacity:.85;}
+  .out:not(.has-result) .copy-hint{display:none;}
+  .save-sticky{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));z-index:70;width:min(560px,calc(100% - 24px));display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--accent);box-shadow:0 12px 40px rgba(0,0,0,.45);transform:translate(-50%,160%);transition:transform .25s ease;}
+  .save-sticky.show{transform:translate(-50%,0);}
+  .save-sticky-t{flex:1;font-size:13.5px;font-weight:600;line-height:1.3;color:var(--text);}
+  .save-sticky .btn{white-space:nowrap;}
+  @media (prefers-reduced-motion: reduce){.save-sticky{transition:none;}}
+  .save-ask p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;}
+  .save-ask .save-ask-btns{display:flex;gap:10px;margin-top:6px;}
+  .save-ask .save-ask-btns .btn{flex:1;justify-content:center;}
   .save-row .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
   .save-msg{font-size:12.5px;color:var(--muted);}
   .save-msg.ok{color:var(--green);}
@@ -661,7 +683,7 @@
 
         <div class="out" id="calcOut">
           <div class="out-hero" aria-live="polite">
-            <div class="out-hero-k" data-i18n="outSizeK">Объём для входа</div>
+            <div class="out-hero-k"><span data-i18n="outSizeK">Объём для входа</span><span class="copy-hint" data-i18n="copyHint">нажми, чтобы скопировать</span></div>
             <div class="out-hero-v v" id="oSize">—</div>
             <div class="out-hero-sub"><span data-i18n="outValueK">Стоимость позиции</span> <span class="v" id="oValue">—</span></div>
           </div>
@@ -677,9 +699,15 @@
           </div>
           <div id="banner"></div>
         </div>
-        <div class="save-row" id="saveTradeRow" hidden>
-          <button type="button" class="btn btn-accent btn-sm" id="saveTradeBtn" disabled><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span data-i18n="saveTradeBtn">Сохранить в журнал</span></button>
+        <div class="save-row save-card" id="saveTradeRow" hidden>
+          <div class="save-pitch"><b data-i18n="savePitchA">Риск посчитан — сделка защищена.</b><span data-i18n="savePitchB">Теперь сохрани её — чтобы защитить депозит.</span></div>
+          <button type="button" class="btn btn-accent save-big" id="saveTradeBtn" disabled><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg><span class="save-big-t"><span data-i18n="saveTradeBtn">Сохранить в журнал</span><small data-i18n="saveTradeSub">10 секунд · без этого не видно, где ты теряешь</small></span></button>
+          <div class="save-nudge" id="saveNudge" role="status" hidden></div>
           <span class="save-msg" id="saveTradeMsg" role="status" hidden></span>
+          <div class="why-j">
+            <b data-i18n="whyJH">Ты считаешь риск, потому что без этого сливаешь. Журнал нужен по той же причине.</b>
+            <ul><li data-i18n="whyJ1">Одна сделка — случайность. Двадцать — твоя система. Работает ли она, покажет только журнал.</li><li data-i18n="whyJ2">Память врёт: прибыль помнишь, ошибки — нет.</li><li data-i18n="whyJ3">Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.</li></ul>
+          </div>
         </div>
         <p class="small" data-i18n="calcSmall">*Приближённая оценка (округлённая maintenance margin rate ~0.4%, без учёта funding/комиссий) — перед реальным входом сверяй точную цену ликвидации на своей бирже.</p>
         <div class="ai-check">
@@ -854,6 +882,23 @@
   </div>
 </div>
 
+<div class="save-sticky" id="saveSticky" aria-hidden="true">
+  <span class="save-sticky-t" data-i18n="stickyText">Расчёт готов — сохрани сделку</span>
+  <button type="button" class="btn btn-accent btn-sm" id="saveStickyBtn" tabindex="-1" data-i18n="saveTradeBtn">Сохранить в журнал</button>
+</div>
+<dialog id="saveAskDialog" class="auth-dialog save-ask" aria-labelledby="saveAskTitle">
+  <form method="dialog">
+    <div class="auth-head">
+      <h2 id="saveAskTitle" data-i18n="askH">Записать эту сделку?</h2>
+      <button type="button" class="auth-x" id="saveAskX" data-i18n-aria="authClose" data-i18n-title="authClose" aria-label="Закрыть" title="Закрыть">×</button>
+    </div>
+    <p data-i18n="askP">Расчёт риска защищает одну сделку. Журнал — весь депозит.</p>
+    <div class="save-ask-btns">
+      <button type="button" class="btn btn-accent" id="saveAskYes" data-i18n="askYes" autofocus>Записать</button>
+      <button type="button" class="btn btn-ghost" id="saveAskNo" data-i18n="askNo">Не сейчас</button>
+    </div>
+  </form>
+</dialog>
 <dialog id="authDialog" class="auth-dialog" aria-labelledby="authTitle">
   <form id="authForm" novalidate>
     <div class="auth-head">
@@ -962,6 +1007,7 @@
       authErrGeneric:"Не получилось. Попробуй ещё раз через минуту.", authCheckEmail:"Почти готово! Мы отправили письмо на {email} — подтверди адрес по ссылке и потом войди.", authResetSent:"Если аккаунт с таким email есть, письмо со ссылкой для нового пароля придёт в течение пары минут.",
       authResetNeedEmail:"Введи email, с которым регистрировался, и нажми «Забыли пароль?» ещё раз.", authPassChanged:"Пароль изменён — ты в аккаунте.", authWelcome:"Готово, ты в аккаунте.",
       authLoggedOut:"Ты вышел из аккаунта.", authDeleted:"Аккаунт и все сделки удалены.", saveTradeBtn:"Сохранить в журнал",
+      savePitchA:"Риск посчитан — сделка защищена.", savePitchB:"Теперь сохрани её — чтобы защитить депозит.", saveTradeSub:"10 секунд · без этого не видно, где ты теряешь", whyJH:"Ты считаешь риск, потому что без этого сливаешь. Журнал нужен по той же причине.", whyJ1:"Одна сделка — случайность. Двадцать — твоя система. Работает ли она, покажет только журнал.", whyJ2:"Память врёт: прибыль помнишь, ошибки — нет.", whyJ3:"Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.", askH:"Записать эту сделку?", askP:"Расчёт риска защищает одну сделку. Журнал — весь депозит.", askYes:"Записать", askNo:"Не сейчас", nudgeUnsaved:"Посчитано сделок: {n}, в журнале — ни одной. Через месяц ты не вспомнишь, какие из них были ошибками.", nudgeRisk:"Риск {p}% депозита. Сделки с таким риском — главная причина сливов. Сохрани её — и журнал покажет, как часто ты так рискуешь.", copyHint:"нажми, чтобы скопировать", sizeCopied:"Объём скопирован", stickyText:"Расчёт готов — сохрани сделку",
       saveTradeSaved:"Сохранено в журнал ✓", saveTradeOpen:"Открыть журнал →", saveTradeErr:"Не удалось сохранить. Проверь интернет и попробуй ещё раз.",
       jH2:"Журнал сделок", jTag:"видишь только ты", jGuestText:"Сохраняй сделки из калькулятора одной кнопкой и отмечай, чем они закончились. Через 20–30 сделок станет видно, что реально работает: как часто выбивает стоп, сколько приносит средняя сделка и где уходят деньги.",
       jGuestSignup:"Создать аккаунт", jGuestLogin:"Войти", jEmpty:"Пока пусто. Посчитай сделку в калькуляторе и нажми «Сохранить в журнал».",
@@ -1101,6 +1147,7 @@
       authErrGeneric:"That didn't work. Try again in a minute.", authCheckEmail:"Almost done! We sent an email to {email} — confirm your address via the link, then log in.", authResetSent:"If an account with this email exists, a link to set a new password will arrive within a couple of minutes.",
       authResetNeedEmail:"Enter the email you signed up with, then click “Forgot password?” again.", authPassChanged:"Password changed — you're signed in.", authWelcome:"Done, you're signed in.",
       authLoggedOut:"You're logged out.", authDeleted:"Account and all trades deleted.", saveTradeBtn:"Save to journal",
+      savePitchA:"Risk calculated — the trade is protected.", savePitchB:"Now save it — to protect your account.", saveTradeSub:"10 seconds · without it you can't see where you lose", whyJH:"You calculate risk because without it you blow your account. A journal matters for exactly the same reason.", whyJ1:"One trade is chance. Twenty are your system. Only a journal shows whether it works.", whyJ2:"Memory lies: you remember the wins, not the mistakes.", whyJ3:"A repeated mistake costs money. A journal finds it in 15 trades, the market — in one account.", askH:"Save this trade?", askP:"Risk sizing protects one trade. A journal protects your whole account.", askYes:"Save", askNo:"Not now", nudgeUnsaved:"Trades calculated: {n}, in the journal: none. In a month you won't remember which of them were mistakes.", nudgeRisk:"Risk: {p}% of your balance. Trades with this much risk are the main reason accounts get blown. Save it — and the journal will show how often you risk like this.", copyHint:"tap to copy", sizeCopied:"Size copied", stickyText:"Calculation ready — save the trade",
       saveTradeSaved:"Saved to journal ✓", saveTradeOpen:"Open journal →", saveTradeErr:"Couldn't save. Check your connection and try again.",
       jH2:"Trade journal", jTag:"only you can see it", jGuestText:"Save trades from the calculator with one click and mark how they ended. After 20–30 trades you'll see what actually works: how often your stop gets hit, what an average trade makes and where the money goes.",
       jGuestSignup:"Create account", jGuestLogin:"Log in", jEmpty:"Nothing here yet. Calculate a trade in the calculator and click “Save to journal”.",
@@ -1240,6 +1287,7 @@
       authErrGeneric:"זה לא הצליח. נסה/י שוב בעוד דקה.", authCheckEmail:"כמעט סיימנו! שלחנו אימייל אל {email} — אשר/י את הכתובת דרך הקישור ואז התחבר/י.", authResetSent:"אם קיים חשבון עם האימייל הזה, קישור לסיסמה חדשה יגיע תוך כמה דקות.",
       authResetNeedEmail:"הזן/י את האימייל שאיתו נרשמת ולחץ/י שוב על „שכחת סיסמה?“.", authPassChanged:"הסיסמה שונתה — את/ה מחובר/ת.", authWelcome:"מעולה, את/ה מחובר/ת.",
       authLoggedOut:"התנתקת מהחשבון.", authDeleted:"החשבון וכל העסקאות נמחקו.", saveTradeBtn:"שמירה ביומן",
+      savePitchA:"הסיכון חושב — העסקה מוגנת.", savePitchB:"עכשיו שמור/י אותה — כדי להגן על החשבון.", saveTradeSub:"10 שניות · בלי זה לא רואים איפה מפסידים", whyJH:"מחשבים סיכון כי בלעדיו מפסידים את החשבון. יומן חשוב בדיוק מאותה סיבה.", whyJ1:"עסקה אחת היא מקרה. עשרים — זו השיטה שלך. רק יומן מראה אם היא עובדת.", whyJ2:"הזיכרון משקר: את הרווחים זוכרים, את הטעויות — לא.", whyJ3:"טעות שחוזרת עולה כסף. היומן מוצא אותה תוך 15 עסקאות, השוק — תוך חשבון אחד.", askH:"לשמור את העסקה הזו?", askP:"חישוב סיכון מגן על עסקה אחת. יומן — על כל החשבון.", askYes:"לשמור", askNo:"לא עכשיו", nudgeUnsaved:"עסקאות שחושבו: {n}, ביומן — אף אחת. בעוד חודש לא תזכור/י אילו מהן היו טעויות.", nudgeRisk:"סיכון של {p}% מהיתרה. עסקאות עם סיכון כזה הן הסיבה העיקרית למחיקת חשבונות. שמור/י אותה — והיומן יראה כמה פעמים את/ה מסכן/ת ככה.", copyHint:"הקש/י להעתקה", sizeCopied:"הגודל הועתק", stickyText:"החישוב מוכן — שמור/י את העסקה",
       saveTradeSaved:"נשמר ביומן ✓", saveTradeOpen:"פתיחת היומן ←", saveTradeErr:"השמירה נכשלה. בדוק/י את האינטרנט ונסה/י שוב.",
       jH2:"יומן עסקאות", jTag:"רק את/ה רואה", jGuestText:"שמור/י עסקאות מהמחשבון בלחיצה אחת וסמן/י איך הן הסתיימו. אחרי 20–30 עסקאות יתברר מה באמת עובד: כמה פעמים הסטופ נפגע, כמה מרוויחה עסקה ממוצעת ולאן הולך הכסף.",
       jGuestSignup:"יצירת חשבון", jGuestLogin:"התחברות", jEmpty:"עדיין ריק. חשב/י עסקה במחשבון ולחץ/י „שמירה ביומן“.",
@@ -1419,6 +1467,7 @@
     if(id==='pageJournal' && typeof renderJournal==='function') renderJournal();
     setActiveNav(id);
     showPageToast(id);
+    updateSticky();
     if(!opts || !opts.skipScroll){
       // сама смена контента происходит мгновенно, но так как общий блок сверху (монета +
       // вердикт) остаётся прежним, без прокрутки к началу нового экрана изменение снизу
@@ -1757,6 +1806,7 @@
     };
     updateSaveGate();
     updateAiRiskGate();
+    jnTrack();
   }
 
 
@@ -3096,6 +3146,7 @@
     btn.disabled = !ready || !!already || btn.dataset.busy==='1';
     const msg = $('saveTradeMsg');
     if(!already && msg.dataset.state==='saved'){ msg.hidden = true; delete msg.dataset.state; }
+    updateJournalNudge();
   }
   async function saveTrade(){
     if(!sb) return;
@@ -3115,6 +3166,7 @@
       if(error) throw error;
       jTrades.unshift(data);
       lastSavedSig = calcSig(c);
+      jnUnsaved = 0; jnSeenSig = jnSig(c); try{ sessionStorage.setItem('rcUnsaved','0'); }catch(e){}
       renderJournal();
       msg.textContent = '';
       const ok = document.createElement('span'); setI18n(ok, 'saveTradeSaved');
@@ -3131,6 +3183,68 @@
     }
   }
   $('saveTradeBtn').addEventListener('click', saveTrade);
+
+  // ---------- подталкивание к журналу: объяснение, подсказки, нижняя панель, вопрос при копировании ----------
+  var jnUnsaved = 0, jnSeenSig = '', jnTimer = null, jnAskShown = false, jnSaveVisible = false;
+  try{ jnUnsaved = +sessionStorage.getItem('rcUnsaved') || 0; jnAskShown = sessionStorage.getItem('rcAskShown')==='1'; }catch(e){}
+  // "идея сделки" без цены входа: живая цена меняется каждые секунды и не должна считаться новой сделкой
+  function jnSig(c){ return c ? [c.symbol,c.side,c.stop,c.leverage,c.risk].join('|') : ''; }
+  function jnSaved(){ return !!(sbUser && lastCalc && calcSig(lastCalc)===lastSavedSig); }
+  function jnReady(){ return !!(sb && lastCalc && lastCalc.ok) && !jnSaved(); }
+  function updateJournalNudge(){
+    const n = $('saveNudge');
+    if(!n) return;
+    let txt = '';
+    if(jnReady()){
+      if(lastRisk && lastRisk.pct!=null && lastRisk.pct>2 && lastRisk.pct<=100) txt = t('nudgeRisk').replace('{p}', fmt(lastRisk.pct,1));
+      else if(jnUnsaved>=3) txt = t('nudgeUnsaved').replace('{n}', String(jnUnsaved));
+    }
+    n.textContent = txt; n.hidden = !txt;
+    updateSticky();
+  }
+  // расчёт считается "посчитанной сделкой", когда результат не меняется 2.5 секунды
+  function jnTrack(){
+    clearTimeout(jnTimer);
+    if(!(lastCalc && lastCalc.ok)) return;
+    const sig = jnSig(lastCalc);
+    jnTimer = setTimeout(()=>{
+      if(!(lastCalc && lastCalc.ok) || jnSig(lastCalc)!==sig || sig===jnSeenSig || jnSaved()) return;
+      jnSeenSig = sig; jnUnsaved++;
+      try{ sessionStorage.setItem('rcUnsaved', String(jnUnsaved)); }catch(e){}
+      updateJournalNudge();
+    }, 2500);
+  }
+  function updateSticky(){
+    const bar = $('saveSticky');
+    if(!bar) return;
+    const show = jnReady() && !$('pageCalc').hidden && !jnSaveVisible && !$('authDialog').open && !$('saveAskDialog').open;
+    bar.classList.toggle('show', show);
+    bar.setAttribute('aria-hidden', show ? 'false' : 'true');
+    $('saveStickyBtn').tabIndex = show ? 0 : -1;
+  }
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>{ es.forEach(e=>{ jnSaveVisible = e.isIntersecting; }); updateSticky(); }).observe($('saveTradeRow'));
+  }
+  $('saveStickyBtn').addEventListener('click', ()=>{ saveTrade(); });
+  // копирование объёма (нажатие на карточку результата) — момент входа в сделку: спрашиваем один раз за визит
+  function closeAsk(){ const d = $('saveAskDialog'); if(d.open){ try{ d.close(); }catch(e){ d.removeAttribute('open'); } } updateSticky(); }
+  function maybeAskSave(){
+    if(jnAskShown || !jnReady()) return;
+    jnAskShown = true;
+    try{ sessionStorage.setItem('rcAskShown','1'); }catch(e){}
+    setTimeout(()=>{ if(!jnReady()) return; const d = $('saveAskDialog'); try{ d.showModal(); }catch(e){ d.setAttribute('open',''); } updateSticky(); }, 600);
+  }
+  document.querySelector('#calcOut .out-hero').addEventListener('click', async ()=>{
+    if(!(lastCalc && lastCalc.ok)) return;
+    const val = String(lastCalc.size);
+    try{ await navigator.clipboard.writeText(val); showToast(t('sizeCopied')); }catch(e){}
+    maybeAskSave();
+  });
+  $('saveAskYes').addEventListener('click', ()=>{ closeAsk(); saveTrade(); });
+  $('saveAskNo').addEventListener('click', closeAsk);
+  $('saveAskX').addEventListener('click', closeAsk);
+  $('saveAskDialog').addEventListener('close', updateSticky);
+  $('authDialog').addEventListener('close', updateSticky);
 
   // ---------- журнал ----------
   function jNum(v){ const n = Number(v); return (v===null || v===undefined || v==='' || !isFinite(n)) ? null : n; }
