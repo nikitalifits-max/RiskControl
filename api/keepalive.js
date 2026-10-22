@@ -12,7 +12,8 @@ module.exports = async (req, res) => {
   }
   try {
     const r = await fetch(url + '/rest/v1/trades?select=id&limit=1', {
-      headers: { apikey: key, Authorization: 'Bearer ' + key }
+      // только apikey: новые ключи sb_publishable_ не являются JWT, в заголовке Authorization их передавать нельзя (будет 401)
+      headers: { apikey: key }
     });
     res.status(200).json({ ok: r.ok, status: r.status, at: new Date().toISOString() });
   } catch (e) {
