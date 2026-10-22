@@ -15,7 +15,10 @@ module.exports = async (req, res) => {
       // только apikey: новые ключи sb_publishable_ не являются JWT, в заголовке Authorization их передавать нельзя (будет 401)
       headers: { apikey: key }
     });
-    res.status(200).json({ ok: r.ok, status: r.status, at: new Date().toISOString() });
+    // 42501 (permission denied) — нормально: анонимному ключу таблицу читать нельзя, но запрос дошёл до базы
+    const body = r.ok ? '' : await r.text().catch(() => '');
+    const dbReached = r.ok || /"code"\s*:\s*"42501"/.test(body);
+    res.status(200).json({ ok: dbReached, status: r.status, at: new Date().toISOString() });
   } catch (e) {
     res.status(200).json({ ok: false, reason: 'fetch_failed' });
   }
