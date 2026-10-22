@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RiskControl — калькулятор риска и плеча для фьючерсов</title>
-<meta name="description" content="RiskControl — бесплатный калькулятор объёма позиции и плеча по риску для крипто-фьючерсов. Know your risk. Control your trade. С оценкой цены ликвидации, живыми данными Bybit и чек-листом входа в сделку. Доступен на русском, English, Deutsch, Українська, עברית.">
+<meta name="description" content="RiskControl — бесплатный калькулятор объёма позиции и плеча по риску для крипто-фьючерсов. Know your risk. Control your trade. С оценкой цены ликвидации, живыми данными Bybit и чек-листом входа в сделку. Доступен на русском, English и עברית.">
 <meta name="keywords" content="калькулятор риска, position size calculator, leverage calculator, crypto futures risk, риск менеджмент трейдинг, liquidation price calculator, Bybit calculator">
 <meta property="og:title" content="RiskControl — калькулятор риска и плеча для фьючерсов">
 <meta property="og:description" content="Считает объём позиции по риску на сделку, проверяет безопасность плеча относительно цены ликвидации и даёт сводку рыночных факторов перед входом в сделку.">
@@ -384,6 +384,10 @@
   .save-sticky-t{flex:1;font-size:13.5px;font-weight:600;line-height:1.3;color:var(--text);}
   .save-sticky .btn{white-space:nowrap;}
   @media (prefers-reduced-motion: reduce){.save-sticky{transition:none;}}
+  .site-foot{margin:28px 0 0;padding:16px 0 84px;border-top:1px solid var(--border-soft);font-size:12px;line-height:1.55;color:var(--muted);display:flex;flex-direction:column;gap:6px;}
+  .site-foot p{margin:0;max-width:820px;}
+  .site-foot a{color:var(--muted);text-decoration:underline;}
+  .ai-note{margin:8px 0 0;font-size:11.5px;line-height:1.45;color:var(--muted);}
   .save-ask p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;}
   .save-ask .save-ask-btns{display:flex;gap:10px;margin-top:6px;}
   .save-ask .save-ask-btns .btn{flex:1;justify-content:center;}
@@ -550,11 +554,11 @@
 <div class="page-toast" id="pageToast" aria-live="polite"></div>
 <div class="ticker-marquee" aria-hidden="true">
   <div class="ticker-track">
-    <span data-i18n="tagline">СНАЧАЛА РИСК — ПОТОМ СДЕЛКА.</span><span class="sep">◆</span>
+    <span data-i18n="tagline">СНАЧАЛА РАСЧЁТ РИСКА — ПОТОМ СДЕЛКА.</span><span class="sep">◆</span>
     <span>BYBIT · LIVE DATA</span><span class="sep">◆</span>
     <span data-i18n="checklistTag">не сигнал к сделке</span><span class="sep">◆</span>
     <span data-i18n="calcTag">риск-менеджмент</span><span class="sep">◆</span>
-    <span data-i18n="tagline">СНАЧАЛА РИСК — ПОТОМ СДЕЛКА.</span><span class="sep">◆</span>
+    <span data-i18n="tagline">СНАЧАЛА РАСЧЁТ РИСКА — ПОТОМ СДЕЛКА.</span><span class="sep">◆</span>
     <span>BYBIT · LIVE DATA</span><span class="sep">◆</span>
     <span data-i18n="checklistTag">не сигнал к сделке</span><span class="sep">◆</span>
     <span data-i18n="calcTag">риск-менеджмент</span><span class="sep">◆</span>
@@ -566,7 +570,7 @@
     <div class="header-row hero-content">
       <div>
         <h1><span class="wm-risk">Risk</span><span class="wm-control">Control</span></h1>
-        <p class="tagline" data-i18n="tagline">СНАЧАЛА РИСК — ПОТОМ СДЕЛКА.</p>
+        <p class="tagline" data-i18n="tagline">СНАЧАЛА РАСЧЁТ РИСКА — ПОТОМ СДЕЛКА.</p>
         <p class="sub" data-i18n="sub">Считай риск до входа в сделку: точный объём позиции, безопасное плечо и цена ликвидации — за секунды, по живым данным Bybit. Не финансовый совет — решение всегда за тобой.</p>
       </div>
       <div class="header-actions">
@@ -717,6 +721,7 @@
             <div id="aiResultRiskLoading" class="ai-result-loading" data-i18n="aiCheckLoadingRisk" hidden>Анализирую параметры сделки — обычно несколько секунд…</div>
             <div id="aiResultRiskText" class="ai-result-text" hidden></div>
             <div id="aiResultRiskError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
+            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.</p>
           </div>
         </div>
       </div>
@@ -766,6 +771,7 @@
         <div id="aiResultLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
         <div id="aiResultText" class="ai-result-text" hidden></div>
         <div id="aiResultError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
+            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.</p>
       </div>
     </div>
   </div>
@@ -803,6 +809,7 @@
               <div id="aiResultChecklistLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
               <div id="aiResultChecklistText" class="ai-result-text" hidden></div>
               <div id="aiResultChecklistError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
+            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.</p>
             </div>
           </div>
         </div>
@@ -880,6 +887,10 @@
       </details>
     </div>
   </div>
+  <footer class="site-foot">
+    <p data-i18n="legalRisk">Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты на сайте — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них — только на тебе.</p>
+    <p><a href="/privacy.html" data-i18n="footPrivacy">Политика конфиденциальности</a> · <a href="mailto:riskctrl.app@gmail.com">riskctrl.app@gmail.com</a></p>
+  </footer>
 </div>
 
 <div class="save-sticky" id="saveSticky" aria-hidden="true">
@@ -947,7 +958,7 @@
   const TR = {
     ru:{
       sub:"Считай риск до входа в сделку: точный объём позиции, безопасное плечо и цена ликвидации — за секунды, по живым данным Bybit. Не финансовый совет — решение всегда за тобой.",
-      tagline:"СНАЧАЛА РИСК — ПОТОМ СДЕЛКА.",
+      tagline:"СНАЧАЛА РАСЧЁТ РИСКА — ПОТОМ СДЕЛКА.",
       themeToggleTitle:"Светлая / тёмная тема",
       navCalc:"Калькулятор", navMarket:"Рынок",
       toastCalc:"Открыт экран «Калькулятор»", toastMarket:"Открыт экран «Рынок»",
@@ -1007,7 +1018,7 @@
       authErrGeneric:"Не получилось. Попробуй ещё раз через минуту.", authCheckEmail:"Почти готово! Мы отправили письмо на {email} — подтверди адрес по ссылке и потом войди.", authResetSent:"Если аккаунт с таким email есть, письмо со ссылкой для нового пароля придёт в течение пары минут.",
       authResetNeedEmail:"Введи email, с которым регистрировался, и нажми «Забыли пароль?» ещё раз.", authPassChanged:"Пароль изменён — ты в аккаунте.", authWelcome:"Готово, ты в аккаунте.",
       authLoggedOut:"Ты вышел из аккаунта.", authDeleted:"Аккаунт и все сделки удалены.", saveTradeBtn:"Сохранить в журнал",
-      savePitchA:"Риск посчитан — сделка защищена.", savePitchB:"Теперь сохрани её — чтобы защитить депозит.", saveTradeSub:"10 секунд · без этого не видно, где ты теряешь", whyJH:"Ты считаешь риск, потому что без этого сливаешь. Журнал нужен по той же причине.", whyJ1:"Одна сделка — случайность. Двадцать — твоя система. Работает ли она, покажет только журнал.", whyJ2:"Память врёт: прибыль помнишь, ошибки — нет.", whyJ3:"Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.", askH:"Записать эту сделку?", askP:"Расчёт риска защищает одну сделку. Журнал — весь депозит.", askYes:"Записать", askNo:"Не сейчас", nudgeUnsaved:"Посчитано сделок: {n}, в журнале — ни одной. Через месяц ты не вспомнишь, какие из них были ошибками.", nudgeRisk:"Риск {p}% депозита. Сделки с таким риском — главная причина сливов. Сохрани её — и журнал покажет, как часто ты так рискуешь.", copyHint:"нажми, чтобы скопировать", sizeCopied:"Объём скопирован", stickyText:"Расчёт готов — сохрани сделку",
+      aiNote:"ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.", legalRisk:"Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты на сайте — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них — только на тебе.", footPrivacy:"Политика конфиденциальности", savePitchA:"Риск посчитан — сделка защищена.", savePitchB:"Теперь сохрани её — чтобы защитить депозит.", saveTradeSub:"10 секунд · без этого не видно, где ты теряешь", whyJH:"Ты считаешь риск, потому что без этого сливаешь. Журнал нужен по той же причине.", whyJ1:"Одна сделка — случайность. Двадцать — твоя система. Работает ли она, покажет только журнал.", whyJ2:"Память врёт: прибыль помнишь, ошибки — нет.", whyJ3:"Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.", askH:"Записать эту сделку?", askP:"Расчёт риска защищает одну сделку. Журнал — весь депозит.", askYes:"Записать", askNo:"Не сейчас", nudgeUnsaved:"Посчитано сделок: {n}, в журнале — ни одной. Через месяц ты не вспомнишь, какие из них были ошибками.", nudgeRisk:"Риск {p}% депозита. Сделки с таким риском — главная причина сливов. Сохрани её — и журнал покажет, как часто ты так рискуешь.", copyHint:"нажми, чтобы скопировать", sizeCopied:"Объём скопирован", stickyText:"Расчёт готов — сохрани сделку",
       saveTradeSaved:"Сохранено в журнал ✓", saveTradeOpen:"Открыть журнал →", saveTradeErr:"Не удалось сохранить. Проверь интернет и попробуй ещё раз.",
       jH2:"Журнал сделок", jTag:"видишь только ты", jGuestText:"Сохраняй сделки из калькулятора одной кнопкой и отмечай, чем они закончились. Через 20–30 сделок станет видно, что реально работает: как часто выбивает стоп, сколько приносит средняя сделка и где уходят деньги.",
       jGuestSignup:"Создать аккаунт", jGuestLogin:"Войти", jEmpty:"Пока пусто. Посчитай сделку в калькуляторе и нажми «Сохранить в журнал».",
@@ -1087,7 +1098,7 @@
     },
     en:{
       sub:"Size your risk before you enter: exact position size, safe leverage, and liquidation price — in seconds, from live Bybit data. Not financial advice — the decision is always yours.",
-      tagline:"RISK FIRST. THEN THE TRADE.",
+      tagline:"CALCULATE THE RISK FIRST. THEN TRADE.",
       themeToggleTitle:"Light / dark theme",
       navCalc:"Calculator", navMarket:"Market",
       toastCalc:"Calculator screen opened", toastMarket:"Market screen opened",
@@ -1147,7 +1158,7 @@
       authErrGeneric:"That didn't work. Try again in a minute.", authCheckEmail:"Almost done! We sent an email to {email} — confirm your address via the link, then log in.", authResetSent:"If an account with this email exists, a link to set a new password will arrive within a couple of minutes.",
       authResetNeedEmail:"Enter the email you signed up with, then click “Forgot password?” again.", authPassChanged:"Password changed — you're signed in.", authWelcome:"Done, you're signed in.",
       authLoggedOut:"You're logged out.", authDeleted:"Account and all trades deleted.", saveTradeBtn:"Save to journal",
-      savePitchA:"Risk calculated — the trade is protected.", savePitchB:"Now save it — to protect your account.", saveTradeSub:"10 seconds · without it you can't see where you lose", whyJH:"You calculate risk because without it you blow your account. A journal matters for exactly the same reason.", whyJ1:"One trade is chance. Twenty are your system. Only a journal shows whether it works.", whyJ2:"Memory lies: you remember the wins, not the mistakes.", whyJ3:"A repeated mistake costs money. A journal finds it in 15 trades, the market — in one account.", askH:"Save this trade?", askP:"Risk sizing protects one trade. A journal protects your whole account.", askYes:"Save", askNo:"Not now", nudgeUnsaved:"Trades calculated: {n}, in the journal: none. In a month you won't remember which of them were mistakes.", nudgeRisk:"Risk: {p}% of your balance. Trades with this much risk are the main reason accounts get blown. Save it — and the journal will show how often you risk like this.", copyHint:"tap to copy", sizeCopied:"Size copied", stickyText:"Calculation ready — save the trade",
+      aiNote:"AI can make mistakes. This is not financial advice — double-check the conclusions yourself.", legalRisk:"Trading leveraged futures carries a high level of risk: you can lose your entire deposit. All calculations on this site are approximate estimates based on public exchange data — not financial advice and not a guarantee of results. Trading decisions and responsibility for them are yours alone.", footPrivacy:"Privacy policy", savePitchA:"Risk calculated — the trade is protected.", savePitchB:"Now save it — to protect your account.", saveTradeSub:"10 seconds · without it you can't see where you lose", whyJH:"You calculate risk because without it you blow your account. A journal matters for exactly the same reason.", whyJ1:"One trade is chance. Twenty are your system. Only a journal shows whether it works.", whyJ2:"Memory lies: you remember the wins, not the mistakes.", whyJ3:"A repeated mistake costs money. A journal finds it in 15 trades, the market — in one account.", askH:"Save this trade?", askP:"Risk sizing protects one trade. A journal protects your whole account.", askYes:"Save", askNo:"Not now", nudgeUnsaved:"Trades calculated: {n}, in the journal: none. In a month you won't remember which of them were mistakes.", nudgeRisk:"Risk: {p}% of your balance. Trades with this much risk are the main reason accounts get blown. Save it — and the journal will show how often you risk like this.", copyHint:"tap to copy", sizeCopied:"Size copied", stickyText:"Calculation ready — save the trade",
       saveTradeSaved:"Saved to journal ✓", saveTradeOpen:"Open journal →", saveTradeErr:"Couldn't save. Check your connection and try again.",
       jH2:"Trade journal", jTag:"only you can see it", jGuestText:"Save trades from the calculator with one click and mark how they ended. After 20–30 trades you'll see what actually works: how often your stop gets hit, what an average trade makes and where the money goes.",
       jGuestSignup:"Create account", jGuestLogin:"Log in", jEmpty:"Nothing here yet. Calculate a trade in the calculator and click “Save to journal”.",
@@ -1227,7 +1238,7 @@
     },
     he:{
       sub:"חשב את הסיכון לפני הכניסה לעסקה: גודל פוזיציה מדויק, מינוף בטוח ומחיר חיסול — תוך שניות, לפי נתונים חיים מבייביט. אין בכך ייעוץ פיננסי — ההחלטה תמיד שלך.",
-      tagline:"קודם הסיכון — אחר כך העסקה.",
+      tagline:"קודם חישוב הסיכון — אחר כך העסקה.",
       themeToggleTitle:"ערכת נושא בהירה / כהה",
       navCalc:"מחשבון", navMarket:"שוק",
       toastCalc:"נפתח מסך המחשבון", toastMarket:"נפתח מסך השוק",
@@ -1287,7 +1298,7 @@
       authErrGeneric:"זה לא הצליח. נסה/י שוב בעוד דקה.", authCheckEmail:"כמעט סיימנו! שלחנו אימייל אל {email} — אשר/י את הכתובת דרך הקישור ואז התחבר/י.", authResetSent:"אם קיים חשבון עם האימייל הזה, קישור לסיסמה חדשה יגיע תוך כמה דקות.",
       authResetNeedEmail:"הזן/י את האימייל שאיתו נרשמת ולחץ/י שוב על „שכחת סיסמה?“.", authPassChanged:"הסיסמה שונתה — את/ה מחובר/ת.", authWelcome:"מעולה, את/ה מחובר/ת.",
       authLoggedOut:"התנתקת מהחשבון.", authDeleted:"החשבון וכל העסקאות נמחקו.", saveTradeBtn:"שמירה ביומן",
-      savePitchA:"הסיכון חושב — העסקה מוגנת.", savePitchB:"עכשיו שמור/י אותה — כדי להגן על החשבון.", saveTradeSub:"10 שניות · בלי זה לא רואים איפה מפסידים", whyJH:"מחשבים סיכון כי בלעדיו מפסידים את החשבון. יומן חשוב בדיוק מאותה סיבה.", whyJ1:"עסקה אחת היא מקרה. עשרים — זו השיטה שלך. רק יומן מראה אם היא עובדת.", whyJ2:"הזיכרון משקר: את הרווחים זוכרים, את הטעויות — לא.", whyJ3:"טעות שחוזרת עולה כסף. היומן מוצא אותה תוך 15 עסקאות, השוק — תוך חשבון אחד.", askH:"לשמור את העסקה הזו?", askP:"חישוב סיכון מגן על עסקה אחת. יומן — על כל החשבון.", askYes:"לשמור", askNo:"לא עכשיו", nudgeUnsaved:"עסקאות שחושבו: {n}, ביומן — אף אחת. בעוד חודש לא תזכור/י אילו מהן היו טעויות.", nudgeRisk:"סיכון של {p}% מהיתרה. עסקאות עם סיכון כזה הן הסיבה העיקרית למחיקת חשבונות. שמור/י אותה — והיומן יראה כמה פעמים את/ה מסכן/ת ככה.", copyHint:"הקש/י להעתקה", sizeCopied:"הגודל הועתק", stickyText:"החישוב מוכן — שמור/י את העסקה",
+      aiNote:"בינה מלאכותית יכולה לטעות. זה לא ייעוץ פיננסי — בדוק/י את המסקנות בעצמך.", legalRisk:"מסחר בחוזים עתידיים עם מינוף כרוך בסיכון גבוה: אפשר להפסיד את כל הפיקדון. כל החישובים באתר הם הערכות משוערות על סמך נתונים ציבוריים של הבורסה — לא ייעוץ פיננסי ולא הבטחה לתוצאה. ההחלטות על עסקאות והאחריות עליהן — שלך בלבד.", footPrivacy:"מדיניות פרטיות", savePitchA:"הסיכון חושב — העסקה מוגנת.", savePitchB:"עכשיו שמור/י אותה — כדי להגן על החשבון.", saveTradeSub:"10 שניות · בלי זה לא רואים איפה מפסידים", whyJH:"מחשבים סיכון כי בלעדיו מפסידים את החשבון. יומן חשוב בדיוק מאותה סיבה.", whyJ1:"עסקה אחת היא מקרה. עשרים — זו השיטה שלך. רק יומן מראה אם היא עובדת.", whyJ2:"הזיכרון משקר: את הרווחים זוכרים, את הטעויות — לא.", whyJ3:"טעות שחוזרת עולה כסף. היומן מוצא אותה תוך 15 עסקאות, השוק — תוך חשבון אחד.", askH:"לשמור את העסקה הזו?", askP:"חישוב סיכון מגן על עסקה אחת. יומן — על כל החשבון.", askYes:"לשמור", askNo:"לא עכשיו", nudgeUnsaved:"עסקאות שחושבו: {n}, ביומן — אף אחת. בעוד חודש לא תזכור/י אילו מהן היו טעויות.", nudgeRisk:"סיכון של {p}% מהיתרה. עסקאות עם סיכון כזה הן הסיבה העיקרית למחיקת חשבונות. שמור/י אותה — והיומן יראה כמה פעמים את/ה מסכן/ת ככה.", copyHint:"הקש/י להעתקה", sizeCopied:"הגודל הועתק", stickyText:"החישוב מוכן — שמור/י את העסקה",
       saveTradeSaved:"נשמר ביומן ✓", saveTradeOpen:"פתיחת היומן ←", saveTradeErr:"השמירה נכשלה. בדוק/י את האינטרנט ונסה/י שוב.",
       jH2:"יומן עסקאות", jTag:"רק את/ה רואה", jGuestText:"שמור/י עסקאות מהמחשבון בלחיצה אחת וסמן/י איך הן הסתיימו. אחרי 20–30 עסקאות יתברר מה באמת עובד: כמה פעמים הסטופ נפגע, כמה מרוויחה עסקה ממוצעת ולאן הולך הכסף.",
       jGuestSignup:"יצירת חשבון", jGuestLogin:"התחברות", jEmpty:"עדיין ריק. חשב/י עסקה במחשבון ולחץ/י „שמירה ביומן“.",
