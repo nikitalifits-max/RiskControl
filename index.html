@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RiskControl — калькулятор риска и плеча для фьючерсов</title>
-<meta name="description" content="RiskControl — бесплатный калькулятор объёма позиции и плеча по риску для крипто-фьючерсов. Know your risk. Control your trade. С оценкой цены ликвидации, живыми данными Bybit и чек-листом входа в сделку. Доступен на русском, English и עברית.">
-<meta name="keywords" content="калькулятор риска, position size calculator, leverage calculator, crypto futures risk, риск менеджмент трейдинг, liquidation price calculator, Bybit calculator">
-<meta property="og:title" content="RiskControl — калькулятор риска и плеча для фьючерсов">
-<meta property="og:description" content="Считает объём позиции по риску на сделку, проверяет безопасность плеча относительно цены ликвидации и даёт сводку рыночных факторов перед входом в сделку.">
+<title>RiskControl — система управления риском для фьючерсов</title>
+<meta name="description" content="Рассчитайте размер позиции, стоп и ликвидацию до входа в сделку и ведите журнал сделок. Расчёт риска бесплатен и без ограничений.">
+<meta name="keywords" content="система управления риском, risk management system, размер позиции, position size, расчёт риска, crypto futures risk, риск менеджмент трейдинг, цена ликвидации, liquidation price, журнал сделок, trade journal, Bybit">
+<meta property="og:title" content="RiskControl — система управления риском для фьючерсов">
+<meta property="og:description" content="Рассчитайте размер позиции, стоп и ликвидацию до входа в сделку и ведите журнал сделок. Расчёт риска бесплатен и без ограничений.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.riskctrl.app/">
 <link rel="canonical" href="https://www.riskctrl.app/">
@@ -16,11 +16,11 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="RiskControl — risk &amp; position size calculator for crypto futures">
+<meta property="og:image:alt" content="RiskControl — risk management system for futures traders">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.riskctrl.app/api/og">
-<meta name="twitter:title" content="RiskControl — калькулятор риска и плеча для фьючерсов">
-<meta name="twitter:description" content="Калькулятор объёма позиции и плеча по риску для крипто-фьючерсов с проверкой безопасности ликвидации.">
+<meta name="twitter:title" content="RiskControl — система управления риском для фьючерсов">
+<meta name="twitter:description" content="Рассчитайте размер позиции, стоп и ликвидацию до входа в сделку и ведите журнал сделок. Расчёт риска бесплатен и без ограничений.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
@@ -332,21 +332,6 @@
   .ai-check-hint{margin:8px 0 0;font-size:11.5px;line-height:1.4;color:var(--muted);text-align:center;}
   .ai-check-hint[hidden]{display:none;}
 
-  /* ---------- реферальный баннер (Bybit) ---------- */
-  .ref-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(135deg,var(--panel3),var(--panel2));border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin:0 0 18px;text-decoration:none;transition:border-color .15s,transform .1s;}
-  .ref-banner:hover{border-color:var(--accent);}
-  .ref-banner:active{transform:scale(.99);}
-  .ref-banner-left{display:flex;align-items:center;gap:10px;min-width:0;}
-  .ref-banner-icon{flex-shrink:0;color:var(--accent2);}
-  .ref-banner-ad{flex-shrink:0;font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:1px 5px;}
-  .ref-banner-text{font-size:13px;line-height:1.4;color:var(--text);}
-  .ref-banner-cta{flex-shrink:0;font-size:12px;font-weight:700;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--accent-text);white-space:nowrap;}
-  @media (max-width:480px){
-    .ref-banner{flex-direction:column;align-items:flex-start;}
-    .ref-banner-cta{align-self:flex-end;}
-    .ref-banner-left{flex-wrap:wrap;row-gap:6px;}
-    .ref-banner-text{flex-basis:100%;}
-  }
   .ai-result{margin-top:10px;}
   .ai-result-loading{font-size:13px;color:var(--muted);}
   .ai-result-text{font-size:13.5px;line-height:1.6;white-space:pre-wrap;background:var(--panel2);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 14px;}
@@ -677,10 +662,6 @@
   .banner.ok,.banner.warn,.banner.bad{background:var(--panel2);color:var(--text);border:1px solid transparent;}
   .banner.bad{border-color:var(--text);}
   .banner.warn{border-color:var(--quiet);}
-  .ref-banner{background:var(--panel);border:0;border-radius:20px;padding:12px 20px;margin:0 0 16px;}
-  .ref-banner-ad{border-color:var(--quiet);font-family:var(--font-ui);}
-  .ref-banner-cta{font-family:var(--font-ui);text-transform:none;letter-spacing:0;font-size:14px;color:var(--accent);}
-  .ref-banner-icon{color:var(--accent);}
   .ticker-bar{background:var(--panel);border:0;border-radius:28px;padding:24px 28px;}
   .symbol-row input{height:auto;}
   .quick-coins{gap:8px;margin-top:12px;}
@@ -933,7 +914,6 @@
     .chip{min-height:44px;}
     .save-sticky{padding:6px 6px 6px 16px;}
     .save-sticky .btn-main-sm{padding:0 16px;font-size:15px;}
-    .ref-banner{padding:12px 16px;}
   }
   @media(max-width:380px){ .row{grid-template-columns:1fr;} }
   .save-sticky:not(.show){visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s;}
@@ -944,7 +924,6 @@
   .chain-bar{flex-wrap:nowrap;}
   .chain-bar .chain-links{flex-wrap:nowrap;min-width:0;}
   .chain-bar .lk{flex:0 1 22px;min-width:8px;}
-  .ref-banner{margin:8px 0 16px;}
   @media(max-width:680px){ .saved-state .btn{flex:1 1 auto;} }
   .chain-bar{min-width:0;}
   @media(min-width:681px){ .topbar{flex-wrap:nowrap;} .brand,.topbar .nav,.header-actions{flex-shrink:0;} }
@@ -954,6 +933,42 @@
   .theme-toggle{width:44px;height:44px;border:0;border-radius:999px;background:var(--panel);color:var(--text);}
   .theme-toggle:hover{background:var(--panel2);color:var(--text);}
   @media(max-width:680px){ .header-actions{gap:6px;} .topbar .nav button{padding:0 6px;font-size:13.5px;} .lang-select{padding:0 6px;} }
+  /* ================= v19 · короткий режим расчёта ================= */
+  .calc-in .toggle:first-of-type{margin-top:18px;}
+  .fld{display:flex;flex-direction:column;}
+  .fld > label,.fld .label-row label{margin-top:16px;}
+  .fld-risk .label-row{margin-top:8px;}
+  .entry-line{margin:18px 0 0;font-size:14px;font-weight:600;color:var(--text2);min-height:20px;}
+  .entry-line.warn{color:var(--text);}
+  .entry-line + .fld-stop > label{margin-top:8px;}
+  .adv-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:48px;margin:18px 0 0;padding:0 18px;border:1px solid var(--quiet);border-radius:999px;background:transparent;color:var(--text);font:700 15px var(--font-ui);cursor:pointer;}
+  .adv-toggle:hover{border-color:var(--text2);}
+  .adv-chev{flex:0 0 auto;transition:transform .15s;}
+  .adv-toggle.open .adv-chev{transform:rotate(180deg);}
+  @media(prefers-reduced-motion:reduce){.adv-chev{transition:none;}}
+  .adv-sum{margin-top:10px;font-size:13px;color:var(--muted);text-align:center;}
+  .adv-box{padding-top:4px;}
+  .adv-box > label{margin-top:16px;}
+  .field-hint .link-btn{font-size:inherit;}
+  .quick-coins button{min-width:64px;}
+  @media(max-width:680px){
+    .symbol-row{flex-direction:row;}
+    .symbol-row .btn{width:auto;flex:0 0 auto;}
+    .quick-coins{flex-wrap:nowrap;}
+    .quick-coins button{flex:1 1 0;min-width:0;padding:0 8px;}
+    .calc-in .ticker-bar{padding-bottom:16px;}
+    .calc-in .contract-line{margin-top:10px;}
+    /* результат и кнопка — сразу под расчётом, шум рынка ниже */
+    .calc-res .out{display:contents;}
+    .calc-res .out-hero{order:1;}
+    .calc-res .res-tiles{order:2;}
+    .calc-res #banner{order:3;}
+    .calc-res .act-row{order:4;}
+    .calc-res .noise-box{order:5;}
+    .calc-res .ai-check{order:6;}
+    .calc-res > .small{order:7;}
+  }
+  .fld-risk .label-row{align-items:center;margin-top:16px;} .fld-risk .label-row label{margin:0;} .fld-risk .unit-toggle{margin-bottom:0;} .fld-risk .label-row + input{margin-top:8px;}
 </style>
 <!-- Vercel Web Analytics: считает посещения без cookie и без личных данных -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
@@ -969,8 +984,8 @@
     </div>
     <button type="button" class="chain-bar" id="chainBar" hidden><span class="chain-label" id="chainLabel"></span><span class="chain-links" id="chainLinks" aria-hidden="true"></span><span class="chain-count" id="chainCount"></span></button>
     <div class="nav">
-    <button id="navCalcBtn" class="active" type="button" data-i18n="navCalc">Калькулятор</button>
-    <button id="navMarketBtn" type="button" data-i18n="navMarket">Рынок и чек-лист</button>
+    <button id="navCalcBtn" class="active" type="button" data-i18n="navCalc">Расчёт</button>
+    <button id="navMarketBtn" type="button" data-i18n="navMarket">Рынок</button>
     <button id="navJournalBtn" type="button" data-i18n="navJournal" hidden>Журнал</button>
   </div>
     <div class="header-actions">
@@ -990,7 +1005,7 @@
   <div id="pageCalc">
   <div class="calc-grid">
     <section class="card calc-in" aria-label="Параметры сделки">
-      <h2><span data-i18n="calcH2">Калькулятор объёма и плеча</span> <span class="tag" data-i18n="calcTag">риск-менеджмент</span></h2>
+      <h2><span data-i18n="calcH2">Расчёт объёма и плеча</span> <span class="tag" data-i18n="calcTag">риск-менеджмент</span></h2>
   <div class="card ticker-bar">
     <label for="symbol" style="margin-top:0;" data-i18n="symbolLabel">Монета / пара (Bybit)</label>
     <div class="symbol-row">
@@ -1001,10 +1016,10 @@
       <button id="btnApplySymbol" type="button" class="btn btn-accent" data-i18n="applyBtn">Применить</button>
     </div>
     <div class="quick-coins" id="quickCoins">
-      <button type="button" data-coin="BTCUSDT">Bitcoin (BTC)</button>
-      <button type="button" data-coin="ETHUSDT">Ethereum (ETH)</button>
-      <button type="button" data-coin="SOLUSDT">Solana (SOL)</button>
-      <button type="button" data-coin="XRPUSDT">XRP (XRP)</button>
+      <button type="button" data-coin="BTCUSDT" aria-label="Bitcoin (BTC)">BTC</button>
+      <button type="button" data-coin="ETHUSDT" aria-label="Ethereum (ETH)">ETH</button>
+      <button type="button" data-coin="SOLUSDT" aria-label="Solana (SOL)">SOL</button>
+      <button type="button" data-coin="XRPUSDT" aria-label="XRP (XRP)">XRP</button>
     </div>
     <div class="contract-line" id="contractLine">
       <span class="contract-name" id="contractName">BTCUSDT</span>
@@ -1012,14 +1027,13 @@
       <span class="live-badge" id="liveBadge" data-i18n="liveLoading">загрузка</span>
       <span class="contract-price" id="contractPrice"></span>
     </div>
-    <p class="small" data-i18n="symbolHint">Действует сразу на обеих страницах — цену входа, график и рыночные данные. Любая пара с бессрочными фьючерсами на Bybit (USDT-M linear), не только BTC. После ввода своей пары жми «Применить» (или Enter).</p>
+    <p class="small" data-i18n="symbolHint">Действует сразу на обеих страницах — цену входа, график и рыночные данные. Любая пара с бессрочными фьючерсами на Bybit (USDT-M linear), не только BTC. После ввода своей пары нажмите «Применить» (или Enter).</p>
   </div>
-        <div class="row">
-          <div>
-            <label for="deposit" data-i18n="depositLabel">Депозит, $ (необязательно)</label>
-            <input type="text" id="deposit" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="например, 1000" data-i18n-placeholder="phDeposit">
-          </div>
-          <div>
+        <div class="toggle">
+          <button id="btnLong" type="button" class="long active">Long</button>
+          <button id="btnShort" type="button" class="short">Short</button>
+        </div>
+        <div class="fld fld-risk">
             <div class="label-row">
               <label for="risk" data-i18n="riskLabel">Риск на сделку</label>
               <div class="unit-toggle" role="group" data-i18n-aria="riskUnitAria" aria-label="Риск в долларах или процентах от депозита">
@@ -1028,22 +1042,25 @@
             </div>
             <input type="text" id="risk" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="например, 10" data-i18n-placeholder="phRisk">
             <div class="field-hint" id="riskHint" dir="auto"></div>
+        </div>
+        <div class="entry-line" id="entryLine" aria-live="polite"></div>
+        <div class="fld fld-stop">
+            <label for="stop" data-i18n="stopLabel">Цена стопа</label>
+            <input type="text" id="stop" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="уровень стоп-лосса" data-i18n-placeholder="phStop">
+        </div>
+        <button type="button" class="adv-toggle" id="advToggle" aria-expanded="false" aria-controls="advBox"><span data-i18n="advToggle">Точная настройка</span><svg class="adv-chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="adv-sum" id="advSum"></div>
+        <div class="adv-box" id="advBox" hidden>
+          <div class="fld">
+            <label for="deposit" data-i18n="depositLabel">Депозит, $ (необязательно)</label>
+            <input type="text" id="deposit" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="например, 1000" data-i18n-placeholder="phDeposit">
           </div>
-        </div>
-
-        <div class="toggle">
-          <button id="btnLong" type="button" class="long active">Long</button>
-          <button id="btnShort" type="button" class="short">Short</button>
-        </div>
-
-        <label data-i18n="feeModeLabel">Тип ордера на вход/выход</label>
+          <label data-i18n="feeModeLabel">Тип ордера на вход/выход</label>
         <div class="toggle" style="margin:0 0 6px;">
           <button id="feeTakerBtn" class="active" type="button" style="padding:6px;font-size:12px;" data-i18n="feeTakerLabel">Маркет (тейкер)</button>
           <button id="feeMakerBtn" type="button" style="padding:6px;font-size:12px;" data-i18n="feeMakerLabel">Лимит (мейкер)</button>
         </div>
-
-        <div class="row">
-          <div>
+          <div class="fld">
             <label for="entry" data-i18n="entryLabel">Цена входа</label>
             <div class="toggle" style="margin:0 0 6px;">
               <button id="entryLiveBtn" class="active" type="button" style="padding:6px;font-size:12px;" data-i18n="entryLiveLabel">Live цена</button>
@@ -1051,13 +1068,7 @@
             </div>
             <input type="text" id="entry" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="цена входа" data-i18n-placeholder="phEntry" readonly>
           </div>
-          <div>
-            <label for="stop" data-i18n="stopLabel">Цена стопа</label>
-            <input type="text" id="stop" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="уровень стоп-лосса" data-i18n-placeholder="phStop">
-          </div>
-        </div>
-
-        <div class="row">
+          <div class="row">
           <div>
             <label for="leverage" data-i18n="leverageLabel">Плечо (x)</label>
             <input type="text" id="leverage" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="например, 5" data-i18n-placeholder="phLeverage">
@@ -1067,12 +1078,12 @@
             <input type="text" id="rr" value="2" inputmode="decimal" autocomplete="off" spellcheck="false">
           </div>
         </div>
-
+        </div>
     </section>
     <section class="calc-res" aria-label="Результат">
         <div class="out" id="calcOut">
           <div class="out-hero" aria-live="polite">
-            <div class="out-hero-k"><span data-i18n="outSizeK">Объём для входа</span><span class="copy-hint" data-i18n="copyHint">нажми, чтобы скопировать</span></div>
+            <div class="out-hero-k"><span data-i18n="outSizeK">Объём для входа</span><span class="copy-hint" data-i18n="copyHint">нажмите, чтобы скопировать</span></div>
             <div class="out-hero-v v" id="oSize">—</div>
             <div class="out-hero-sub"><span data-i18n="outValueK">Стоимость позиции</span> <span class="v" id="oValue">—</span></div>
           </div>
@@ -1083,7 +1094,7 @@
             <div class="res-tile"><span class="k" data-i18n="outDistK">Расстояние до стопа</span><span class="v" id="oDist">—</span></div>
           </div>
           <div class="noise-box" id="noiseBox" hidden>
-            <div class="noise-k" data-i18n="noiseH">Шум рынка — по истории этой монеты</div>
+            <div class="noise-k" data-i18n="noiseH">Шум рынка — оценка по истории монеты, не прогноз</div>
             <div class="noise-tiles">
               <div class="res-tile"><span class="k" data-i18n="noiseMoveK">Обычный ход (80%): 4 ч / 24 ч</span><span class="v" id="oMove">—</span></div>
               <div class="res-tile"><span class="k" data-i18n="noiseStopK">Шанс задеть стоп: 4 ч / 24 ч</span><span class="v" id="oStopHit">—</span></div>
@@ -1103,7 +1114,7 @@
             <div class="save-nudge" id="saveNudge" role="status" hidden></div>
             <span class="save-msg" id="saveTradeMsg" role="status" hidden></span>
           </div>
-          <button type="button" id="aiCheckBtnRisk" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnRisk">ИИ-анализ риска этой сделки</span></button>
+          <button type="button" id="aiCheckBtnRisk" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnRisk">ИИ-проверка</span></button>
         </div>
         <div class="ai-check">
           
@@ -1111,11 +1122,11 @@
           <div id="aiResultRisk" class="ai-result" hidden>
             <div id="aiResultRiskLoading" class="ai-result-loading" data-i18n="aiCheckLoadingRisk" hidden>Анализирую параметры сделки — обычно несколько секунд…</div>
             <div id="aiResultRiskText" class="ai-result-text" hidden></div>
-            <div id="aiResultRiskError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
-            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.</p>
+            <div id="aiResultRiskError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуйте ещё раз через минуту.</div>
+            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяйте выводы сами.</p>
           </div>
         </div>
-        <p class="small" data-i18n="calcSmall">*Приближённая оценка (округлённая maintenance margin rate ~0.4%, без учёта funding/комиссий) — перед реальным входом сверяй точную цену ликвидации на своей бирже.</p>
+        <p class="small" data-i18n="calcSmall">*Цена ликвидации — оценка для изолированной маржи (isolated). В режиме кросс-маржи ликвидация зависит от всего баланса счёта и обычно наступает дальше. Объём округляется вниз до шага лота выбранной пары на Bybit и учитывает комиссию за вход и выход по выбранному типу ордера, чтобы фактический убыток на стопе не превышал заданный риск. Цена ликвидации использует реальную ставку maintenance margin с Bybit для текущего размера позиции, если она загрузилась (иначе — приближение ~0.4%); funding не учитывается — перед реальным входом сверяйте точную цену ликвидации на своей бирже.</p>
     </section>
   </div>
   <div class="card">
@@ -1131,7 +1142,7 @@
       <div class="verdict-icon" id="verdictIcon"><span class="dot"></span></div>
       <div>
         <div class="verdict-title" id="verdictTitle" data-i18n="verdictWaitingTitle">Собираю данные…</div>
-        <div class="verdict-sub" id="verdictSub" data-i18n="verdictWaitingSub">Жди первую загрузку рыночных данных</div>
+        <div class="verdict-sub" id="verdictSub" data-i18n="verdictWaitingSub">Подождите первую загрузку рыночных данных</div>
         <button type="button" class="btn btn-accent btn-sm retry-btn" id="verdictRetryBtn" data-i18n="retryBtn" hidden>Повторить</button>
       </div>
     </div>
@@ -1140,7 +1151,7 @@
       <div class="range-tile"><div class="range-k" data-i18n="rangeD1">Ход за 24 часа</div><div class="range-v skel" id="rD1">—</div><div class="range-p skel" id="rD1p">—</div></div>
       <div class="range-tile"><div class="range-k" data-i18n="rangeD7">Ход за 7 дней</div><div class="range-v skel" id="rD7">—</div><div class="range-p skel" id="rD7p">—</div></div>
     </div>
-    <p class="range-caption" data-i18n="rangeCaption">В 80% случаев по истории этой монеты цена за такое время не уходила дальше этого диапазона — в любую сторону.</p>
+    <p class="range-caption" data-i18n="rangeCaption">В 80% случаев по истории этой монеты цена за такое время не уходила дальше этого диапазона — в любую сторону. Это оценка по истории, а не прогноз.</p>
     <p class="range-note" id="rangeNote"></p>
     <div class="verdict-factors-label" data-i18n="warnH">Риски сейчас</div>
     <div class="risk-warnings" id="riskWarnings"></div>
@@ -1148,17 +1159,17 @@
       <span data-i18n="verdictTfPrefix">Учитывается таймфрейм:</span> <b id="verdictTfValue">—</b>
       <button type="button" id="verdictChangeBtn" class="link-btn" data-i18n="verdictChangeBtn">Изменить</button>
     </div>
-    <div class="verdict-factors-label" data-i18n="verdictFactorsLabel">Почему так:</div>
+    <div class="verdict-factors-label" data-i18n="verdictFactorsLabel">Технические факторы — описание, не сигнал:</div>
     <div class="verdict-factors" id="verdictFactors"></div>
-    <p class="small" data-i18n="verdictDisclaimer">Автоматическая оценка по 5 факторам: тренд, funding, RSI, Fibonacci/pivot, паттерн свечей. Не финансовый совет — решение всегда за тобой.</p>
+    <p class="small" data-i18n="verdictDisclaimer">Система показывает риск и контекст, а не направление: проверка на истории (год, 6 монет) не нашла у технических сигналов преимущества над подбрасыванием монетки. Не финансовый совет — решение и риск всегда ваши.</p>
     <div class="ai-check">
-      <button type="button" id="aiCheckBtn" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtn">Проверить с ИИ — данные + свежие новости</span></button>
+      <button type="button" id="aiCheckBtn" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtn">ИИ: картина рынка и свежие новости</span></button>
       <p class="ai-check-hint" id="aiCheckHintTrade" data-i18n="aiCheckHintMarket" hidden>Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.</p>
       <div id="aiResult" class="ai-result" hidden>
         <div id="aiResultLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
         <div id="aiResultText" class="ai-result-text" hidden></div>
-        <div id="aiResultError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
-            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.</p>
+        <div id="aiResultError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуйте ещё раз через минуту.</div>
+            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяйте выводы сами.</p>
       </div>
     </div>
   </div>
@@ -1190,13 +1201,13 @@
           <table class="levels-table" id="levelsTable"></table>
           <p class="small" data-i18n="marketSmall">Fibonacci и pivot уровни считаются автоматически по последним свечам выбранного таймфрейма (по последнему выраженному свингу high/low).</p>
           <div class="ai-check">
-            <button type="button" id="aiCheckBtnChecklist" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnChecklist">ИИ-разбор чек-листа</span></button>
+            <button type="button" id="aiCheckBtnChecklist" class="ai-check-btn" disabled><svg class="ai-icon" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg><span class="btn-label" data-i18n="aiCheckBtnChecklist">ИИ: что может пойти не так</span></button>
             <p class="ai-check-hint" id="aiCheckHintChecklist" data-i18n="aiCheckHintMarket" hidden>Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.</p>
             <div id="aiResultChecklist" class="ai-result" hidden>
               <div id="aiResultChecklistLoading" class="ai-result-loading" data-i18n="aiCheckLoading" hidden>Читаю новости и анализирую — обычно 10-20 секунд…</div>
               <div id="aiResultChecklistText" class="ai-result-text" hidden></div>
-              <div id="aiResultChecklistError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.</div>
-            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.</p>
+              <div id="aiResultChecklistError" class="ai-result-error" data-i18n="aiCheckError" hidden>Не удалось получить ответ от ИИ. Попробуйте ещё раз через минуту.</div>
+            <p class="ai-note" data-i18n="aiNote">ИИ может ошибаться. Это не финансовый совет — проверяйте выводы сами.</p>
             </div>
           </div>
         </div>
@@ -1204,11 +1215,11 @@
 
       <div>
         <details class="card card-quiet fold" id="methodFold">
-          <summary><h2><span data-i18n="methodH2">Как формируется вердикт</span> <span class="tag" data-i18n="methodTag">методология</span></h2></summary>
-          <p class="small" data-i18n="methodIntro" style="margin-top:0;font-size:13px;color:var(--text);">Вердикт — сумма 5 равнозначных факторов, каждый от -1 до +1:</p>
+          <summary><h2><span data-i18n="methodH2">Как считается состояние рынка</span> <span class="tag" data-i18n="methodTag">методология</span></h2></summary>
+          <p class="small" data-i18n="methodIntro" style="margin-top:0;font-size:13px;color:var(--text);">Система не угадывает, куда пойдёт цена: проверка за год (6 монет, 1ч и 4ч, ~66 000 оценок) показала 44–51% угаданных направлений — уровень монетки. Поэтому здесь считается то, что поддаётся проверке:</p>
           <ul id="methodList" style="margin:8px 0 0;padding-inline-start:18px;font-size:13px;line-height:1.55;"></ul>
-          <p class="small" data-i18n="methodThreshold">Сумма ≥ +3 или ≤ -3 — технический фон считается однозначным (бычьим/медвежьим). От -2 до +2 — картина смешанная, явного перевеса нет.</p>
-          <p class="small" data-i18n="methodSmall">Все факторы считаются автоматически по данным Bybit для выбранной монеты и таймфрейма. Важно: это не финансовая рекомендация и не сигнал к входу — в честном тестировании на исторических данных (несколько монет, более 300 дней, с проверкой на данных, которые алгоритм раньше не видел) этот набор факторов не показал надёжного преимущества над рынком после учёта комиссий. Используй это как технический ориентир вместе со своим анализом — решение и риск всегда твои.</p>
+          <p class="small" data-i18n="methodThreshold">Если какие-то данные с Bybit не загрузились, блок остаётся пустым — система не заполняет его догадками.</p>
+          <p class="small" data-i18n="methodSmall">Не финансовая рекомендация. Диапазон — вероятностная оценка: примерно в 1 случае из 5 цена уходит дальше, иногда намного. Решение и риск всегда ваши.</p>
         </details>
       </div>
     </div>
@@ -1223,9 +1234,9 @@
       </div>
       <div class="j-chaincard" id="jChainCard" hidden><div class="j-chaincard-k" data-i18n="jLinksK">Звенья месяца</div><div class="chain-links big" id="jhLinks" aria-hidden="true"></div></div>
     <div class="card">
-      <h2><span data-i18n="jH2">Журнал сделок</span> <span class="tag" data-i18n="jTag">видишь только ты</span></h2>
+      <h2><span data-i18n="jH2">Журнал сделок</span> <span class="tag" data-i18n="jTag">видите только вы</span></h2>
       <div class="j-guest" id="jGuest">
-        <p data-i18n="jGuestText">Сохраняй сделки из калькулятора одной кнопкой и отмечай, чем они закончились.</p>
+        <p data-i18n="jGuestText">Сохраняйте сделки одной кнопкой после расчёта и отмечайте, чем они закончились. Через 20–30 сделок станет видно, что реально работает: как часто выбивает стоп, сколько приносит средняя сделка и где уходят деньги.</p>
         <div class="j-guest-btns">
           <button type="button" class="btn btn-accent" id="jGuestSignup" data-i18n="jGuestSignup">Создать аккаунт</button>
           <button type="button" class="btn btn-ghost" id="jGuestLogin" data-i18n="jGuestLogin">Войти</button>
@@ -1237,13 +1248,13 @@
           <div class="range-tile"><div class="range-k" data-i18n="jStatTrades">Сделок</div><div class="range-v" id="jsTrades">—</div><div class="range-p" id="jsTradesSub"></div></div>
           <div class="range-tile"><div class="range-k" data-i18n="jStatWin">Винрейт</div><div class="range-v" id="jsWin">—</div><div class="range-p" data-i18n="jStatWinSub">доля закрытых в плюс</div></div>
           <div class="range-tile"><div class="range-k" data-i18n="jStatPnl">Итог</div><div class="range-v" id="jsPnl">—</div><div class="range-p" data-i18n="jStatPnlSub">по закрытым сделкам</div></div>
-          <div class="range-tile"><div class="range-k" data-i18n="jStatAvgR">Средняя сделка</div><div class="range-v" id="jsAvgR">—</div><div class="range-p" data-i18n="jStatAvgRSub">в R</div></div>
+          <div class="range-tile"><div class="range-k" data-i18n="jStatAvgR">Средняя сделка</div><div class="range-v" id="jsAvgR">—</div><div class="range-p" data-i18n="jStatAvgRSub">в R: 1R = ваш риск на сделку</div></div>
           <div class="range-tile"><div class="range-k" data-i18n="jStatStopped">Выбило стопом</div><div class="range-v" id="jsStopped">—</div><div class="range-p" data-i18n="jStatStoppedSub">из закрытых сделок</div></div>
         </div>
-        <p class="j-hint" id="jHintFew" data-i18n="jHintFew" hidden>Статистика станет показательной после 20+ закрытых сделок.</p>
+        <p class="j-hint" id="jHintFew" data-i18n="jHintFew" hidden>Статистика станет показательной после 20+ закрытых сделок — до этого это скорее случайность.</p>
         <p class="j-loading" id="jLoading" data-i18n="jLoading">Загружаю журнал…</p>
-        <div class="banner bad j-error" id="jError" data-i18n="jLoadErr" hidden>Не удалось загрузить журнал.</div>
-        <p class="j-empty" id="jEmpty" data-i18n="jEmpty" hidden>Пока пусто.</p>
+        <div class="banner bad j-error" id="jError" data-i18n="jLoadErr" hidden>Не удалось загрузить журнал. Проверьте интернет и обновите страницу.</div>
+        <p class="j-empty" id="jEmpty" data-i18n="jEmpty" hidden>Пока пусто. Посчитайте сделку на экране «Расчёт» и нажмите «Замкнуть звено».</p>
         <div class="j-toolbar" id="jToolbar" hidden>
           <label><span data-i18n="jFilterLabel">Показать</span>
             <select id="jFilter">
@@ -1265,8 +1276,8 @@
       <div class="card j-why">
         <h2 data-i18n="jWhyH">Зачем цепь</h2>
         <div class="why-j">
-            <b data-i18n="whyJH">Ты считаешь риск, потому что без этого сливаешь. Журнал нужен по той же причине.</b>
-            <ul><li data-i18n="whyJ1">Одна сделка — случайность. Двадцать — твоя система. Работает ли она, покажет только журнал.</li><li data-i18n="whyJ2">Память врёт: прибыль помнишь, ошибки — нет.</li><li data-i18n="whyJ3">Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.</li></ul>
+            <b data-i18n="whyJH">Вы считаете риск, потому что без этого теряете депозит. Журнал нужен по той же причине.</b>
+            <ul><li data-i18n="whyJ1">Одна сделка — случайность. Двадцать — ваша система. Работает ли она, покажет только журнал.</li><li data-i18n="whyJ2">Память врёт: прибыль помнится, ошибки — нет.</li><li data-i18n="whyJ3">Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.</li></ul>
           </div>
       </div>
       <button type="button" class="pro-teaser" id="proTeaser"><span data-i18n="proTeaser">★ Pro скоро: проп-режим, разбор ошибок, автоимпорт с Bybit</span><b data-i18n="proTeaserGo">Хочу →</b></button>
@@ -1274,14 +1285,14 @@
       <h2><span data-i18n="proH2">RiskControl Pro</span> <span class="tag" data-i18n="proTag">скоро</span></h2>
       <p class="pro-lead" data-i18n="proLead">Для тех, кто торгует регулярно и хочет перестать терять на одних и тех же ошибках.</p>
       <ul class="pro-list">
-        <li data-i18n="proF1">Проп-режим — следит за дневным лимитом и просадкой испытания и сам уменьшает объём, чтобы ты не нарушил правила.</li>
-        <li data-i18n="proF2">Разбор ошибок — где именно ты теряешь: монеты, плечо, время, серии убытков.</li>
+        <li data-i18n="proF1">Проп-режим — следит за дневным лимитом и просадкой испытания и сам уменьшает объём, чтобы вы не нарушили правила.</li>
+        <li data-i18n="proF2">Разбор ошибок — где именно вы теряете: монеты, плечо, время, серии убытков.</li>
         <li data-i18n="proF3">Автоимпорт сделок с Bybit — журнал заполняется сам.</li>
         <li data-i18n="proF4">Уведомления в Telegram — когда цена подходит к стопу или ликвидации.</li>
         <li data-i18n="proF5">Безлимитная ИИ-проверка сделок.</li>
       </ul>
       <div class="pro-form" id="proForm">
-        <div class="pro-q" data-i18n="proQ">Сколько готов платить в месяц?</div>
+        <div class="pro-q" data-i18n="proQ">Сколько вы готовы платить в месяц?</div>
         <div class="pro-chips" id="proChips" role="group">
           <button type="button" data-v="0" data-i18n="proP0">Только бесплатно</button>
           <button type="button" data-v="lt5" data-i18n="proP1">до €5</button>
@@ -1289,33 +1300,25 @@
           <button type="button" data-v="gt10" data-i18n="proP3">больше €10</button>
         </div>
         <div class="pro-row">
-          <input type="email" id="proEmail" autocomplete="email" spellcheck="false" placeholder="твой email" data-i18n-placeholder="proEmailPh" aria-label="Email">
+          <input type="email" id="proEmail" autocomplete="email" spellcheck="false" placeholder="ваш email" data-i18n-placeholder="proEmailPh" aria-label="Email">
           <button type="button" class="btn btn-accent" id="proJoin" data-i18n="proJoin">Хочу Pro</button>
         </div>
         <div class="pro-msg" id="proMsg" role="alert" hidden></div>
         <p class="pro-note"><span data-i18n="proNote">Напишем один раз — когда Pro запустится. Без спама.</span> <a href="/privacy.html" target="_blank" rel="noopener" data-i18n="footPrivacy">Политика конфиденциальности</a></p>
       </div>
-      <p class="pro-done" id="proDone" data-i18n="proDone" hidden>Готово — ты в списке. Напишем, когда Pro запустится ✓</p>
+      <p class="pro-done" id="proDone" data-i18n="proDone" hidden>Готово — вы в списке. Напишем, когда Pro запустится ✓</p>
     </div>
     </aside>
   </div>
   </div>
 
-  <a class="ref-banner" href="https://www.bybit.eu/invite?ref=BL4R0DM" target="_blank" rel="noopener sponsored">
-    <span class="ref-banner-left">
-      <svg class="ref-banner-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-      <span class="ref-banner-ad" data-i18n="refBannerAd">Реклама</span>
-      <span class="ref-banner-text" data-i18n="refBannerText">Нет аккаунта на Bybit? Зарегистрируйся по моей ссылке — так ты поддержишь развитие RiskControl.</span>
-    </span>
-    <span class="ref-banner-cta" data-i18n="refBannerCta">Перейти →</span>
-  </a>
   <!-- Общий блок "О проекте" + глоссарий — виден на обоих экранах (Калькулятор и Рынок),
        не привязан к showPage(), потому что стоит вне #pageCalc/#pageMarket. -->
   <div class="grid" style="margin-top:16px;">
     <div>
       <div class="card card-quiet">
-        <h2><span data-i18n="aboutH2">О проекте</span> <span class="tag" data-i18n="aboutTag">независимый инструмент</span></h2>
-        <p class="small" style="margin-top:0;" data-i18n="aboutText">RiskControl — независимый некоммерческий проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без обязательной регистрации: аккаунт (только email) нужен лишь для журнала сделок. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.</p>
+        <h2><span data-i18n="aboutH2">О системе</span> <span class="tag" data-i18n="aboutTag">независимая система</span></h2>
+        <p class="small" style="margin-top:0;" data-i18n="aboutText">RiskControl — независимая система управления риском. Она не связана ни с одной биржей и использует только публичные рыночные данные. Расчёт риска бесплатен и без ограничений, регистрация не нужна. Аккаунт нужен только для журнала сделок. Перед реальной сделкой сверяйте ключевые цифры на своей бирже.</p>
       </div>
     </div>
     <div>
@@ -1333,7 +1336,7 @@
     </div>
   </div>
   <footer class="site-foot">
-    <p data-i18n="legalRisk">Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты на сайте — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них — только на тебе.</p>
+    <p data-i18n="legalRisk">Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты системы — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них остаются за вами.</p>
     <p><a href="/privacy.html" data-i18n="footPrivacy">Политика конфиденциальности</a> · <a href="mailto:riskctrl.app@gmail.com">riskctrl.app@gmail.com</a></p>
   </footer>
 </div>
@@ -1382,7 +1385,7 @@
       <h2 id="authTitle" data-i18n="authTitleLogin">Вход</h2>
       <button type="button" class="auth-x" id="authClose" data-i18n-aria="authClose" data-i18n-title="authClose" aria-label="Закрыть" title="Закрыть">×</button>
     </div>
-    <p class="auth-why" id="authWhy" data-i18n="authWhy" hidden>Войди или зарегистрируйся — и сделка сохранится в твой журнал.</p>
+    <p class="auth-why" id="authWhy" data-i18n="authWhy" hidden>Войдите или зарегистрируйтесь — и сделка сохранится в ваш журнал.</p>
     <div class="auth-tabs" id="authTabs" role="tablist">
       <button type="button" id="authTabLogin" role="tab" class="active" aria-selected="true" data-i18n="authTabLogin">Вход</button>
       <button type="button" id="authTabSignup" role="tab" aria-selected="false" data-i18n="authTabSignup">Регистрация</button>
@@ -1390,7 +1393,7 @@
     <div class="auth-msg" id="authMsg" role="alert" hidden></div>
     <div class="auth-google" id="authGoogleRow" hidden>
       <button type="button" class="btn btn-ghost auth-google-btn" id="authGoogle"><span class="auth-g" aria-hidden="true">G</span><span data-i18n="authGoogle">Войти через Google</span></button>
-      <p class="auth-note"><span data-i18n="authGoogleNote">Входя через Google, ты соглашаешься с</span> <a href="/privacy.html" target="_blank" rel="noopener" data-i18n="authPrivacyLink">политикой конфиденциальности</a>.</p>
+      <p class="auth-note"><span data-i18n="authGoogleNote">Входя через Google, вы соглашаетесь с</span> <a href="/privacy.html" target="_blank" rel="noopener" data-i18n="authPrivacyLink">политикой конфиденциальности</a>.</p>
       <div class="auth-or"><span data-i18n="authOr">или</span></div>
     </div>
     <div class="auth-fields" id="authFields">
@@ -1404,12 +1407,12 @@
         <p class="field-hint" id="authPassHint" data-i18n="authPassHint" hidden>Минимум 8 символов.</p>
       </div>
       <label class="auth-consent" id="authConsentRow" hidden><input type="checkbox" id="authConsent"><span><span data-i18n="authConsent">Я согласен с</span> <a href="/privacy.html" target="_blank" rel="noopener" data-i18n="authPrivacyLink">политикой конфиденциальности</a></span></label>
-      <p class="auth-note" id="authPrivacyNote" data-i18n="authPrivacyNote" hidden>Храним только email и твои сделки.</p>
+      <p class="auth-note" id="authPrivacyNote" data-i18n="authPrivacyNote" hidden>Храним только email и ваши сделки. Пароль хранится в зашифрованном виде, мы его не видим.</p>
       <button type="submit" class="btn btn-accent auth-submit" id="authSubmit"><span id="authSubmitLabel" data-i18n="authSubmitLogin">Войти</span></button>
       <button type="button" class="link-btn auth-forgot" id="authForgot" data-i18n="authForgot" hidden>Забыли пароль?</button>
     </div>
     <div class="auth-account" id="authAccount" hidden>
-      <p class="auth-email"><span data-i18n="authSignedAs">Ты вошёл как</span> <b id="authUserEmail"></b></p>
+      <p class="auth-email"><span data-i18n="authSignedAs">Вы вошли как</span> <b id="authUserEmail"></b></p>
       <button type="button" class="btn btn-accent" id="authOpenJournal" data-i18n="authOpenJournal">Открыть журнал</button>
       <button type="button" class="btn btn-ghost" id="authLogout" data-i18n="authLogout">Выйти</button>
       <button type="button" class="link-danger" id="authDelete" data-i18n="authDelete">Удалить аккаунт и все сделки</button>
@@ -1423,33 +1426,33 @@
   // ---------- translations ----------
   const TR = {
     ru:{
-      sub:"Считай риск до входа в сделку: точный объём позиции, безопасное плечо и цена ликвидации — за секунды, по живым данным Bybit. Не финансовый совет — решение всегда за тобой.",
+      sub:"Считайте риск до входа в сделку: точный объём позиции, безопасное плечо и цена ликвидации — за секунды, по живым данным Bybit. Не финансовый совет — решение всегда за вами.",
       tagline:"СНАЧАЛА РАСЧЁТ РИСКА — ПОТОМ СДЕЛКА.",
       themeToggleTitle:"Светлая / тёмная тема",
       navCalc:"Расчёт", navMarket:"Рынок",
-      toastCalc:"Открыт экран «Калькулятор»", toastMarket:"Открыт экран «Рынок»",
+      toastCalc:"Открыт экран «Расчёт»", toastMarket:"Открыт экран «Рынок»",
       symbolLabel:"Монета / пара (Bybit)", intervalLabel:"Таймфрейм для уровней",
       interval15:"15м", interval60:"1ч", interval240:"4ч", intervalD:"1д",
       applyBtn:"Применить",
-      symbolHint:"Действует сразу на обеих страницах — цену входа, график и рыночные данные. Любая пара с бессрочными фьючерсами на Bybit (USDT-M linear), не только BTC. После ввода своей пары жми «Применить» (или Enter).",
-      calcH2:"Калькулятор объёма и плеча", calcTag:"риск-менеджмент",
+      symbolHint:"Действует сразу на обеих страницах — цену входа, график и рыночные данные. Любая пара с бессрочными фьючерсами на Bybit (USDT-M linear), не только BTC. После ввода своей пары нажмите «Применить» (или Enter).",
+      calcH2:"Расчёт объёма и плеча", calcTag:"риск-менеджмент",
       riskLabel:"Риск на сделку", entryLabel:"Цена входа",
       entryLiveLabel:"Live цена", entryManualLabel:"Ручной ввод", feeModeLabel:"Тип ордера на вход/выход", feeTakerLabel:"Маркет (тейкер)", feeMakerLabel:"Лимит (мейкер)",
       stopLabel:"Цена стопа", leverageLabel:"Плечо (x)",
       rrLabel:"Желаемое R:R для тейк-профита",
       outDistK:"Расстояние до стопа", outSizeK:"Объём для входа", outValueK:"Стоимость позиции",
       outMarginK:"Требуемая маржа", outLiqK:"Оценка ликвидации (изолир. маржа)*", outTPK:"Тейк-профит",
-      calcSmall:"*Цена ликвидации — оценка для изолированной маржи (isolated). В режиме кросс-маржи ликвидация зависит от всего баланса счёта и обычно наступает дальше. Объём округляется вниз до шага лота выбранной пары на Bybit и учитывает комиссию за вход и выход по выбранному типу ордера, чтобы фактический убыток на стопе не превышал заданный риск. Цена ликвидации использует реальную ставку maintenance margin с Bybit для текущего размера позиции, если она загрузилась (иначе — приближение ~0.4%); funding не учитывается — перед реальным входом сверяй точную цену ликвидации на своей бирже.",
-      sizeBelowMin:"Расчётный объём ({size}) меньше минимального лота биржи для этой пары ({min}) — увеличь риск на сделку или расширь стоп, иначе сделку с таким риском открыть не получится.",
+      calcSmall:"*Цена ликвидации — оценка для изолированной маржи (isolated). В режиме кросс-маржи ликвидация зависит от всего баланса счёта и обычно наступает дальше. Объём округляется вниз до шага лота выбранной пары на Bybit и учитывает комиссию за вход и выход по выбранному типу ордера, чтобы фактический убыток на стопе не превышал заданный риск. Цена ликвидации использует реальную ставку maintenance margin с Bybit для текущего размера позиции, если она загрузилась (иначе — приближение ~0.4%); funding не учитывается — перед реальным входом сверяйте точную цену ликвидации на своей бирже.",
+      sizeBelowMin:"Расчётный объём ({size}) меньше минимального лота биржи для этой пары ({min}) — увеличьте риск на сделку или расширьте стоп, иначе сделку с таким риском открыть не получится.",
       bannerStopLong:"Стоп должен быть ниже цены входа для лонга.",
       bannerStopShort:"Стоп должен быть выше цены входа для шорта.",
-      bannerLiqWarn:"Внимание: при таком плече цена ликвидации наступит раньше стопа — реальный риск выше, чем ты задал. Снижай плечо.",
+      bannerLiqWarn:"Внимание: при таком плече цена ликвидации наступит раньше стопа — реальный риск выше, чем вы задали. Снизьте плечо.",
       bannerOk:"Плечо в порядке: стоп сработает раньше цены ликвидации (по приближённой оценке).",
-      marginMissing:"укажи плечо",
+      marginMissing:"укажите плечо",
       chartH2:"График", chartTag:"TradingView",
-      tvFallback:"Не загрузился скрипт TradingView (s3.tradingview.com/tv.js).<br>Обычно это блокировщик рекламы/приватности (uBlock, AdBlock, Brave Shields) или сеть режут внешний скрипт — API-ключ тут ни при чём, виджет бесплатный и публичный.<br>Проверь: 1) консоль браузера F12 → Console на красные ошибки с tradingview; 2) на секунду отключи блокировщик рекламы для этой страницы и обнови её.",
+      tvFallback:"Не загрузился скрипт TradingView (s3.tradingview.com/tv.js).<br>Обычно это блокировщик рекламы/приватности (uBlock, AdBlock, Brave Shields) или сеть режут внешний скрипт — API-ключ тут ни при чём, виджет бесплатный и публичный.<br>Проверьте: 1) консоль браузера F12 → Console на красные ошибки с tradingview; 2) на секунду отключите блокировщик рекламы для этой страницы и обновите её.",
       marketH2:"Рыночные данные", refreshBtn:"Обновить данные",
-      statusLoading:"загрузка...", statusUpdatedPrefix:"обновлено ", statusError:"ошибка загрузки — проверь символ/соединение; также Bybit может быть недоступен в твоём регионе", statusStalePrefix:"не удалось обновить — показаны данные на ",
+      statusLoading:"загрузка...", statusUpdatedPrefix:"обновлено ", statusError:"ошибка загрузки — проверьте символ/соединение; также Bybit может быть недоступен в вашем регионе", statusStalePrefix:"не удалось обновить — показаны данные на ",
       mPriceK:"Последняя цена", mChangeK:"Изменение 24ч", mTrendK:"Тренд (EMA20 vs EMA50)",
       trendUp:"Восходящий", trendDown:"Нисходящий", trendFlat:"Смешанный/боковик",
       marketSmall:"Fibonacci и pivot уровни считаются автоматически по последним свечам выбранного таймфрейма (по последнему выраженному свингу high/low).",
@@ -1464,54 +1467,54 @@
       cRsiOversold:"▲ перепродан", cRsiOverbought:"▼ перекуплен",
       cFibSupport:"▲ у поддержки", cFibResistance:"▼ у сопротивления",
       cPatternBull:"▲ бычий сигнал", cPatternBear:"▼ медвежий сигнал",
-      verdictWaitingTitle:"Собираю данные…", verdictWaitingSub:"Подожди первую загрузку рыночных данных",
+      verdictWaitingTitle:"Собираю данные…", verdictWaitingSub:"Подождите первую загрузку рыночных данных",
       verdictLongTitle:"Технический фон: скорее бычий", verdictShortTitle:"Технический фон: скорее медвежий", verdictNoneTitle:"Технический фон: нейтральный",
       verdictLongSub:"Большинство факторов указывают на рост", verdictShortSub:"Большинство факторов указывают на снижение", verdictNoneSub:"Факторы противоречат друг другу — явной картины нет",
       verdictTfPrefix:"Учитывается таймфрейм:", verdictChangeBtn:"Изменить",
       verdictFactorsLabel:"Технические факторы — описание, не сигнал:",
       navJournal:"Журнал", toastJournal:"Открыт журнал сделок", accountLogin:"Войти",
       accountBtnIn:"Аккаунт", authTitleLogin:"Вход", authTitleSignup:"Регистрация",
-      authTitleAccount:"Аккаунт", authTitleRecover:"Новый пароль", authTabLogin:"Вход", authGoogle:"Войти через Google", authGoogleNote:"Входя через Google, ты соглашаешься с", authOr:"или", authErrGoogle:"Не получилось войти через Google. Попробуй ещё раз или войди по email.",
+      authTitleAccount:"Аккаунт", authTitleRecover:"Новый пароль", authTabLogin:"Вход", authGoogle:"Войти через Google", authGoogleNote:"Входя через Google, вы соглашаетесь с", authOr:"или", authErrGoogle:"Не получилось войти через Google. Попробуйте ещё раз или войдите по email.",
       authTabSignup:"Регистрация", authEmail:"Email", authPass:"Пароль",
       authPassNew:"Новый пароль", authPassHint:"Минимум 8 символов.", authConsent:"Я согласен с",
-      authPrivacyLink:"политикой конфиденциальности", authPrivacyNote:"Храним только email и твои сделки. Пароль хранится в зашифрованном виде, мы его не видим.", authSubmitLogin:"Войти",
+      authPrivacyLink:"политикой конфиденциальности", authPrivacyNote:"Храним только email и ваши сделки. Пароль хранится в зашифрованном виде, мы его не видим.", authSubmitLogin:"Войти",
       authSubmitSignup:"Создать аккаунт", authSubmitRecover:"Сохранить пароль", authForgot:"Забыли пароль?",
-      authWhy:"Войди или зарегистрируйся — и сделка сохранится в твой журнал.", authSignedAs:"Ты вошёл как", authOpenJournal:"Открыть журнал",
-      authLogout:"Выйти", authDelete:"Удалить аккаунт и все сделки", authDeleteConfirm:"Точно удалить? Нажми ещё раз — отменить будет нельзя.",
-      authClose:"Закрыть", authErrInvalid:"Неверный email или пароль.", authErrExists:"Аккаунт с таким email уже есть — войди в него.",
-      authErrWeak:"Пароль слишком короткий: нужно минимум 8 символов.", authErrEmail:"Проверь email — похоже, в нём ошибка.", authErrConsent:"Отметь согласие с политикой конфиденциальности.",
-      authErrRate:"Слишком много попыток. Подожди пару минут и попробуй снова.", authErrNotConfirmed:"Сначала подтверди email по ссылке из письма.", authErrNetwork:"Нет связи с сервером. Проверь интернет и попробуй ещё раз.",
-      authErrGeneric:"Не получилось. Попробуй ещё раз через минуту.", authCheckEmail:"Почти готово! Мы отправили письмо на {email} — подтверди адрес по ссылке и потом войди.", authResetSent:"Если аккаунт с таким email есть, письмо со ссылкой для нового пароля придёт в течение пары минут.",
-      authResetNeedEmail:"Введи email, с которым регистрировался, и нажми «Забыли пароль?» ещё раз.", authPassChanged:"Пароль изменён — ты в аккаунте.", authWelcome:"Готово, ты в аккаунте.",
-      authLoggedOut:"Ты вышел из аккаунта.", authDeleted:"Аккаунт и все сделки удалены.", saveTradeBtn:"Сохранить в журнал",
-      proTeaser:"★ Pro скоро: проп-режим, разбор ошибок, автоимпорт с Bybit", proTeaserGo:"Хочу →", proH2:"RiskControl Pro", proTag:"скоро", proLead:"Для тех, кто торгует регулярно и хочет перестать терять на одних и тех же ошибках.", proF1:"Проп-режим — следит за дневным лимитом и просадкой испытания и сам уменьшает объём, чтобы ты не нарушил правила.", proF2:"Разбор ошибок — где именно ты теряешь: монеты, плечо, время, серии убытков.", proF3:"Автоимпорт сделок с Bybit — журнал заполняется сам.", proF4:"Уведомления в Telegram — когда цена подходит к стопу или ликвидации.", proF5:"Безлимитная ИИ-проверка сделок.", proQ:"Сколько готов платить в месяц?", proP0:"Только бесплатно", proP1:"до €5", proP2:"€5–10", proP3:"больше €10", proEmailPh:"твой email", proJoin:"Хочу Pro", proNote:"Напишем один раз — когда Pro запустится. Без спама.", proDone:"Готово — ты в списке. Напишем, когда Pro запустится ✓", proErrEmail:"Проверь email — похоже, в нём ошибка.", proErr:"Не получилось отправить. Проверь интернет и попробуй ещё раз.", ringK:"депозита", chainLabel:"Цепь {month}", chainOpen:"{n} открыто", closeLink:"Замкнуть звено", closeLinkN:"Замкнуть звено № {n} — записать сделку", closeShort:"Замкнуть", closeShortN:"Замкнуть звено № {n}", openNoteN:"Звено № {n} открыто — расчёт есть, записи нет", savedLinkN:"Звено № {n} замкнуто", openJournal:"Открыть журнал", stickyOpenN:"Звено № {n} открыто", rwEyebrow:"ЗВЕНО № {n} ЗАМКНУТО", rwTitle:"Сделка в журнале", rwTitle15:"Цепь месяца собрана", rwText:"Каждая записанная сделка — звено. Цепь показывает, насколько ты дисциплинирован.", rwText15:"Статистика открыта — посмотри, где ты зарабатываешь и где теряешь.", rwLeft:"{m} из 15 · до статистики ещё {left}", rwStatsOpen:"{m} из 15 · статистика открыта", rwReasonK:"Причина входа — по желанию", rwJournal:"Посмотреть цепь", rwBack:"Вернуться к расчёту", rsBreakout:"Пробой", rsBounce:"Отскок", rsTrend:"Тренд", rsNews:"Новость", rsOther:"Другое", jReason:"Причина входа", jLockedN:"Статистика откроется на 15-м звене — ещё {left}", jhSub:"звеньев записано в этом месяце", jhGoal:"Цепь месяца — 15 звеньев", jLinksK:"Звенья месяца", jWhyH:"Зачем цепь", jOpenTextN:"№ {n} · открыто · не записано", jNumN:"№ {n}", chainAria:"Цепь месяца: {m} из 15 звеньев", aiNote:"ИИ может ошибаться. Это не финансовый совет — проверяй выводы сам.", legalRisk:"Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты на сайте — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них — только на тебе.", footPrivacy:"Политика конфиденциальности", savePitchA:"Риск посчитан — сделка защищена.", savePitchB:"Теперь сохрани её — чтобы защитить депозит.", saveTradeSub:"10 секунд · без этого не видно, где ты теряешь", whyJH:"Ты считаешь риск, потому что без этого сливаешь. Журнал нужен по той же причине.", whyJ1:"Одна сделка — случайность. Двадцать — твоя система. Работает ли она, покажет только журнал.", whyJ2:"Память врёт: прибыль помнишь, ошибки — нет.", whyJ3:"Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.", askH:"Записать эту сделку?", askP:"Расчёт риска защищает одну сделку. Журнал — весь депозит.", askYes:"Записать", askNo:"Не сейчас", nudgeUnsaved:"Посчитано сделок: {n}, в журнале — ни одной. Через месяц ты не вспомнишь, какие из них были ошибками.", nudgeRisk:"Риск {p}% депозита. Сделки с таким риском — главная причина сливов. Сохрани её — и журнал покажет, как часто ты так рискуешь.", copyHint:"нажми, чтобы скопировать", sizeCopied:"Объём скопирован", stickyText:"Расчёт готов — сохрани сделку",
-      saveTradeSaved:"Сохранено в журнал ✓", saveTradeOpen:"Открыть журнал →", saveTradeErr:"Не удалось сохранить. Проверь интернет и попробуй ещё раз.",
-      jH2:"Журнал сделок", jTag:"видишь только ты", jGuestText:"Сохраняй сделки из калькулятора одной кнопкой и отмечай, чем они закончились. Через 20–30 сделок станет видно, что реально работает: как часто выбивает стоп, сколько приносит средняя сделка и где уходят деньги.",
-      jGuestSignup:"Создать аккаунт", jGuestLogin:"Войти", jEmpty:"Пока пусто. Посчитай сделку в калькуляторе и нажми «Сохранить в журнал».",
-      jLoading:"Загружаю журнал…", jLoadErr:"Не удалось загрузить журнал. Проверь интернет и обнови страницу.", jStatTrades:"Сделок",
+      authWhy:"Войдите или зарегистрируйтесь — и сделка сохранится в ваш журнал.", authSignedAs:"Вы вошли как", authOpenJournal:"Открыть журнал",
+      authLogout:"Выйти", authDelete:"Удалить аккаунт и все сделки", authDeleteConfirm:"Точно удалить? Нажмите ещё раз — отменить будет нельзя.",
+      authClose:"Закрыть", authErrInvalid:"Неверный email или пароль.", authErrExists:"Аккаунт с таким email уже есть — войдите в него.",
+      authErrWeak:"Пароль слишком короткий: нужно минимум 8 символов.", authErrEmail:"Проверьте email — похоже, в нём ошибка.", authErrConsent:"Отметьте согласие с политикой конфиденциальности.",
+      authErrRate:"Слишком много попыток. Подождите пару минут и попробуйте снова.", authErrNotConfirmed:"Сначала подтвердите email по ссылке из письма.", authErrNetwork:"Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.",
+      authErrGeneric:"Не получилось. Попробуйте ещё раз через минуту.", authCheckEmail:"Почти готово! Мы отправили письмо на {email} — подтвердите адрес по ссылке и потом войдите.", authResetSent:"Если аккаунт с таким email есть, письмо со ссылкой для нового пароля придёт в течение пары минут.",
+      authResetNeedEmail:"Введите email, с которым регистрировались, и нажмите «Забыли пароль?» ещё раз.", authPassChanged:"Пароль изменён — вы в аккаунте.", authWelcome:"Готово, вы в аккаунте.",
+      authLoggedOut:"Вы вышли из аккаунта.", authDeleted:"Аккаунт и все сделки удалены.", saveTradeBtn:"Сохранить в журнал",
+      proTeaser:"★ Pro скоро: проп-режим, разбор ошибок, автоимпорт с Bybit", proTeaserGo:"Хочу →", proH2:"RiskControl Pro", proTag:"скоро", proLead:"Для тех, кто торгует регулярно и хочет перестать терять на одних и тех же ошибках.", proF1:"Проп-режим — следит за дневным лимитом и просадкой испытания и сам уменьшает объём, чтобы вы не нарушили правила.", proF2:"Разбор ошибок — где именно вы теряете: монеты, плечо, время, серии убытков.", proF3:"Автоимпорт сделок с Bybit — журнал заполняется сам.", proF4:"Уведомления в Telegram — когда цена подходит к стопу или ликвидации.", proF5:"Безлимитная ИИ-проверка сделок.", proQ:"Сколько вы готовы платить в месяц?", proP0:"Только бесплатно", proP1:"до €5", proP2:"€5–10", proP3:"больше €10", proEmailPh:"ваш email", proJoin:"Хочу Pro", proNote:"Напишем один раз — когда Pro запустится. Без спама.", proDone:"Готово — вы в списке. Напишем, когда Pro запустится ✓", proErrEmail:"Проверьте email — похоже, в нём ошибка.", proErr:"Не получилось отправить. Проверьте интернет и попробуйте ещё раз.", metaDesc:"Рассчитайте размер позиции, стоп и ликвидацию до входа в сделку и ведите журнал сделок. Расчёт риска бесплатен и без ограничений.", advToggle:"Точная настройка", entryLineLive:"Вход по текущей цене: {p}", entryLineManual:"Вход: {p} (вручную)", entryLineNone:"Текущая цена недоступна, введите вход вручную", entryLineWait:"Вход по текущей цене: загрузка…", ringK:"депозита", chainLabel:"Цепь {month}", chainOpen:"{n} открыто", closeLink:"Замкнуть звено", closeLinkN:"Замкнуть звено № {n} — записать сделку", closeShort:"Замкнуть", closeShortN:"Замкнуть звено № {n}", openNoteN:"Звено № {n} открыто — расчёт есть, записи нет", savedLinkN:"Звено № {n} замкнуто", openJournal:"Открыть журнал", stickyOpenN:"Звено № {n} открыто", rwEyebrow:"ЗВЕНО № {n} ЗАМКНУТО", rwTitle:"Сделка в журнале", rwTitle15:"Цепь месяца собрана", rwText:"Каждая записанная сделка — звено. Цепь показывает вашу дисциплину.", rwText15:"Статистика открыта — посмотрите, где вы зарабатываете и где теряете.", rwLeft:"{m} из 15 · до статистики ещё {left}", rwStatsOpen:"{m} из 15 · статистика открыта", rwReasonK:"Причина входа — по желанию", rwJournal:"Посмотреть цепь", rwBack:"Вернуться к расчёту", rsBreakout:"Пробой", rsBounce:"Отскок", rsTrend:"Тренд", rsNews:"Новость", rsOther:"Другое", jReason:"Причина входа", jLockedN:"Статистика откроется на 15-м звене — ещё {left}", jhSub:"звеньев записано в этом месяце", jhGoal:"Цепь месяца — 15 звеньев", jLinksK:"Звенья месяца", jWhyH:"Зачем цепь", jOpenTextN:"№ {n} · открыто · не записано", jNumN:"№ {n}", chainAria:"Цепь месяца: {m} из 15 звеньев", aiNote:"ИИ может ошибаться. Это не финансовый совет — проверяйте выводы сами.", legalRisk:"Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты системы — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них остаются за вами.", footPrivacy:"Политика конфиденциальности", savePitchA:"Риск посчитан — сделка защищена.", savePitchB:"Теперь сохраните её — чтобы защитить депозит.", saveTradeSub:"10 секунд · без этого не видно, где вы теряете", whyJH:"Вы считаете риск, потому что без этого теряете депозит. Журнал нужен по той же причине.", whyJ1:"Одна сделка — случайность. Двадцать — ваша система. Работает ли она, покажет только журнал.", whyJ2:"Память врёт: прибыль помнится, ошибки — нет.", whyJ3:"Повторённая ошибка стоит денег. Журнал находит её за 15 сделок, рынок — за один депозит.", askH:"Записать эту сделку?", askP:"Расчёт риска защищает одну сделку. Журнал — весь депозит.", askYes:"Записать", askNo:"Не сейчас", nudgeUnsaved:"Посчитано сделок: {n}, в журнале — ни одной. Через месяц вы не вспомните, какие из них были ошибками.", nudgeRisk:"Риск {p}% депозита. Сделки с таким риском — главная причина потери депозита. Сохраните её, и журнал покажет, как часто вы так рискуете.", copyHint:"нажмите, чтобы скопировать", sizeCopied:"Объём скопирован", stickyText:"Расчёт готов — сохраните сделку",
+      saveTradeSaved:"Сохранено в журнал ✓", saveTradeOpen:"Открыть журнал →", saveTradeErr:"Не удалось сохранить. Проверьте интернет и попробуйте ещё раз.",
+      jH2:"Журнал сделок", jTag:"видите только вы", jGuestText:"Сохраняйте сделки одной кнопкой после расчёта и отмечайте, чем они закончились. Через 20–30 сделок станет видно, что реально работает: как часто выбивает стоп, сколько приносит средняя сделка и где уходят деньги.",
+      jGuestSignup:"Создать аккаунт", jGuestLogin:"Войти", jEmpty:"Пока пусто. Посчитайте сделку на экране «Расчёт» и нажмите «Замкнуть звено».",
+      jLoading:"Загружаю журнал…", jLoadErr:"Не удалось загрузить журнал. Проверьте интернет и обновите страницу.", jStatTrades:"Сделок",
       jStatTradesSub:"{closed} закрыто · {open} открыто", jStatWin:"Винрейт", jStatWinSub:"доля закрытых в плюс",
       jStatPnl:"Итог", jStatPnlSub:"по закрытым сделкам", jStatAvgR:"Средняя сделка",
-      jStatAvgRSub:"в R: 1R = твой риск на сделку", jStatStopped:"Выбило стопом", jStatStoppedSub:"из закрытых сделок",
+      jStatAvgRSub:"в R: 1R = ваш риск на сделку", jStatStopped:"Выбило стопом", jStatStoppedSub:"из закрытых сделок",
       jHintFew:"Статистика станет показательной после 20+ закрытых сделок — до этого это скорее случайность.", jExport:"Скачать CSV", jFilterAll:"Все",
       jFilterOpen:"Открытые", jFilterClosed:"Закрытые", jFilterLabel:"Показать",
       jEntry:"Вход", jStop:"Стоп", jTake:"Тейк",
       jLev:"Плечо", jRisk:"Риск", jStatus:"Чем закончилась",
       jResult:"Результат, $", jResultPh:"−10 или 25", jNote:"Заметка",
-      jNotePh:"Почему зашёл, что пошло не так…", jStOpen:"Открыта", jStTake:"Тейк-профит",
+      jNotePh:"Почему вошли в сделку, что пошло не так…", jStOpen:"Открыта", jStTake:"Тейк-профит",
       jStStop:"Стоп-лосс", jStClosed:"Закрыта вручную", jDelete:"Удалить",
-      jDeleteConfirm:"Точно? Нажми ещё раз", jSaved:"Сохранено", jSaveErr:"Не сохранилось — проверь интернет",
-      jBadNumber:"Введи число, например −10 или 25", jLong:"ЛОНГ", jShort:"ШОРТ",
+      jDeleteConfirm:"Точно? Нажмите ещё раз", jSaved:"Сохранено", jSaveErr:"Не сохранилось — проверьте интернет",
+      jBadNumber:"Введите число, например −10 или 25", jLong:"ЛОНГ", jShort:"ШОРТ",
       stateHot:"Рынок перегрет — осторожно с плечом", stateHigh:"Высокая волатильность", stateQuiet:"Тихий рынок",
-      stateNormal:"Обычный рынок", stateSub:"Обычный ход за 24 ч: {pct}. Направление сайт не прогнозирует.", stateSubNoVol:"Недостаточно истории свечей, чтобы оценить размах движения.",
+      stateNormal:"Обычный рынок", stateSub:"Обычный ход за 24 ч: {pct}. Направление система не прогнозирует.", stateSubNoVol:"Недостаточно истории свечей, чтобы оценить размах движения.",
       rangeH4:"Ход за 4 часа", rangeD1:"Ход за 24 часа", rangeD7:"Ход за 7 дней",
       rangeCaption:"В 80% случаев по истории этой монеты цена за такое время не уходила дальше этого диапазона — в любую сторону. Это оценка по истории, а не прогноз.", covNote:"Самопроверка по {coin}: за последние {n} дней цена за сутки осталась в прогнозном диапазоне в {rate}% дней (цель — 80%). Прошлые прогнозы пересчитаны только по данным, известным на тот день.", covNoteShort:"Мало истории для самопроверки ({n} дн.) — диапазон ориентировочный.",
       warnH:"Риски сейчас", warnFunding:"Funding {f} — {side} переплачивают в разы больше нормы (~0,01%). Толпа перекошена: возможны резкие выносы в обе стороны.", warnOi:"Открытый интерес вырос на {pct}% за сутки — в рынок быстро набирается плечо, растёт риск каскада ликвидаций.",
-      warnCrowd:"{pct}% аккаунтов Bybit в лонге — сильный перекос толпы.", warnHighVol:"Волатильность в {x} раза выше обычной для этой монеты — снизь плечо и размер позиции.", warnQuiet:"Волатильность в {x} раза ниже обычной — необычно тихо.",
+      warnCrowd:"{pct}% аккаунтов Bybit в лонге — сильный перекос толпы.", warnHighVol:"Волатильность в {x} раза выше обычной для этой монеты — снизьте плечо и размер позиции.", warnQuiet:"Волатильность в {x} раза ниже обычной — необычно тихо.",
       warnNone:"Признаков перегрева нет: funding, открытый интерес и позиции толпы в норме.", sideLongs:"лонги", sideShorts:"шорты",
       noiseH:"Шум рынка — оценка по истории монеты, не прогноз", noiseMoveK:"Обычный ход (80%): 4 ч / 24 ч", noiseStopK:"Шанс задеть стоп: 4 ч / 24 ч",
-      noiseLiqK:"Шанс дойти до ликвидации за 24 ч", bannerStopNoise:"Стоп стоит внутри обычного шума: по истории цена задевает такую дистанцию за 4 часа примерно в {p}% случаев (обычный ход за 4 ч — {move}). Подумай о более широком стопе и меньшем объёме.", bannerLiqNoise:"Ликвидация близко: по истории цена доходит до такой дистанции за сутки примерно в {p}% случаев. Снизь плечо.",
-      methodItemVol:"Размах движения — модель HAR по дневным свечам этой монеты (волатильность Garman–Klass: дневная, недельная и месячная составляющие). Диапазон «80%» подобран по её собственной истории.", methodItemCheck:"Самопроверка — каждый прошлый прогноз пересчитывается только по данным, известным в тот день, и сайт показывает, как часто цена реально осталась в диапазоне за последние 180 дней.", methodItemTouch:"Шанс задеть стоп — доля прошлых 4-часовых и суточных отрезков, в которых цена отходила на такую же дистанцию (с поправкой на текущую волатильность), в любую сторону.",
-      methodItemWarn:"Перегрев — funding от 0,05% за период, рост открытого интереса от 8% за сутки, 80% и больше или 30% и меньше аккаунтов в лонге, волатильность в 1,5+ раза выше обычной. Это описание риска, а не сигнал на вход.", methodItemFactors:"Технические факторы (тренд, MACD, RSI, объём, уровни и др.) показаны как описание рынка и не складываются в совет «лонг» или «шорт».", methodItemValidated:"Проверено на 20 монетах Bybit за последний год, на данных, которых модель не видела: цена осталась в суточном диапазоне в 79–86% дней (в среднем 83% при цели 80%); модель точнее простой 30-дневной волатильности на 18 из 20 монет; шанс задеть стоп за 4 ч отличался от реального в среднем на 1,5 процентного пункта. Фильтр тренда на дневках тоже проверяли: после комиссий и funding он не дал устойчивого плюса, поэтому на сайте его нет.",
+      noiseLiqK:"Шанс дойти до ликвидации за 24 ч", bannerStopNoise:"Стоп стоит внутри обычного шума: по истории цена задевает такую дистанцию за 4 часа примерно в {p}% случаев (обычный ход за 4 ч — {move}). Подумайте о более широком стопе и меньшем объёме.", bannerLiqNoise:"Ликвидация близко: по истории цена доходит до такой дистанции за сутки примерно в {p}% случаев. Снизьте плечо.",
+      methodItemVol:"Размах движения — модель HAR по дневным свечам этой монеты (волатильность Garman–Klass: дневная, недельная и месячная составляющие). Диапазон «80%» подобран по её собственной истории.", methodItemCheck:"Самопроверка — каждый прошлый прогноз пересчитывается только по данным, известным в тот день, и система показывает, как часто цена реально осталась в диапазоне за последние 180 дней.", methodItemTouch:"Шанс задеть стоп — доля прошлых 4-часовых и суточных отрезков, в которых цена отходила на такую же дистанцию (с поправкой на текущую волатильность), в любую сторону.",
+      methodItemWarn:"Перегрев — funding от 0,05% за период, рост открытого интереса от 8% за сутки, 80% и больше или 30% и меньше аккаунтов в лонге, волатильность в 1,5+ раза выше обычной. Это описание риска, а не сигнал на вход.", methodItemFactors:"Технические факторы (тренд, MACD, RSI, объём, уровни и др.) показаны как описание рынка и не складываются в совет «лонг» или «шорт».", methodItemValidated:"Проверено на 20 монетах Bybit за последний год, на данных, которых модель не видела: цена осталась в суточном диапазоне в 79–86% дней (в среднем 83% при цели 80%); модель точнее простой 30-дневной волатильности на 18 из 20 монет; шанс задеть стоп за 4 ч отличался от реального в среднем на 1,5 процентного пункта. Фильтр тренда на дневках тоже проверяли: после комиссий и funding он не дал устойчивого плюса, поэтому в системе его нет.",
       fTrendLabel:"Тренд ({tf})", fTrendHint:"Цена относительно EMA20 и EMA50", fHtfLabel:"Старший ТФ ({htf})", fHtfHint:"Тот же тренд на таймфрейме выше — фильтр от шума",
       fMacdLabel:"MACD (12/26/9)", fMacdHint:"Направление и ускорение импульса", fMacdDetail:"гистограмма {h}", fRsiLabel:"RSI (14)",
       fRsiHint:"Ниже 30 — перепродан, выше 70 — перекуплен, 55–70 и 30–45 — импульс", fVolLabel:"Объём", fVolHint:"Последние 3 свечи против среднего за 20", fVolDetail:"×{x} к среднему",
@@ -1530,24 +1533,23 @@
       stPatternBear:"▼ медвежий сигнал", stNoPattern:"• сигнала нет", verdictStrongLongTitle:"Технический фон: сильный бычий", verdictStrongShortTitle:"Технический фон: сильный медвежий",
       verdictScoreSub:"Оценка {score} по шкале от −100 до +100 · за рост {up}, за снижение {down}, нейтрально {flat}", scaleBear:"медвежий", scaleBull:"бычий", intervalW:"1н",
       methodWeight:"вес ×{w}",
-      verdictDisclaimer:"Сайт показывает риск и контекст, а не направление: проверка на истории (год, 6 монет) не нашла у технических сигналов преимущества над подбрасыванием монетки. Не финансовый совет — решение и риск всегда твои.",
-      aiCheckBtn:"ИИ: объясни картину и свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…", retryBtn:"Повторить", contractPerp:"бессрочный фьючерс USDT · Bybit", liveOn:"LIVE", liveLoading:"загрузка", liveOff:"нет связи", aiMoreBtn:"Подробная причина", aiLessBtn:"Скрыть подробности",
+      verdictDisclaimer:"Система показывает риск и контекст, а не направление: проверка на истории (год, 6 монет) не нашла у технических сигналов преимущества над подбрасыванием монетки. Не финансовый совет — решение и риск всегда ваши.",
+      aiCheckBtn:"ИИ: картина рынка и свежие новости", aiCheckBtnLoading:"Спрашиваю ИИ…", retryBtn:"Повторить", contractPerp:"бессрочный фьючерс USDT · Bybit", liveOn:"LIVE", liveLoading:"загрузка", liveOff:"нет связи", aiMoreBtn:"Подробная причина", aiLessBtn:"Скрыть подробности",
       aiCheckBtnRisk:"ИИ-проверка", aiCheckBtnChecklist:"ИИ: что может пойти не так",
       aiCheckLoading:"Читаю новости и анализирую — обычно 10-20 секунд…",
-      aiCheckError:"Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту.",
+      aiCheckError:"Не удалось получить ответ от ИИ. Попробуйте ещё раз через минуту.",
       aiCheckHintRisk:"Кнопка станет активной, когда заполнены риск, вход, стоп и плечо и в расчёте нет ошибок.",
-      refBannerText:"Нет аккаунта на Bybit? Зарегистрируйся по моей ссылке — так ты поддержишь развитие RiskControl.", refBannerCta:"Перейти →",
       methodH2:"Как считается состояние рынка", methodTag:"методология",
-      methodIntro:"Сайт не угадывает, куда пойдёт цена: проверка за год (6 монет, 1ч и 4ч, ~66 000 оценок) показала 44–51% угаданных направлений — уровень монетки. Поэтому здесь считается то, что поддаётся проверке:",
+      methodIntro:"Система не угадывает, куда пойдёт цена: проверка за год (6 монет, 1ч и 4ч, ~66 000 оценок) показала 44–51% угаданных направлений — уровень монетки. Поэтому здесь считается то, что поддаётся проверке:",
       methodItem1:"Тренд — цена и EMA20 выше EMA50 (бычий) или ниже (медвежий)",
       methodItem2:"Funding rate — экстремальная ставка в одну сторону (от ±0.1% за период) трактуется как перекос толпы (контрариан)",
       methodItem3:"RSI(14) — перекупленность выше 70 или перепроданность ниже 30",
       methodItem4:"Fibonacci/pivot — цена рядом с уровнем поддержки или сопротивления",
       methodItem5:"Паттерн/структура — пробой диапазона, поглощение, пин-бар или направление структуры максимумов/минимумов",
-      methodThreshold:"Если какие-то данные с Bybit не загрузились, блок остаётся пустым — сайт не заполняет его догадками.",
-      methodSmall:"Не финансовая рекомендация. Диапазон — вероятностная оценка: примерно в 1 случае из 5 цена уходит дальше, иногда намного. Решение и риск всегда твои.",
-      aboutH2:"О проекте", aboutTag:"независимый инструмент",
-      aboutText:"RiskControl — независимый бесплатный проект, не связанный ни с одной биржей, включая Bybit, чьи публичные данные он использует для расчётов. Задача сайта — один экран для расчёта риска и объёма позиции перед сделкой, без обязательной регистрации: аккаунт (только email) нужен лишь для журнала сделок. Баннер Bybit вверху — реферальная ссылка: если зарегистрируешься по ней, автор может получить вознаграждение от биржи; на расчёты это никак не влияет. Сайт постепенно дорабатывается; как и любой инструмент — перед реальной сделкой перепроверяй ключевые цифры самостоятельно.",
+      methodThreshold:"Если какие-то данные с Bybit не загрузились, блок остаётся пустым — система не заполняет его догадками.",
+      methodSmall:"Не финансовая рекомендация. Диапазон — вероятностная оценка: примерно в 1 случае из 5 цена уходит дальше, иногда намного. Решение и риск всегда ваши.",
+      aboutH2:"О системе", aboutTag:"независимая система",
+      aboutText:"RiskControl — независимая система управления риском. Она не связана ни с одной биржей и использует только публичные рыночные данные. Расчёт риска бесплатен и без ограничений, регистрация не нужна. Аккаунт нужен только для журнала сделок. Перед реальной сделкой сверяйте ключевые цифры на своей бирже.",
       glossaryH2:"Глоссарий терминов", glossaryTag:"если что-то непонятно",
       glossLeverageTerm:"Плечо (leverage)", glossLeverageDef:"Множитель, увеличивающий размер позиции относительно внесённой маржи. Плечо 10x значит, что и прибыль, и убыток по сделке умножаются в 10 раз.",
       glossMarginTerm:"Маржа", glossMarginDef:"Сумма собственных средств, которую биржа замораживает как залог под открытую позицию с плечом.",
@@ -1557,10 +1559,10 @@
       glossTrendTerm:"Тренд (EMA20/EMA50)", glossTrendDef:"Скользящие средние показывают направление рынка: цена выше обеих EMA — тренд бычий, ниже — медвежий.",
       glossFibTerm:"Fibonacci / pivot уровни", glossFibDef:"Ценовые уровни, рядом с которыми движение часто замедляется или разворачивается — используются как ориентиры поддержки и сопротивления.",
       glossPatternTerm:"Паттерн свечей", glossPatternDef:"Узнаваемая форма одной или нескольких свечей на графике (пробой, поглощение, пин-бар), которая намекает на возможное продолжение или разворот движения.",
-      aiCheckLoadingRisk:"Анализирую параметры сделки — обычно несколько секунд…", aiCheckHintMarket:"Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.", refBannerAd:"Реклама", verdictErrorTitle:"Нет данных с Bybit", verdictErrorSub:"Не удалось загрузить рынок — проверь соединение, попробую снова автоматически.", verdictBadSymbolTitle:"Пара {sym} не найдена на Bybit", verdictBadSymbolSub:"Проверь тикер: нужен бессрочный фьючерс USDT, например BTCUSDT, SOLUSDT или 1000PEPEUSDT.",
-      pageTitle:"RiskControl — калькулятор риска и плеча для фьючерсов", phSymbol:"BTC, SOL, PEPE…", phRisk:"например, 10", phStop:"уровень стоп-лосса", phLeverage:"например, 5", phEntry:"цена входа",
-      bannerLevMin:"Плечо должно быть не меньше 1x.", bannerLevMax:"Плечо {lev}x больше максимума Bybit для этой пары и такого объёма позиции ({max}x) — биржа не даст открыть сделку. Снизь плечо.", bannerStopInvalid:"Цена стопа должна быть больше нуля.", bannerOverRiskLimit:"Позиция ({value}) больше максимального лимита Bybit для этой пары ({max}) — одной сделкой её не открыть. Уменьши риск или расширь стоп.", sizeBelowMinNotional:"Стоимость позиции ({value}) меньше минимальной суммы ордера на Bybit ({min}) — увеличь риск на сделку или расширь стоп.", chartLoading:"Загружаю график…", aiCheckRateLimited:"Слишком много запросов к ИИ подряд — подожди пару минут и попробуй снова.",
-      depositLabel:"Депозит, $ (необязательно)", phDeposit:"например, 1000", riskUnitAria:"Риск в долларах или процентах от депозита", riskHintOfDeposit:"{pct}% депозита", riskNeedDeposit:"Укажи депозит, чтобы считать риск в %", bannerRiskHigh:"Риск {pct}% депозита на одну сделку — это много. Обычно рискуют 0.5–2%, чтобы серия убытков не обнулила счёт.", bannerRiskOverDeposit:"Риск больше депозита: при срабатывании стопа ты потеряешь больше, чем есть на счёте.", bannerMarginOverDeposit:"Требуемая маржа ({margin}) больше депозита ({deposit}) — на такую позицию не хватит средств. Уменьши риск или подними плечо (следи за ценой ликвидации)."
+      aiCheckLoadingRisk:"Анализирую параметры сделки — обычно несколько секунд…", aiCheckHintMarket:"Кнопка станет активной, когда загрузятся рыночные данные по выбранной паре.", verdictErrorTitle:"Нет данных с Bybit", verdictErrorSub:"Не удалось загрузить рынок — проверьте соединение. Система попробует снова автоматически.", verdictBadSymbolTitle:"Пара {sym} не найдена на Bybit", verdictBadSymbolSub:"Проверьте тикер: нужен бессрочный фьючерс USDT, например BTCUSDT, SOLUSDT или 1000PEPEUSDT.",
+      pageTitle:"RiskControl — система управления риском для фьючерсов", phSymbol:"BTC, SOL, PEPE…", phRisk:"например, 10", phStop:"уровень стоп-лосса", phLeverage:"например, 5", phEntry:"цена входа",
+      bannerLevMin:"Плечо должно быть не меньше 1x.", bannerLevMax:"Плечо {lev}x больше максимума Bybit для этой пары и такого объёма позиции ({max}x) — биржа не даст открыть сделку. Снизьте плечо.", bannerStopInvalid:"Цена стопа должна быть больше нуля.", bannerOverRiskLimit:"Позиция ({value}) больше максимального лимита Bybit для этой пары ({max}) — одной сделкой её не открыть. Уменьшите риск или расширьте стоп.", sizeBelowMinNotional:"Стоимость позиции ({value}) меньше минимальной суммы ордера на Bybit ({min}) — увеличьте риск на сделку или расширьте стоп.", chartLoading:"Загружаю график…", aiCheckRateLimited:"Слишком много запросов к ИИ подряд — подождите пару минут и попробуйте снова.",
+      depositLabel:"Депозит, $ (необязательно)", phDeposit:"например, 1000", riskUnitAria:"Риск в долларах или процентах от депозита", riskHintOfDeposit:"{pct}% депозита", riskNeedDeposit:"Укажите депозит в [точной настройке], чтобы считать риск в %", bannerRiskHigh:"Риск {pct}% депозита на одну сделку — это много. Обычно рискуют 0.5–2%, чтобы серия убытков не обнулила счёт.", bannerRiskOverDeposit:"Риск больше депозита: при срабатывании стопа вы потеряете больше, чем есть на счёте.", bannerMarginOverDeposit:"Требуемая маржа ({margin}) больше депозита ({deposit}) — на такую позицию не хватит средств. Уменьшите риск или поднимите плечо (следите за ценой ликвидации)."
     },
     en:{
       sub:"Size your risk before you enter: exact position size, safe leverage, and liquidation price — in seconds, from live Bybit data. Not financial advice — the decision is always yours.",
@@ -1624,7 +1626,7 @@
       authErrGeneric:"That didn't work. Try again in a minute.", authCheckEmail:"Almost done! We sent an email to {email} — confirm your address via the link, then log in.", authResetSent:"If an account with this email exists, a link to set a new password will arrive within a couple of minutes.",
       authResetNeedEmail:"Enter the email you signed up with, then click “Forgot password?” again.", authPassChanged:"Password changed — you're signed in.", authWelcome:"Done, you're signed in.",
       authLoggedOut:"You're logged out.", authDeleted:"Account and all trades deleted.", saveTradeBtn:"Save to journal",
-      proTeaser:"★ Pro is coming: prop mode, mistake analysis, Bybit auto-import", proTeaserGo:"I want it →", proH2:"RiskControl Pro", proTag:"coming soon", proLead:"For people who trade regularly and want to stop losing money on the same mistakes.", proF1:"Prop mode — tracks your challenge's daily loss limit and drawdown and sizes positions down so you don't break the rules.", proF2:"Mistake analysis — exactly where you lose: coins, leverage, time of day, losing streaks.", proF3:"Bybit auto-import — your journal fills itself.", proF4:"Telegram alerts — when price gets close to your stop or liquidation.", proF5:"Unlimited AI trade checks.", proQ:"How much would you pay per month?", proP0:"Free only", proP1:"up to €5", proP2:"€5–10", proP3:"more than €10", proEmailPh:"your email", proJoin:"I want Pro", proNote:"We'll email you once — when Pro launches. No spam.", proDone:"Done — you're on the list. We'll let you know when Pro launches ✓", proErrEmail:"Check your email — it looks like there's a typo.", proErr:"Couldn't send. Check your connection and try again.", ringK:"of deposit", chainLabel:"{month} chain", chainOpen:"{n} open", closeLink:"Close the link", closeLinkN:"Close link #{n} — log the trade", closeShort:"Close", closeShortN:"Close link #{n}", openNoteN:"Link #{n} is open — calculated, not logged", savedLinkN:"Link #{n} closed", openJournal:"Open journal", stickyOpenN:"Link #{n} is open", rwEyebrow:"LINK #{n} CLOSED", rwTitle:"Trade logged", rwTitle15:"This month’s chain is complete", rwText:"Every logged trade is a link. The chain shows how disciplined you are.", rwText15:"Stats are unlocked — see where you make and lose money.", rwLeft:"{m} of 15 · {left} more to unlock stats", rwStatsOpen:"{m} of 15 · stats unlocked", rwReasonK:"Entry reason — optional", rwJournal:"View the chain", rwBack:"Back to sizing", rsBreakout:"Breakout", rsBounce:"Bounce", rsTrend:"Trend", rsNews:"News", rsOther:"Other", jReason:"Entry reason", jLockedN:"Stats unlock at link 15 — {left} to go", jhSub:"links logged this month", jhGoal:"Monthly chain — 15 links", jLinksK:"This month’s links", jWhyH:"Why a chain", jOpenTextN:"#{n} · open · not logged", jNumN:"#{n}", chainAria:"Monthly chain: {m} of 15 links", aiNote:"AI can make mistakes. This is not financial advice — double-check the conclusions yourself.", legalRisk:"Trading leveraged futures carries a high level of risk: you can lose your entire deposit. All calculations on this site are approximate estimates based on public exchange data — not financial advice and not a guarantee of results. Trading decisions and responsibility for them are yours alone.", footPrivacy:"Privacy policy", savePitchA:"Risk calculated — the trade is protected.", savePitchB:"Now save it — to protect your account.", saveTradeSub:"10 seconds · without it you can't see where you lose", whyJH:"You calculate risk because without it you blow your account. A journal matters for exactly the same reason.", whyJ1:"One trade is chance. Twenty are your system. Only a journal shows whether it works.", whyJ2:"Memory lies: you remember the wins, not the mistakes.", whyJ3:"A repeated mistake costs money. A journal finds it in 15 trades, the market — in one account.", askH:"Save this trade?", askP:"Risk sizing protects one trade. A journal protects your whole account.", askYes:"Save", askNo:"Not now", nudgeUnsaved:"Trades calculated: {n}, in the journal: none. In a month you won't remember which of them were mistakes.", nudgeRisk:"Risk: {p}% of your balance. Trades with this much risk are the main reason accounts get blown. Save it — and the journal will show how often you risk like this.", copyHint:"tap to copy", sizeCopied:"Size copied", stickyText:"Calculation ready — save the trade",
+      proTeaser:"★ Pro is coming: prop mode, mistake analysis, Bybit auto-import", proTeaserGo:"I want it →", proH2:"RiskControl Pro", proTag:"coming soon", proLead:"For people who trade regularly and want to stop losing money on the same mistakes.", proF1:"Prop mode — tracks your challenge's daily loss limit and drawdown and sizes positions down so you don't break the rules.", proF2:"Mistake analysis — exactly where you lose: coins, leverage, time of day, losing streaks.", proF3:"Bybit auto-import — your journal fills itself.", proF4:"Telegram alerts — when price gets close to your stop or liquidation.", proF5:"Unlimited AI trade checks.", proQ:"How much would you pay per month?", proP0:"Free only", proP1:"up to €5", proP2:"€5–10", proP3:"more than €10", proEmailPh:"your email", proJoin:"I want Pro", proNote:"We'll email you once — when Pro launches. No spam.", proDone:"Done — you're on the list. We'll let you know when Pro launches ✓", proErrEmail:"Check your email — it looks like there's a typo.", proErr:"Couldn't send. Check your connection and try again.", metaDesc:"Calculate position size, stop and liquidation before you enter a trade, and keep a trade journal. Risk calculation is free and unlimited.", advToggle:"Advanced settings", entryLineLive:"Entry at current price: {p}", entryLineManual:"Entry: {p} (manual)", entryLineNone:"Current price unavailable, enter entry manually", entryLineWait:"Entry at current price: loading…", ringK:"of deposit", chainLabel:"{month} chain", chainOpen:"{n} open", closeLink:"Close the link", closeLinkN:"Close link #{n} — log the trade", closeShort:"Close", closeShortN:"Close link #{n}", openNoteN:"Link #{n} is open — calculated, not logged", savedLinkN:"Link #{n} closed", openJournal:"Open journal", stickyOpenN:"Link #{n} is open", rwEyebrow:"LINK #{n} CLOSED", rwTitle:"Trade logged", rwTitle15:"This month’s chain is complete", rwText:"Every logged trade is a link. The chain shows how disciplined you are.", rwText15:"Stats are unlocked — see where you make and lose money.", rwLeft:"{m} of 15 · {left} more to unlock stats", rwStatsOpen:"{m} of 15 · stats unlocked", rwReasonK:"Entry reason — optional", rwJournal:"View the chain", rwBack:"Back to sizing", rsBreakout:"Breakout", rsBounce:"Bounce", rsTrend:"Trend", rsNews:"News", rsOther:"Other", jReason:"Entry reason", jLockedN:"Stats unlock at link 15 — {left} to go", jhSub:"links logged this month", jhGoal:"Monthly chain — 15 links", jLinksK:"This month’s links", jWhyH:"Why a chain", jOpenTextN:"#{n} · open · not logged", jNumN:"#{n}", chainAria:"Monthly chain: {m} of 15 links", aiNote:"AI can make mistakes. This is not financial advice — double-check the conclusions yourself.", legalRisk:"Trading leveraged futures carries a high level of risk: you can lose your entire deposit. All calculations on this site are approximate estimates based on public exchange data — not financial advice and not a guarantee of results. Trading decisions and responsibility for them are yours alone.", footPrivacy:"Privacy policy", savePitchA:"Risk calculated — the trade is protected.", savePitchB:"Now save it — to protect your account.", saveTradeSub:"10 seconds · without it you can't see where you lose", whyJH:"You calculate risk because without it you blow your account. A journal matters for exactly the same reason.", whyJ1:"One trade is chance. Twenty are your system. Only a journal shows whether it works.", whyJ2:"Memory lies: you remember the wins, not the mistakes.", whyJ3:"A repeated mistake costs money. A journal finds it in 15 trades, the market — in one account.", askH:"Save this trade?", askP:"Risk sizing protects one trade. A journal protects your whole account.", askYes:"Save", askNo:"Not now", nudgeUnsaved:"Trades calculated: {n}, in the journal: none. In a month you won't remember which of them were mistakes.", nudgeRisk:"Risk: {p}% of your balance. Trades with this much risk are the main reason accounts get blown. Save it — and the journal will show how often you risk like this.", copyHint:"tap to copy", sizeCopied:"Size copied", stickyText:"Calculation ready — save the trade",
       saveTradeSaved:"Saved to journal ✓", saveTradeOpen:"Open journal →", saveTradeErr:"Couldn't save. Check your connection and try again.",
       jH2:"Trade journal", jTag:"only you can see it", jGuestText:"Save trades from the calculator with one click and mark how they ended. After 20–30 trades you'll see what actually works: how often your stop gets hit, what an average trade makes and where the money goes.",
       jGuestSignup:"Create account", jGuestLogin:"Log in", jEmpty:"Nothing here yet. Calculate a trade in the calculator and click “Save to journal”.",
@@ -1676,7 +1678,6 @@
       aiCheckLoading:"Reading the news and analyzing — usually 10-20 seconds…",
       aiCheckError:"Couldn't get a response from the AI. Try again in a minute.",
       aiCheckHintRisk:"The button unlocks once risk, entry, stop and leverage are filled in and the calculation shows no errors.",
-      refBannerText:"No Bybit account yet? Sign up through my link — it helps support RiskControl.", refBannerCta:"Go →",
       methodH2:"How market conditions are calculated", methodTag:"methodology",
       methodIntro:"The site does not guess where price will go: a 1-year check (6 coins, 1h and 4h, ~66,000 readings) showed 44–51% of directions right — coin-flip level. So it calculates what can actually be verified:",
       methodItem1:"Trend — price and EMA20 above EMA50 (bullish) or below (bearish)",
@@ -1686,8 +1687,8 @@
       methodItem5:"Pattern/structure — range breakout, engulfing, pin bar, or the direction of the high/low structure",
       methodThreshold:"If some Bybit data fails to load, that block stays empty — the site never fills it with guesses.",
       methodSmall:"Not financial advice. The range is a probability estimate: in roughly 1 case out of 5 price goes further, sometimes much further. The decision and the risk are always yours.",
-      aboutH2:"About this tool", aboutTag:"independent project",
-      aboutText:"RiskControl is an independent, free project with no affiliation to any exchange, including Bybit, whose public data it uses for its calculations. The site's job is a single screen for sizing risk and position before a trade, with no sign-up required: an account (just an email) is only needed for the trade journal. The Bybit banner at the top is a referral link: if you sign up through it, the author may receive a reward from the exchange; this has no effect on the calculations. It's an evolving side project — as with any tool, double-check the key numbers yourself before a real trade.",
+      aboutH2:"About the system", aboutTag:"independent system",
+      aboutText:"RiskControl is an independent risk management system. It is not affiliated with any exchange and uses only public market data. Risk calculation is free and unlimited, no sign-up required. An account is only needed for the trade journal. Always double-check key numbers on your exchange before a real trade.",
       glossaryH2:"Glossary", glossaryTag:"if something's unclear",
       glossLeverageTerm:"Leverage", glossLeverageDef:"A multiplier that scales your position size relative to the margin you put up. 10x leverage means both profit and loss on the trade are multiplied by 10.",
       glossMarginTerm:"Margin", glossMarginDef:"The amount of your own funds the exchange locks up as collateral for a leveraged position.",
@@ -1697,10 +1698,10 @@
       glossTrendTerm:"Trend (EMA20/EMA50)", glossTrendDef:"Moving averages that show market direction: price above both EMAs is a bullish trend, below both is bearish.",
       glossFibTerm:"Fibonacci / pivot levels", glossFibDef:"Price levels where movement often slows down or reverses — used as reference points for support and resistance.",
       glossPatternTerm:"Candlestick pattern", glossPatternDef:"A recognizable shape formed by one or more candles (breakout, engulfing, pin bar) that hints at a possible continuation or reversal.",
-      aiCheckLoadingRisk:"Analyzing your trade setup — usually a few seconds…", aiCheckHintMarket:"The button unlocks once market data for the selected pair has loaded.", refBannerAd:"Ad", verdictErrorTitle:"No data from Bybit", verdictErrorSub:"Couldn't load market data — check your connection, I'll retry automatically.", verdictBadSymbolTitle:"{sym} not found on Bybit", verdictBadSymbolSub:"Check the ticker: it must be a USDT perpetual, e.g. BTCUSDT, SOLUSDT or 1000PEPEUSDT.",
-      pageTitle:"RiskControl — risk & leverage calculator for crypto futures", phSymbol:"BTC, SOL, PEPE…", phRisk:"e.g. 10", phStop:"your stop-loss level", phLeverage:"e.g. 5", phEntry:"entry price",
+      aiCheckLoadingRisk:"Analyzing your trade setup — usually a few seconds…", aiCheckHintMarket:"The button unlocks once market data for the selected pair has loaded.", verdictErrorTitle:"No data from Bybit", verdictErrorSub:"Couldn't load market data — check your connection, I'll retry automatically.", verdictBadSymbolTitle:"{sym} not found on Bybit", verdictBadSymbolSub:"Check the ticker: it must be a USDT perpetual, e.g. BTCUSDT, SOLUSDT or 1000PEPEUSDT.",
+      pageTitle:"RiskControl — risk management system for futures traders", phSymbol:"BTC, SOL, PEPE…", phRisk:"e.g. 10", phStop:"your stop-loss level", phLeverage:"e.g. 5", phEntry:"entry price",
       bannerLevMin:"Leverage must be at least 1x.", bannerLevMax:"{lev}x leverage exceeds Bybit's maximum for this pair at this position size ({max}x) — the exchange won't open the trade. Lower the leverage.", bannerStopInvalid:"Stop price must be greater than zero.", bannerOverRiskLimit:"The position ({value}) exceeds Bybit's maximum risk limit for this pair ({max}) — it can't be opened as a single trade. Lower the risk or widen the stop.", sizeBelowMinNotional:"Position value ({value}) is below Bybit's minimum order value ({min}) — increase the risk per trade or widen the stop.", chartLoading:"Loading chart…", aiCheckRateLimited:"Too many AI requests in a row — wait a couple of minutes and try again.",
-      depositLabel:"Account balance, $ (optional)", phDeposit:"e.g. 1000", riskUnitAria:"Risk in dollars or % of balance", riskHintOfDeposit:"{pct}% of balance", riskNeedDeposit:"Enter your balance to set risk in %", bannerRiskHigh:"Risking {pct}% of your balance on one trade is a lot. Traders usually risk 0.5–2% so a losing streak doesn't wipe out the account.", bannerRiskOverDeposit:"The risk is larger than your balance: if the stop is hit you'd lose more than you have.", bannerMarginOverDeposit:"Required margin ({margin}) is larger than your balance ({deposit}) — you can't fund this position. Lower the risk or raise the leverage (watch the liquidation price)."
+      depositLabel:"Account balance, $ (optional)", phDeposit:"e.g. 1000", riskUnitAria:"Risk in dollars or % of balance", riskHintOfDeposit:"{pct}% of balance", riskNeedDeposit:"Enter your deposit in [Advanced settings] to use % risk", bannerRiskHigh:"Risking {pct}% of your balance on one trade is a lot. Traders usually risk 0.5–2% so a losing streak doesn't wipe out the account.", bannerRiskOverDeposit:"The risk is larger than your balance: if the stop is hit you'd lose more than you have.", bannerMarginOverDeposit:"Required margin ({margin}) is larger than your balance ({deposit}) — you can't fund this position. Lower the risk or raise the leverage (watch the liquidation price)."
     },
     he:{
       sub:"חשב את הסיכון לפני הכניסה לעסקה: גודל פוזיציה מדויק, מינוף בטוח ומחיר חיסול — תוך שניות, לפי נתונים חיים מבייביט. אין בכך ייעוץ פיננסי — ההחלטה תמיד שלך.",
@@ -1764,7 +1765,7 @@
       authErrGeneric:"זה לא הצליח. נסה/י שוב בעוד דקה.", authCheckEmail:"כמעט סיימנו! שלחנו אימייל אל {email} — אשר/י את הכתובת דרך הקישור ואז התחבר/י.", authResetSent:"אם קיים חשבון עם האימייל הזה, קישור לסיסמה חדשה יגיע תוך כמה דקות.",
       authResetNeedEmail:"הזן/י את האימייל שאיתו נרשמת ולחץ/י שוב על „שכחת סיסמה?“.", authPassChanged:"הסיסמה שונתה — את/ה מחובר/ת.", authWelcome:"מעולה, את/ה מחובר/ת.",
       authLoggedOut:"התנתקת מהחשבון.", authDeleted:"החשבון וכל העסקאות נמחקו.", saveTradeBtn:"שמירה ביומן",
-      proTeaser:"★ Pro בקרוב: מצב פרופ, ניתוח טעויות, ייבוא אוטומטי מ-Bybit", proTeaserGo:"אני רוצה ←", proH2:"RiskControl Pro", proTag:"בקרוב", proLead:"למי שסוחר/ת באופן קבוע ורוצה להפסיק להפסיד על אותן טעויות.", proF1:"מצב פרופ — עוקב אחרי מגבלת ההפסד היומית והירידה המקסימלית של האתגר ומקטין את הפוזיציה, כדי שלא תפר/י את הכללים.", proF2:"ניתוח טעויות — איפה בדיוק את/ה מפסיד/ה: מטבעות, מינוף, שעות, רצפי הפסדים.", proF3:"ייבוא אוטומטי של עסקאות מ-Bybit — היומן מתמלא לבד.", proF4:"התראות בטלגרם — כשהמחיר מתקרב לסטופ או לחיסול.", proF5:"בדיקות AI לעסקאות ללא הגבלה.", proQ:"כמה היית מוכן/ה לשלם בחודש?", proP0:"רק בחינם", proP1:"עד €5", proP2:"€5–10", proP3:"יותר מ-€10", proEmailPh:"האימייל שלך", proJoin:"אני רוצה Pro", proNote:"נכתוב פעם אחת — כש-Pro יושק. בלי ספאם.", proDone:"מעולה — את/ה ברשימה. נעדכן כש-Pro יושק ✓", proErrEmail:"בדוק/י את האימייל — נראה שיש בו טעות.", proErr:"השליחה נכשלה. בדוק/י את האינטרנט ונסה/י שוב.", ringK:"מהפיקדון", chainLabel:"שרשרת {month}", chainOpen:"{n} פתוחה", closeLink:"לסגור חוליה", closeLinkN:"לסגור חוליה {n} — לרשום את העסקה", closeShort:"לסגור", closeShortN:"לסגור חוליה {n}", openNoteN:"חוליה {n} פתוחה — יש חישוב, אין רישום", savedLinkN:"חוליה {n} נסגרה", openJournal:"פתיחת היומן", stickyOpenN:"חוליה {n} פתוחה", rwEyebrow:"חוליה {n} נסגרה", rwTitle:"העסקה ביומן", rwTitle15:"שרשרת החודש הושלמה", rwText:"כל עסקה רשומה היא חוליה. השרשרת מראה כמה את/ה ממושמע/ת.", rwText15:"הסטטיסטיקה נפתחה — ראה/י איפה את/ה מרוויח/ה ואיפה מפסיד/ה.", rwLeft:"{m} מתוך 15 · עוד {left} עד הסטטיסטיקה", rwStatsOpen:"{m} מתוך 15 · הסטטיסטיקה פתוחה", rwReasonK:"סיבת הכניסה — לא חובה", rwJournal:"לצפייה בשרשרת", rwBack:"חזרה לחישוב", rsBreakout:"פריצה", rsBounce:"ריבאונד", rsTrend:"מגמה", rsNews:"חדשות", rsOther:"אחר", jReason:"סיבת כניסה", jLockedN:"הסטטיסטיקה תיפתח בחוליה 15 — עוד {left}", jhSub:"חוליות נרשמו החודש", jhGoal:"שרשרת חודשית — 15 חוליות", jLinksK:"חוליות החודש", jWhyH:"למה שרשרת", jOpenTextN:"{n} · פתוחה · לא נרשמה", jNumN:"{n}", chainAria:"שרשרת החודש: {m} מתוך 15 חוליות", aiNote:"בינה מלאכותית יכולה לטעות. זה לא ייעוץ פיננסי — בדוק/י את המסקנות בעצמך.", legalRisk:"מסחר בחוזים עתידיים עם מינוף כרוך בסיכון גבוה: אפשר להפסיד את כל הפיקדון. כל החישובים באתר הם הערכות משוערות על סמך נתונים ציבוריים של הבורסה — לא ייעוץ פיננסי ולא הבטחה לתוצאה. ההחלטות על עסקאות והאחריות עליהן — שלך בלבד.", footPrivacy:"מדיניות פרטיות", savePitchA:"הסיכון חושב — העסקה מוגנת.", savePitchB:"עכשיו שמור/י אותה — כדי להגן על החשבון.", saveTradeSub:"10 שניות · בלי זה לא רואים איפה מפסידים", whyJH:"מחשבים סיכון כי בלעדיו מפסידים את החשבון. יומן חשוב בדיוק מאותה סיבה.", whyJ1:"עסקה אחת היא מקרה. עשרים — זו השיטה שלך. רק יומן מראה אם היא עובדת.", whyJ2:"הזיכרון משקר: את הרווחים זוכרים, את הטעויות — לא.", whyJ3:"טעות שחוזרת עולה כסף. היומן מוצא אותה תוך 15 עסקאות, השוק — תוך חשבון אחד.", askH:"לשמור את העסקה הזו?", askP:"חישוב סיכון מגן על עסקה אחת. יומן — על כל החשבון.", askYes:"לשמור", askNo:"לא עכשיו", nudgeUnsaved:"עסקאות שחושבו: {n}, ביומן — אף אחת. בעוד חודש לא תזכור/י אילו מהן היו טעויות.", nudgeRisk:"סיכון של {p}% מהיתרה. עסקאות עם סיכון כזה הן הסיבה העיקרית למחיקת חשבונות. שמור/י אותה — והיומן יראה כמה פעמים את/ה מסכן/ת ככה.", copyHint:"הקש/י להעתקה", sizeCopied:"הגודל הועתק", stickyText:"החישוב מוכן — שמור/י את העסקה",
+      proTeaser:"★ Pro בקרוב: מצב פרופ, ניתוח טעויות, ייבוא אוטומטי מ-Bybit", proTeaserGo:"אני רוצה ←", proH2:"RiskControl Pro", proTag:"בקרוב", proLead:"למי שסוחר/ת באופן קבוע ורוצה להפסיק להפסיד על אותן טעויות.", proF1:"מצב פרופ — עוקב אחרי מגבלת ההפסד היומית והירידה המקסימלית של האתגר ומקטין את הפוזיציה, כדי שלא תפר/י את הכללים.", proF2:"ניתוח טעויות — איפה בדיוק את/ה מפסיד/ה: מטבעות, מינוף, שעות, רצפי הפסדים.", proF3:"ייבוא אוטומטי של עסקאות מ-Bybit — היומן מתמלא לבד.", proF4:"התראות בטלגרם — כשהמחיר מתקרב לסטופ או לחיסול.", proF5:"בדיקות AI לעסקאות ללא הגבלה.", proQ:"כמה היית מוכן/ה לשלם בחודש?", proP0:"רק בחינם", proP1:"עד €5", proP2:"€5–10", proP3:"יותר מ-€10", proEmailPh:"האימייל שלך", proJoin:"אני רוצה Pro", proNote:"נכתוב פעם אחת — כש-Pro יושק. בלי ספאם.", proDone:"מעולה — את/ה ברשימה. נעדכן כש-Pro יושק ✓", proErrEmail:"בדוק/י את האימייל — נראה שיש בו טעות.", proErr:"השליחה נכשלה. בדוק/י את האינטרנט ונסה/י שוב.", metaDesc:"חשבו את גודל הפוזיציה, הסטופ ומחיר החיסול לפני הכניסה לעסקה, ונהלו יומן עסקאות. חישוב הסיכון חינמי וללא הגבלה.", advToggle:"הגדרות מתקדמות", entryLineLive:"כניסה במחיר הנוכחי: {p}", entryLineManual:"כניסה: {p} (ידני)", entryLineNone:"המחיר הנוכחי אינו זמין, הזינו מחיר כניסה ידנית", entryLineWait:"כניסה במחיר הנוכחי: …", ringK:"מהפיקדון", chainLabel:"שרשרת {month}", chainOpen:"{n} פתוחה", closeLink:"לסגור חוליה", closeLinkN:"לסגור חוליה {n} — לרשום את העסקה", closeShort:"לסגור", closeShortN:"לסגור חוליה {n}", openNoteN:"חוליה {n} פתוחה — יש חישוב, אין רישום", savedLinkN:"חוליה {n} נסגרה", openJournal:"פתיחת היומן", stickyOpenN:"חוליה {n} פתוחה", rwEyebrow:"חוליה {n} נסגרה", rwTitle:"העסקה ביומן", rwTitle15:"שרשרת החודש הושלמה", rwText:"כל עסקה רשומה היא חוליה. השרשרת מראה כמה את/ה ממושמע/ת.", rwText15:"הסטטיסטיקה נפתחה — ראה/י איפה את/ה מרוויח/ה ואיפה מפסיד/ה.", rwLeft:"{m} מתוך 15 · עוד {left} עד הסטטיסטיקה", rwStatsOpen:"{m} מתוך 15 · הסטטיסטיקה פתוחה", rwReasonK:"סיבת הכניסה — לא חובה", rwJournal:"לצפייה בשרשרת", rwBack:"חזרה לחישוב", rsBreakout:"פריצה", rsBounce:"ריבאונד", rsTrend:"מגמה", rsNews:"חדשות", rsOther:"אחר", jReason:"סיבת כניסה", jLockedN:"הסטטיסטיקה תיפתח בחוליה 15 — עוד {left}", jhSub:"חוליות נרשמו החודש", jhGoal:"שרשרת חודשית — 15 חוליות", jLinksK:"חוליות החודש", jWhyH:"למה שרשרת", jOpenTextN:"{n} · פתוחה · לא נרשמה", jNumN:"{n}", chainAria:"שרשרת החודש: {m} מתוך 15 חוליות", aiNote:"בינה מלאכותית יכולה לטעות. זה לא ייעוץ פיננסי — בדוק/י את המסקנות בעצמך.", legalRisk:"מסחר בחוזים עתידיים עם מינוף כרוך בסיכון גבוה: אפשר להפסיד את כל הפיקדון. כל החישובים באתר הם הערכות משוערות על סמך נתונים ציבוריים של הבורסה — לא ייעוץ פיננסי ולא הבטחה לתוצאה. ההחלטות על עסקאות והאחריות עליהן — שלך בלבד.", footPrivacy:"מדיניות פרטיות", savePitchA:"הסיכון חושב — העסקה מוגנת.", savePitchB:"עכשיו שמור/י אותה — כדי להגן על החשבון.", saveTradeSub:"10 שניות · בלי זה לא רואים איפה מפסידים", whyJH:"מחשבים סיכון כי בלעדיו מפסידים את החשבון. יומן חשוב בדיוק מאותה סיבה.", whyJ1:"עסקה אחת היא מקרה. עשרים — זו השיטה שלך. רק יומן מראה אם היא עובדת.", whyJ2:"הזיכרון משקר: את הרווחים זוכרים, את הטעויות — לא.", whyJ3:"טעות שחוזרת עולה כסף. היומן מוצא אותה תוך 15 עסקאות, השוק — תוך חשבון אחד.", askH:"לשמור את העסקה הזו?", askP:"חישוב סיכון מגן על עסקה אחת. יומן — על כל החשבון.", askYes:"לשמור", askNo:"לא עכשיו", nudgeUnsaved:"עסקאות שחושבו: {n}, ביומן — אף אחת. בעוד חודש לא תזכור/י אילו מהן היו טעויות.", nudgeRisk:"סיכון של {p}% מהיתרה. עסקאות עם סיכון כזה הן הסיבה העיקרית למחיקת חשבונות. שמור/י אותה — והיומן יראה כמה פעמים את/ה מסכן/ת ככה.", copyHint:"הקש/י להעתקה", sizeCopied:"הגודל הועתק", stickyText:"החישוב מוכן — שמור/י את העסקה",
       saveTradeSaved:"נשמר ביומן ✓", saveTradeOpen:"פתיחת היומן ←", saveTradeErr:"השמירה נכשלה. בדוק/י את האינטרנט ונסה/י שוב.",
       jH2:"יומן עסקאות", jTag:"רק את/ה רואה", jGuestText:"שמור/י עסקאות מהמחשבון בלחיצה אחת וסמן/י איך הן הסתיימו. אחרי 20–30 עסקאות יתברר מה באמת עובד: כמה פעמים הסטופ נפגע, כמה מרוויחה עסקה ממוצעת ולאן הולך הכסף.",
       jGuestSignup:"יצירת חשבון", jGuestLogin:"התחברות", jEmpty:"עדיין ריק. חשב/י עסקה במחשבון ולחץ/י „שמירה ביומן“.",
@@ -1816,7 +1817,6 @@
       aiCheckLoading:"קורא חדשות ומנתח — בדרך כלל 10-20 שניות…",
       aiCheckError:"לא הצלחתי לקבל תשובה מה-AI. נסה שוב בעוד דקה.",
       aiCheckHintRisk:"הכפתור יופעל לאחר מילוי סיכון, כניסה, סטופ ומינוף, כשאין שגיאות בחישוב.",
-      refBannerText:"אין לך עדיין חשבון ב-Bybit? הירשם דרך הקישור שלי — כך תתמוך ב-RiskControl.", refBannerCta:"מעבר ←",
       methodH2:"איך מחושב מצב השוק", methodTag:"מתודולוגיה",
       methodIntro:"האתר לא מנחש לאן ילך המחיר: בדיקה על שנה (6 מטבעות, שעה ו-4 שעות, כ-66,000 הערכות) צדקה בכיוון ב-44–51% מהמקרים — רמת הטלת מטבע. לכן מחושב כאן מה שאפשר לבדוק:",
       methodItem1:"מגמה — המחיר ו-EMA20 מעל EMA50 (עולה) או מתחת (יורד)",
@@ -1826,8 +1826,8 @@
       methodItem5:"תבנית/מבנה — פריצת טווח, בליעה, פין-בר, או כיוון מבנה השיאים/השפלים",
       methodThreshold:"אם חלק מנתוני Bybit לא נטענו, הבלוק נשאר ריק — האתר לא ממלא אותו בניחושים.",
       methodSmall:"אין בכך ייעוץ פיננסי. הטווח הוא הערכה הסתברותית: בערך במקרה אחד מתוך 5 המחיר הולך רחוק יותר, לפעמים הרבה. ההחלטה והסיכון תמיד שלך.",
-      aboutH2:"אודות הכלי", aboutTag:"פרויקט עצמאי",
-      aboutText:"RiskControl הוא פרויקט עצמאי וחינמי, ללא קשר לאף בורסה, כולל Bybit שאת הנתונים הציבוריים שלה הוא משתמש בהם לחישובים. תפקיד האתר הוא מסך אחד לחישוב סיכון וגודל פוזיציה לפני עסקה, ללא חובת הרשמה: חשבון (רק אימייל) נדרש רק ליומן העסקאות. הבאנר של Bybit למעלה הוא קישור הפניה: אם תירשם דרכו, היוצר עשוי לקבל תגמול מהבורסה; זה לא משפיע על החישובים. האתר משתפר בהדרגה; כמו בכל כלי — בדוק בעצמך את המספרים המרכזיים לפני עסקה אמיתית.",
+      aboutH2:"על המערכת", aboutTag:"מערכת עצמאית",
+      aboutText:"RiskControl היא מערכת עצמאית לניהול סיכונים. היא אינה קשורה לשום בורסה ומשתמשת רק בנתוני שוק ציבוריים. חישוב הסיכון חינמי וללא הגבלה, ללא צורך בהרשמה. חשבון נדרש רק ליומן העסקאות. לפני עסקה אמיתית, בדקו את הנתונים העיקריים בבורסה שלכם.",
       glossaryH2:"מילון מונחים", glossaryTag:"אם משהו לא ברור",
       glossLeverageTerm:"מינוף (leverage)", glossLeverageDef:"מכפיל שמגדיל את גודל הפוזיציה ביחס למרג'ין שהופקד. מינוף פי 10 אומר שגם הרווח וגם ההפסד בעסקה מוכפלים פי 10.",
       glossMarginTerm:"מרג'ין", glossMarginDef:"סכום הכסף העצמי שהבורסה מקפיאה כבטוחה עבור פוזיציה עם מינוף.",
@@ -1837,10 +1837,10 @@
       glossTrendTerm:"מגמה (EMA20/EMA50)", glossTrendDef:"ממוצעים נעים שמראים את כיוון השוק: מחיר מעל שני ה-EMA הוא מגמה עולה, מתחת לשניהם — יורדת.",
       glossFibTerm:"רמות Fibonacci / פיבוט", glossFibDef:"רמות מחיר שלידן התנועה לרוב מאטה או מתהפכת — משמשות כנקודות ייחוס לתמיכה והתנגדות.",
       glossPatternTerm:"תבנית נרות", glossPatternDef:"צורה מזוהה של נר אחד או יותר (פריצה, בליעה, פין-בר) שמרמזת על המשך אפשרי או היפוך של התנועה.",
-      aiCheckLoadingRisk:"מנתח את פרמטרי העסקה — בדרך כלל כמה שניות…", aiCheckHintMarket:"הכפתור יופעל לאחר שנתוני השוק של הזוג שנבחר ייטענו.", refBannerAd:"פרסומת", verdictErrorTitle:"אין נתונים מ-Bybit", verdictErrorSub:"לא ניתן לטעון נתוני שוק — בדוק את החיבור, אנסה שוב אוטומטית.", verdictBadSymbolTitle:"{sym} לא נמצא ב-Bybit", verdictBadSymbolSub:"בדוק את הסימול: נדרש חוזה פרפטואלי ב-USDT, לדוגמה BTCUSDT, SOLUSDT או 1000PEPEUSDT.",
-      pageTitle:"RiskControl — מחשבון סיכון ומינוף לחוזים עתידיים", phSymbol:"BTC, SOL, PEPE…", phRisk:"לדוגמה, 10", phStop:"רמת הסטופ-לוס", phLeverage:"לדוגמה, 5", phEntry:"מחיר כניסה",
+      aiCheckLoadingRisk:"מנתח את פרמטרי העסקה — בדרך כלל כמה שניות…", aiCheckHintMarket:"הכפתור יופעל לאחר שנתוני השוק של הזוג שנבחר ייטענו.", verdictErrorTitle:"אין נתונים מ-Bybit", verdictErrorSub:"לא ניתן לטעון נתוני שוק — בדוק את החיבור, אנסה שוב אוטומטית.", verdictBadSymbolTitle:"{sym} לא נמצא ב-Bybit", verdictBadSymbolSub:"בדוק את הסימול: נדרש חוזה פרפטואלי ב-USDT, לדוגמה BTCUSDT, SOLUSDT או 1000PEPEUSDT.",
+      pageTitle:"RiskControl — מערכת לניהול סיכונים למסחר בחוזים עתידיים", phSymbol:"BTC, SOL, PEPE…", phRisk:"לדוגמה, 10", phStop:"רמת הסטופ-לוס", phLeverage:"לדוגמה, 5", phEntry:"מחיר כניסה",
       bannerLevMin:"המינוף חייב להיות לפחות 1x.", bannerLevMax:"מינוף {lev}x גבוה מהמקסימום של Bybit לזוג הזה ובגודל פוזיציה כזה ({max}x) — הבורסה לא תפתח את העסקה. הורד את המינוף.", bannerStopInvalid:"מחיר הסטופ חייב להיות גדול מאפס.", bannerOverRiskLimit:"הפוזיציה ({value}) גדולה ממגבלת הסיכון המקסימלית של Bybit לזוג הזה ({max}) — אי אפשר לפתוח אותה בעסקה אחת. הקטן את הסיכון או הרחב את הסטופ.", sizeBelowMinNotional:"שווי הפוזיציה ({value}) נמוך משווי ההזמנה המינימלי ב-Bybit ({min}) — הגדל את הסיכון לעסקה או הרחב את הסטופ.", chartLoading:"טוען גרף…", aiCheckRateLimited:"יותר מדי בקשות ל-AI ברצף — המתן כמה דקות ונסה שוב.",
-      depositLabel:"יתרת חשבון, $ (לא חובה)", phDeposit:"לדוגמה, 1000", riskUnitAria:"סיכון בדולרים או באחוזים מהיתרה", riskHintOfDeposit:"{pct}% מהיתרה", riskNeedDeposit:"הזן את יתרת החשבון כדי לחשב סיכון באחוזים", bannerRiskHigh:"סיכון של {pct}% מהיתרה בעסקה אחת הוא הרבה. בדרך כלל מסכנים 0.5–2% כדי שרצף הפסדים לא ימחק את החשבון.", bannerRiskOverDeposit:"הסיכון גדול מהיתרה: אם הסטופ יופעל תפסיד יותר ממה שיש לך בחשבון.", bannerMarginOverDeposit:"המרג׳ין הנדרש ({margin}) גדול מהיתרה ({deposit}) — אין מספיק כסף לפוזיציה כזו. הקטן את הסיכון או העלה את המינוף (שים לב למחיר החיסול)."
+      depositLabel:"יתרת חשבון, $ (לא חובה)", phDeposit:"לדוגמה, 1000", riskUnitAria:"סיכון בדולרים או באחוזים מהיתרה", riskHintOfDeposit:"{pct}% מהיתרה", riskNeedDeposit:"הזינו את סכום הפיקדון [בהגדרות המתקדמות] כדי לחשב סיכון באחוזים", bannerRiskHigh:"סיכון של {pct}% מהיתרה בעסקה אחת הוא הרבה. בדרך כלל מסכנים 0.5–2% כדי שרצף הפסדים לא ימחק את החשבון.", bannerRiskOverDeposit:"הסיכון גדול מהיתרה: אם הסטופ יופעל תפסיד יותר ממה שיש לך בחשבון.", bannerMarginOverDeposit:"המרג׳ין הנדרש ({margin}) גדול מהיתרה ({deposit}) — אין מספיק כסף לפוזיציה כזו. הקטן את הסיכון או העלה את המינוף (שים לב למחיר החיסול)."
     }
   };
   const TV_LOCALE = {ru:'ru', en:'en', he:'he_IL'};
@@ -1858,6 +1858,7 @@
     document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n).replace('{sym}', currentSymbol||''); });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPlaceholder); });
     document.title = t('pageTitle');
+    { const md = document.querySelector('meta[name="description"]'); if(md) md.setAttribute('content', t('metaDesc')); }
     document.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.title = t(el.dataset.i18nTitle); });
     document.querySelectorAll('[data-i18n-aria]').forEach(el=>{ el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
     $('langSelect').value = lang;
@@ -2176,7 +2177,7 @@
     const hint = $('riskHint');
     hint.className = 'field-hint';
     if(riskMode==='pct'){
-      if(!(deposit>0)){ hint.textContent = t('riskNeedDeposit'); hint.className = 'field-hint warn'; }
+      if(!(deposit>0)){ renderNeedDeposit(hint); hint.className = 'field-hint warn'; }
       else hint.textContent = riskAmount>0 ? '= '+fmtUsd(riskAmount) : '';
     } else {
       hint.textContent = riskPct!=null ? '= '+t('riskHintOfDeposit').replace('{pct}', fmt(riskPct,2)) : '';
@@ -2185,6 +2186,7 @@
     const stop = parseNum($('stop').value);
     const leverageIn = parseNum($('leverage').value);
     const rr = parseNum($('rr').value);
+    renderEntryLine(entry); renderAdvSum();
 
     const banner = $('banner');
     banner.innerHTML = '';
@@ -2858,7 +2860,7 @@
     const lines = [];
     lines.push('Таймфрейм: '+ru(intervalKey(iv))+', старший таймфрейм: '+ru(intervalKey(HTF_OF[iv]||'D')));
     lines.push('Цена: '+fmtPrice(m.price)+(isFinite(m.change24h) ? ' · за 24ч: '+pct(m.change24h) : ''));
-    lines.push('Состояние рынка (по сайту): '+ru(marketStateKey()));
+    lines.push('Состояние рынка (по оценке системы): '+ru(marketStateKey()));
     if(vm){
       lines.push('Обычный ход цены (в 80% случаев по истории монеты): 4ч '+fmtMove(volMove(vm,'h4'))+', 24ч '+fmtMove(volMove(vm,'d1'))+', 7д '+fmtMove(volMove(vm,'d7'))
         +(isFinite(vm.ratio) ? '; волатильность '+fmt(vm.ratio,2)+'× от обычной' : '')
@@ -2916,6 +2918,7 @@
     b.dataset.i18n = key; b.textContent = t(key);
     b.className = 'live-badge' + (st==='updated' ? ' on' : st==='loading' ? '' : ' off');
     $('contractPrice').textContent = (hasMarketData && lastTickerPrice!==null) ? fmtUsdPrice(lastTickerPrice) : '';
+    renderEntryLine(parseNum($('entry').value));
   }
   function renderFetchStatus(){
     renderLiveBadge();
@@ -4031,6 +4034,7 @@
 
   // ---------- init ----------
   loadState();
+  if(!$('leverage').value) $('leverage').value = '10';
   applyTheme();
   applyI18n();
   updateVerdictTf();
@@ -4466,6 +4470,58 @@
   $('savedOpenJournal').addEventListener('click', ()=>showPage('pageJournal'));
   $('jOpenClose').addEventListener('click', ()=>{ showPage('pageCalc'); saveTrade(); });
   renderChain();
+
+  // ================= v19 · короткий режим расчёта =================
+  var advAutoOpened = false;
+  function advIsOpen(){ const b = document.getElementById('advBox'); return !!(b && !b.hidden); }
+  function setAdvOpen(open, persist){
+    const box = $('advBox'), btn = $('advToggle'); if(!box || !btn) return;
+    box.hidden = !open; btn.setAttribute('aria-expanded', String(open));
+    btn.classList.toggle('open', open);
+    $('advSum').hidden = open;
+    if(persist){ try{ localStorage.setItem('rcAdvOpen', open ? '1' : '0'); }catch(e){} }
+  }
+  function fmtEntryPrice(p){
+    const dp = (typeof priceDp==='number' && priceDp>=0) ? priceDp : 2;
+    try{ return Number(p).toLocaleString(lang==='ru' ? 'ru-RU' : 'en-US', {minimumFractionDigits:0, maximumFractionDigits:dp}); }catch(e){ return String(p); }
+  }
+  function renderEntryLine(entry){
+    const el = document.getElementById('entryLine'); if(!el) return;
+    const manual = (typeof entryMode!=='undefined' && entryMode==='manual') || (typeof feeMode!=='undefined' && feeMode==='maker');
+    const st = (typeof fetchState!=='undefined' && fetchState) ? fetchState.type : 'loading';
+    let txt, warn = false;
+    if(entry>0) txt = tf(manual ? 'entryLineManual' : 'entryLineLive', {p: fmtEntryPrice(entry)});
+    else if(entryMode==='live' && st!=='loading'){
+      txt = t('entryLineNone'); warn = true;
+      if(!advAutoOpened){ advAutoOpened = true; setAdvOpen(true, false); }
+    }
+    else txt = t(entryMode==='manual' ? 'entryLineNone' : 'entryLineWait');
+    el.textContent = txt;
+    el.classList.toggle('warn', warn);
+  }
+  function labelHead(key){ return String(t(key)).split(/,| \(/)[0].trim(); }
+  function renderAdvSum(){
+    const el = document.getElementById('advSum'); if(!el) return;
+    const parts = [labelHead(feeMode==='maker' ? 'feeMakerLabel' : 'feeTakerLabel')];
+    const lev = parseNum($('leverage').value), rr = parseNum($('rr').value), dep = parseNum($('deposit').value);
+    const low = s => lang!=='he' ? s.charAt(0).toLowerCase()+s.slice(1) : s;
+    if(lev>0) parts.push(low(labelHead('leverageLabel'))+' '+fmt(lev,2)+'×');
+    if(rr>0) parts.push('R:R '+fmt(rr,2));
+    if(dep>0) parts.push(low(labelHead('depositLabel'))+' '+fmtUsd(dep,0));
+    el.textContent = parts.join(' · ');
+  }
+  function renderNeedDeposit(hint){
+    const s = t('riskNeedDeposit'), m = s.match(/^(.*)\[(.*)\](.*)$/);
+    hint.textContent = '';
+    if(!m){ hint.textContent = s; return; }
+    const a = document.createElement('button'); a.type = 'button'; a.className = 'link-btn'; a.textContent = m[2];
+    a.addEventListener('click', ()=>{ setAdvOpen(true, true); const d = $('deposit'); d.focus(); d.scrollIntoView({block:'center', behavior:'smooth'}); });
+    hint.append(m[1], a, m[3]);
+  }
+  $('advToggle').addEventListener('click', ()=>{ setAdvOpen(!advIsOpen(), true); });
+  ['leverage','rr','deposit'].forEach(id=> $(id).addEventListener('input', renderAdvSum));
+  (function(){ let open = false; try{ open = localStorage.getItem('rcAdvOpen')==='1'; }catch(e){} if(!advIsOpen()) setAdvOpen(open, false); else setAdvOpen(true, false); })();
+  renderAdvSum(); renderEntryLine(parseNum($('entry').value));
 
 })();
 </script>
