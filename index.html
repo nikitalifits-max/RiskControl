@@ -969,6 +969,41 @@
     .calc-res > .small{order:7;}
   }
   .fld-risk .label-row{align-items:center;margin-top:16px;} .fld-risk .label-row label{margin:0;} .fld-risk .unit-toggle{margin-bottom:0;} .fld-risk .label-row + input{margin-top:8px;}
+  /* обучение (tour): карточка по центру, цвета только из токенов темы */
+  .tour-btn{flex-shrink:0;width:36px;height:36px;padding:0;border-radius:999px;border:1px solid var(--border);background:var(--panel);color:var(--text);font:800 17px var(--font-ui);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+  .tour-btn:hover{border-color:var(--accent);}
+  .tour-btn:focus-visible,.tour-dialog .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* НЕмодальная карточка: страницу не блокирует, без затемнения */
+  .tour-card{position:fixed;z-index:75;inset-inline-end:24px;bottom:24px;width:380px;max-width:calc(100vw - 32px);max-height:80vh;max-height:80dvh;overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:20px;display:flex;flex-direction:column;gap:12px;background:var(--panel);color:var(--text);border:1px solid var(--muted);border-radius:var(--radius-sm);opacity:0;transform:translateY(12px);transition:opacity .2s ease,transform .2s ease;}
+  .tour-card.show{opacity:1;transform:none;}
+  .tour-card .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .tour-step{font-size:13px;font-weight:700;color:var(--text2);margin:0;direction:ltr;unicode-bidi:isolate;}
+  .tour-dots{display:flex;gap:6px;align-items:center;}
+  .tour-dots i{display:block;width:8px;height:8px;border-radius:999px;background:var(--text2);}
+  .tour-foot-link{background:none;border:0;padding:8px 0;margin:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer;min-height:36px;}
+  .tour-foot-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* на узком экране «?» не помещается в шапку (360/390 px) — доступ из подвала */
+  @media(max-width:680px){ .tour-btn{display:none;} }
+  .tour-dots i.on{width:20px;background:var(--accent);}
+  .tour-title{margin:0;font-size:22px;font-weight:800;line-height:28px;}
+  .tour-text{margin:0;font-size:15px;line-height:1.5;color:var(--text2);}
+  .tour-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;align-items:center;}
+  .tour-btns .btn{min-height:44px;min-width:44px;padding:0 16px;justify-content:center;}
+  .tour-btns .tour-spacer{flex:1;}
+  body.tour-open{padding-bottom:var(--tour-h,0px);}
+  @media (max-width:600px){
+    .tour-card{inset-inline:16px;width:auto;max-width:none;bottom:calc(16px + env(safe-area-inset-bottom));}
+  }
+  /* карточка (справа, 380px) пересекается с центральной панелью до ~1370px: поднимаем панель над карточкой; не выше экрана */
+  @media (max-width:1400px){ body.tour-open .save-sticky{bottom:min(calc(var(--tour-h,0px) + 28px + env(safe-area-inset-bottom)), calc(100dvh - 80px));} }
+  /* низкая высота (landscape): компактная карточка */
+  @media (max-height:500px){
+    .tour-card{max-height:60vh;max-height:60dvh;padding:12px 16px;gap:8px;}
+    .tour-title{font-size:18px;line-height:24px;}
+    .tour-text{font-size:14px;line-height:1.4;}
+    .tour-btns{margin-top:0;}
+  }
+  @media (prefers-reduced-motion:reduce){ .tour-card{transition:none !important;transform:none;} }
 </style>
 <!-- Vercel Web Analytics: считает посещения без cookie и без личных данных -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
@@ -994,6 +1029,7 @@
           <option value="en">EN</option>
           <option value="he">HE</option>
         </select>
+      <button id="tourBtn" class="tour-btn" type="button" data-i18n-title="tourMenu" data-i18n-aria="tourMenu" title="Обзор системы" aria-label="Обзор системы"><span aria-hidden="true">?</span></button>
       <button id="accountBtn" class="account-btn" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="btn-label" id="accountBtnLabel" data-i18n="accountLogin">Войти</span></button>
       <button id="themeToggle" class="theme-toggle" type="button" data-i18n-title="themeToggleTitle" data-i18n-aria="themeToggleTitle" title="Светлая / тёмная тема" aria-label="Светлая / тёмная тема"></button>
     </div>
@@ -1337,7 +1373,7 @@
   </div>
   <footer class="site-foot">
     <p data-i18n="legalRisk">Торговля фьючерсами с плечом связана с высоким риском: можно потерять весь депозит. Все расчёты системы — приближённые оценки по публичным данным биржи, а не финансовый совет и не гарантия результата. Решения о сделках и ответственность за них остаются за вами.</p>
-    <p><a href="/privacy.html" data-i18n="footPrivacy">Политика конфиденциальности</a> · <a href="mailto:riskctrl.app@gmail.com">riskctrl.app@gmail.com</a></p>
+    <p><a href="/privacy.html" data-i18n="footPrivacy">Политика конфиденциальности</a> · <a href="mailto:riskctrl.app@gmail.com">riskctrl.app@gmail.com</a> · <button type="button" id="tourFootBtn" class="tour-foot-link" data-i18n="tourMenu">Обзор системы</button></p>
   </footer>
 </div>
 
@@ -1379,6 +1415,20 @@
     </div>
   </div>
 </dialog>
+<div id="tourDialog" class="tour-card" role="dialog" aria-modal="false" aria-labelledby="tourTitle" hidden>
+  <p class="tour-step" id="tourStepLbl"></p>
+  <div class="tour-dots" id="tourDots" aria-hidden="true"></div>
+  <div id="tourLive" aria-live="polite" aria-atomic="true">
+    <h2 id="tourTitle" class="tour-title"></h2>
+    <p id="tourText" class="tour-text"></p>
+  </div>
+  <div class="tour-btns">
+    <button type="button" class="btn btn-ghost" id="tourSkip"></button>
+    <span class="tour-spacer"></span>
+    <button type="button" class="btn btn-ghost" id="tourBack" hidden></button>
+    <button type="button" class="btn btn-accent" id="tourNext"></button>
+  </div>
+</div>
 <dialog id="authDialog" class="auth-dialog" aria-labelledby="authTitle">
   <form id="authForm" novalidate>
     <div class="auth-head">
@@ -1426,6 +1476,11 @@
   // ---------- translations ----------
   const TR = {
     ru:{
+      tourMenu:"Обзор системы", tourDlgAria:"Обзор системы", tourNext:"Далее", tourBack:"Назад", tourSkip:"Пропустить", tourStart:"Начать расчёт", tourStepOf:"{n}/4",
+      tourT1:"Сначала расчёт риска", tourP1:"Введите риск и цену стопа — вход берётся по живой цене. Система покажет объём позиции до сделки.",
+      tourT2:"Звено за звеном", tourP2:"Для журнала нужен бесплатный аккаунт. Нажмите «Замкнуть звено» — расчёт сохранится в «Цепи».",
+      tourT3:"Причина входа", tourP3:"После сохранения отметьте причину — по желанию: Пробой, Отскок, Тренд или Новость.",
+      tourT4:"Всё под рукой", tourP4:"Обзор откроется снова из «?» в шапке или по ссылке «Обзор системы» внизу страницы.",
       sub:"Считайте риск до входа в сделку: точный объём позиции, безопасное плечо и цена ликвидации — за секунды, по живым данным Bybit. Не финансовый совет — решение всегда за вами.",
       tagline:"СНАЧАЛА РАСЧЁТ РИСКА — ПОТОМ СДЕЛКА.",
       themeToggleTitle:"Светлая / тёмная тема",
@@ -1565,6 +1620,11 @@
       depositLabel:"Депозит, $ (необязательно)", phDeposit:"например, 1000", riskUnitAria:"Риск в долларах или процентах от депозита", riskHintOfDeposit:"{pct}% депозита", riskNeedDeposit:"Укажите депозит в [точной настройке], чтобы считать риск в %", bannerRiskHigh:"Риск {pct}% депозита на одну сделку — это много. Обычно рискуют 0.5–2%, чтобы серия убытков не обнулила счёт.", bannerRiskOverDeposit:"Риск больше депозита: при срабатывании стопа вы потеряете больше, чем есть на счёте.", bannerMarginOverDeposit:"Требуемая маржа ({margin}) больше депозита ({deposit}) — на такую позицию не хватит средств. Уменьшите риск или поднимите плечо (следите за ценой ликвидации)."
     },
     en:{
+      tourMenu:"System tour", tourDlgAria:"System tour", tourNext:"Next", tourBack:"Back", tourSkip:"Skip", tourStart:"Start calculating", tourStepOf:"{n}/4",
+      tourT1:"Risk calculation first", tourP1:"Enter risk and stop price — entry uses the live price. The system shows position size before the trade.",
+      tourT2:"Link by link", tourP2:"Journal needs a free account. Press “Close the link” — the calculation is saved to the Chain.",
+      tourT3:"Reason for entry", tourP3:"After saving, mark a reason — optional: Breakout, Bounce, Trend or News.",
+      tourT4:"Everything at hand", tourP4:"Reopen this tour via “?” in the header or the “System tour” link at the page bottom.",
       sub:"Size your risk before you enter: exact position size, safe leverage, and liquidation price — in seconds, from live Bybit data. Not financial advice — the decision is always yours.",
       tagline:"CALCULATE THE RISK FIRST. THEN TRADE.",
       themeToggleTitle:"Light / dark theme",
@@ -1704,6 +1764,11 @@
       depositLabel:"Account balance, $ (optional)", phDeposit:"e.g. 1000", riskUnitAria:"Risk in dollars or % of balance", riskHintOfDeposit:"{pct}% of balance", riskNeedDeposit:"Enter your deposit in [Advanced settings] to use % risk", bannerRiskHigh:"Risking {pct}% of your balance on one trade is a lot. Traders usually risk 0.5–2% so a losing streak doesn't wipe out the account.", bannerRiskOverDeposit:"The risk is larger than your balance: if the stop is hit you'd lose more than you have.", bannerMarginOverDeposit:"Required margin ({margin}) is larger than your balance ({deposit}) — you can't fund this position. Lower the risk or raise the leverage (watch the liquidation price)."
     },
     he:{
+      tourMenu:"סיור במערכת", tourDlgAria:"סיור במערכת", tourNext:"הבא", tourBack:"הקודם", tourSkip:"דלג", tourStart:"התחל בחישוב", tourStepOf:"{n}/4",
+      tourT1:"קודם חישוב סיכון", tourP1:"הזינו סיכון ומחיר סטופ — הכניסה לפי המחיר החי. המערכת תציג את גודל הפוזיציה לפני העסקה.",
+      tourT2:"חוליה אחר חוליה", tourP2:"ליומן נדרש חשבון חינמי. לחצו «לסגור חוליה» — החישוב יישמר ב«שרשרת».",
+      tourT3:"סיבת כניסה", tourP3:"אחרי השמירה סמנו סיבה — לא חובה: פריצה, ריבאונד, מגמה או חדשות.",
+      tourT4:"הכול בהישג יד", tourP4:"הסיור נפתח שוב מ«?» בכותרת או בקישור «סיור במערכת» בתחתית הדף.",
       sub:"חשב את הסיכון לפני הכניסה לעסקה: גודל פוזיציה מדויק, מינוף בטוח ומחיר חיסול — תוך שניות, לפי נתונים חיים מבייביט. אין בכך ייעוץ פיננסי — ההחלטה תמיד שלך.",
       tagline:"קודם חישוב הסיכון — אחר כך העסקה.",
       themeToggleTitle:"ערכת נושא בהירה / כהה",
@@ -1862,6 +1927,7 @@
     document.querySelectorAll('[data-i18n-title]').forEach(el=>{ el.title = t(el.dataset.i18nTitle); });
     document.querySelectorAll('[data-i18n-aria]').forEach(el=>{ el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
     $('langSelect').value = lang;
+    if(window.rcTourRender) window.rcTourRender();
   }
 
   // ---------- state ----------
@@ -3427,10 +3493,14 @@
   }
 
   // ---------- шапка, кнопки, диалог входа ----------
+  let hashJournalDone = false;
+  window.addEventListener('hashchange', ()=>{ if(location.hash==='#journal' && !$('navJournalBtn').hidden) showPage('pageJournal', {skipScroll:true}); });
   function updateAccountUi(){
     const on = !!sb;
     $('accountBtn').hidden = !on;
     $('navJournalBtn').hidden = !on;
+    // ссылка /#journal: открыть вкладку «Журнал», как только она доступна (один раз)
+    if(on && !hashJournalDone && location.hash==='#journal'){ hashJournalDone = true; showPage('pageJournal', {skipScroll:true}); }
     $('saveTradeRow').hidden = !on;
     if(typeof updateProCard==='function') updateProCard();
     const label = $('accountBtnLabel');
@@ -4522,6 +4592,107 @@
   ['leverage','rr','deposit'].forEach(id=> $(id).addEventListener('input', renderAdvSum));
   (function(){ let open = false; try{ open = localStorage.getItem('rcAdvOpen')==='1'; }catch(e){} if(!advIsOpen()) setAdvOpen(open, false); else setAdvOpen(true, false); })();
   renderAdvSum(); renderEntryLine(parseNum($('entry').value));
+
+  // ---------- обучение (tour): 4 шага, один раз, только localStorage ----------
+  // Ключ rcTourDone = '1' после показа/пропуска. Без сети, без базы, без трекинга.
+  // Если localStorage недоступен — показываем один раз за сессию (флаг в памяти).
+  // Карточка НЕмодальная: страницу не блокирует. Все тексты — через textContent.
+  const TOUR_KEY = 'rcTourDone', TOUR_N = 4;
+  let tourStep = 0, tourMemDone = false, tourPrevFocus = null, tourOpened = false, tourMoved = false, tourAutoTimer = null;
+  function tourIsDone(){
+    if(tourMemDone) return true;
+    try{ return localStorage.getItem(TOUR_KEY)==='1'; }catch(e){ return false; }
+  }
+  function tourMarkDone(){
+    tourMemDone = true;
+    try{ localStorage.setItem(TOUR_KEY, '1'); }catch(e){}
+  }
+  function tourRender(){
+    const dlg = $('tourDialog');
+    if(!dlg) return;
+    const n = tourStep + 1;
+    $('tourTitle').textContent = t('tourT'+n);
+    $('tourText').textContent = t('tourP'+n);
+    const dots = $('tourDots');
+    dots.textContent = '';
+    for(let i=0;i<TOUR_N;i++){ const d = document.createElement('i'); if(i===tourStep) d.className = 'on'; dots.appendChild(d); }
+    $('tourStepLbl').textContent = t('tourStepOf').replace('{n}', String(n));
+    $('tourSkip').textContent = t('tourSkip');
+    $('tourBack').textContent = t('tourBack');
+    $('tourBack').hidden = (tourStep === 0);
+    $('tourNext').textContent = t(tourStep===TOUR_N-1 ? 'tourStart' : 'tourNext');
+    dlg.setAttribute('aria-label', t('tourDlgAria'));
+    tourSyncPad();
+  }
+  window.rcTourRender = tourRender;
+  // нижний отступ страницы = высота карточки, пока она открыта
+  function tourSyncPad(){
+    const dlg = $('tourDialog');
+    if(!dlg || dlg.hidden){ document.documentElement.style.removeProperty('--tour-h'); return; }
+    const h = Math.ceil(dlg.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--tour-h', (window.innerWidth<=1400 ? h + 32 : 0) + 'px');
+  }
+  window.addEventListener('resize', ()=>{ if(tourOpened) tourSyncPad(); });
+  function tourOpen(moveFocus){
+    const dlg = $('tourDialog');
+    if(!dlg) return;
+    if(tourAutoTimer){ clearTimeout(tourAutoTimer); tourAutoTimer = null; }
+    if(!tourOpened){ tourPrevFocus = document.activeElement; tourMoved = false; }
+    tourOpened = true;
+    tourStep = 0;
+    dlg.hidden = false;
+    document.body.classList.add('tour-open');
+    tourRender();
+    requestAnimationFrame(()=>{ dlg.classList.add('show'); });
+    if(moveFocus){ tourMoved = true; $('tourNext').focus(); }
+  }
+  function tourClose(focusEl){
+    const dlg = $('tourDialog');
+    if(!tourOpened) return;
+    tourOpened = false;
+    tourMarkDone();
+    dlg.classList.remove('show');
+    dlg.hidden = true;
+    document.body.classList.remove('tour-open');
+    document.documentElement.style.removeProperty('--tour-h');
+    if(focusEl){ try{ focusEl.focus(); }catch(e){} }
+    else if(tourMoved && tourPrevFocus && tourPrevFocus.focus && document.contains(tourPrevFocus)){ try{ tourPrevFocus.focus(); }catch(e){} }
+    tourPrevFocus = null; tourMoved = false;
+  }
+  $('tourSkip').addEventListener('click', ()=>tourClose());
+  $('tourBack').addEventListener('click', ()=>{ if(tourStep>0){ tourStep--; tourRender(); } });
+  $('tourNext').addEventListener('click', ()=>{
+    if(tourStep >= TOUR_N-1){
+      if(!$('pageCalc') || $('pageCalc').hidden) showPage('pageCalc', {skipScroll:true});
+      tourClose($('symbol'));
+      return;
+    }
+    tourStep++; tourRender();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape' && tourOpened && !document.querySelector('dialog[open]')) tourClose();
+  });
+  $('tourBtn').addEventListener('click', ()=>tourOpen(true));
+  $('tourFootBtn').addEventListener('click', ()=>tourOpen(true));
+  // авто-показ (~1 с): не поверх входа / возврата из OAuth / восстановления пароля / других окон;
+  // не мешает вводу: фокус в поле или в поле уже есть значение -> отложить на 1,5 с, максимум 2 раза
+  function tourBusy(){
+    const a = document.activeElement;
+    if(a && (a.tagName==='INPUT' || a.tagName==='TEXTAREA' || a.tagName==='SELECT' || a.isContentEditable)) return true;
+    // только поля, которые вводит пользователь (монета, плечо, R:R, вход заполнены по умолчанию/живой ценой)
+    for(const id of ['risk','stop','deposit']){ const el = $(id); if(el && el.value && el.value.trim()!=='') return true; }
+    return false;
+  }
+  function tourAuto(retry){
+    try{
+      if(tourIsDone() || tourOpened) return;
+      if(/(access_token|refresh_token|[#&?]code=|[#&?]error|type=recovery|type=signup)/.test(location.hash + location.search)) return;
+      if(document.querySelector('dialog[open]')) return;
+      if(tourBusy()){ if(retry < 2) tourAutoTimer = setTimeout(()=>tourAuto(retry+1), 1500); return; }
+      tourOpen(false);
+    }catch(e){}
+  }
+  tourAutoTimer = setTimeout(()=>tourAuto(0), 1000);
 
 })();
 </script>
